@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "33470561986",
+    "firebase_url": "https://studentchecking.firebaseio.com",
+    "project_id": "studentchecking",
+    "storage_bucket": "studentchecking.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:33470561986:android:771c1de831297bff52855b",
+        "android_client_info": {
+          "package_name": "RN.Camera99"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "33470561986-5isik49ebe07l5rujeaggqbfo3hi7mlt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBhiltc0crk19PtclL8z0dzOvjPJcJ7VDg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "33470561986-5isik49ebe07l5rujeaggqbfo3hi7mlt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

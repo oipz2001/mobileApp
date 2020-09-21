@@ -2,7 +2,8 @@
 import React, { PureComponent } from 'react';
 import {  StyleSheet, Text, TouchableOpacity, View,Image } from 'react-native';
 import { RNCamera } from 'react-native-camera';
-var eyeblink,smile = 0
+var eyeblink =0
+var smile = 0
 class ExampleApp extends PureComponent {
 
   
@@ -99,7 +100,7 @@ class ExampleApp extends PureComponent {
         smile=smileCount
       }
     }
-    console.log(smile);
+    // console.log(smile);
     
 
     

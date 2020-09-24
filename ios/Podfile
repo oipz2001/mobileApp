@@ -8,6 +8,10 @@ target 'mobileAttendanceCheck' do
 
   use_react_native!(:path => config["reactNativePath"])
 
+  pod 'AzureAuth', :path => '../node_modules/react-native-azure-auth'
+
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
   target 'mobileAttendanceCheckTests' do
     inherit! :complete
     # Pods for testing

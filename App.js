@@ -4,6 +4,7 @@ import WifiPresent from './src/screens/wifiPresent'
 import Camera from './src/screens/cameraTest'
 import Login from './src/screens/Login'
 import Calendar from './src/components/CalendarPicker'
+import MyAppNavigator from './src/index'
 
 const App = () => {
   
@@ -12,7 +13,9 @@ const App = () => {
     // <WifiPresent />
     <Camera />
     // <Login />
+    
     // <Calendar/>
+    // <MyAppNavigator/>
     
     
     
@@ -22,6 +25,7 @@ const App = () => {
   
 }
 export default App
+
 
 
 

@@ -11,7 +11,7 @@ const azureAuth = new AzureAuth({
 
 
 
-const Login = () => {
+const Login = ({navigation}) => {
     const [accessToken,setaccessToken] = useState('')
     const [user,setuser] = useState('')
     const [mail,setmail] = useState([])
@@ -40,11 +40,20 @@ const Login = () => {
         
       
         <SafeAreaView style={{flex:1,justifyContent:'center',alignItems:'center'}}> 
-          <Button title="LOGIN" onPress={_Login}/>
+          {/* <Button title="LOGIN" onPress={_Login}/>
           
           <Text>Name: {user} </Text>
           <Text>Mail: {mail} </Text>
-          <Text>ID: {userId} </Text>
+          <Text>ID: {userId} </Text> */}
+          <View>
+            <Text style={{fontSize:20}}>Login screen</Text>
+          </View>
+          <View style={{marginTop:30}}>
+            <Button title="Go to Teacher Home" onPress={() => navigation.navigate('TeacherHome') } />
+          </View>
+          <View style={{marginTop:30}}>
+            <Button title="Go to Student Home" onPress={() => navigation.navigate('StudentHome')}  />
+          </View>
         </SafeAreaView>
       
 

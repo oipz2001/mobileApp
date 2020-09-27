@@ -7,13 +7,13 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
-const MyQR = () => {
+const StudentHome = () => {
 
     return(
         <>
                 <SafeAreaView style={{flex:1,alignItems:'center',justifyContent:'center'}}>
                 <View>
-                    <Text style={{fontSize:20}}>My QR Code</Text>
+                    <Text style={{fontSize:20}}>Face regcognition camera</Text>
                 </View>
                 
                 </SafeAreaView>
@@ -29,4 +29,4 @@ const MyQR = () => {
 
 }
 
-export default MyQR
+export default StudentHome

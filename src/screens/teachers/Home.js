@@ -2,49 +2,52 @@ import React,{useState} from 'react'
 import { Button, View,Text,StyleSheet,FlatList,StatusBar,TouchableOpacity,Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Calendar from '../../components/CalendarPicker'
-const DATA = [
-    {
-      id: "111111",
-      title: "Calculas1",
-      time:"13:00-14.30",
-      desc: "Room 516 Math Building",
-      all:100,
-      present:80,
-      absent:20
-    },
-    {
-      id: "222222",
-      title: "Calculas2",
-      time:"11:00-12.30",
-      desc: "Room 517 Math Building",
-      all:1000,
-      present:750,
-      absent:250
-    },
-    {
-      id: "333333",
-      title: "Calculas3",
-      time:"8:00-9:30",
-      desc: "Room 588 Math Building",
-      all:21,
-      present:17,
-      absent:4
 
-    },
-  ];
   
   
   
 
 const TeacherHome = ({ navigation }) => {
     const [selectedId, setSelectedId] = useState(null);
+    const DATA = [
+      {
+        id: "111111",
+        title: "Calculas1",
+        time:"13:00-14.30",
+        desc: "Room 516 Math Building",
+        all:100,
+        present:80,
+        absent:20
+      },
+      {
+        id: "222222",
+        title: "Calculas2",
+        time:"11:00-12.30",
+        desc: "Room 517 Math Building",
+        all:1000,
+        present:750,
+        absent:250
+      },
+      {
+        id: "333333",
+        title: "Calculas3",
+        time:"8:00-9:30",
+        desc: "Room 588 Math Building",
+        all:21,
+        present:17,
+        absent:4
+  
+      },
+    ];
     const renderItem = ({ item }) => {
         const Item = ({ item, onPress, style }) => (
-     
-            <TouchableOpacity onPress={() => navigation.navigate('RoomStat')} style={[styles.item, style]}>
+            
+            <TouchableOpacity onPress={() => {
+              navigation.navigate('RoomStat',{selectedSessionId:item.id})
+              }}  style={[styles.item, style]}>
             <View style={{flexDirection:'column'}}>
                 <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                    <View>
+                    <View >
                         <Text style={styles.title}>{item.title}</Text>
                         <Text style={styles.descrption} >Time: {item.time} </Text>
                         <Text style={styles.descrption}>Description: {item.desc} </Text>
@@ -79,7 +82,10 @@ const TeacherHome = ({ navigation }) => {
         return (
           <Item
             item={item}
-            onPress={() => setSelectedId(item.id)}
+            onPress={() => {
+              setSelectedId(item.id)
+              
+            }}
             style={{ backgroundColor:'white' }}
           />
         
@@ -89,7 +95,7 @@ const TeacherHome = ({ navigation }) => {
       };
 
 
-       const HeaderComponent = () => {
+       const HeaderFlatlistComponent = () => {
           return(
             <>
                 <Calendar style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}} />
@@ -114,7 +120,7 @@ const TeacherHome = ({ navigation }) => {
                     keyExtractor={(item) => item.id}
                     extraData={selectedId}
                     style={{marginTop:10}}
-                    ListHeaderComponent={<HeaderComponent/>}
+                    ListHeaderComponent={<HeaderFlatlistComponent/>}
                 />
             </SafeAreaView>
         </>

@@ -9,6 +9,7 @@ import TeacherHome from './src/screens/teachers/Home'
 import StudentHome from './src/screens/students/Home'
 import InClassRoom from './src/screens/students/InClassroom'
 import CheckInCamera from './src/screens/students/faceCheckInCamera'
+import Stat from './src/screens/teachers/SessionStat'
 
 const App = () => {
   
@@ -24,6 +25,7 @@ const App = () => {
     // <StudentHome/>
     // <InClassRoom/>
     // <CheckInCamera/>
+    // <Stat/>
     
     
     );

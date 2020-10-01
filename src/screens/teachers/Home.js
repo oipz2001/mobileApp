@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import { Button, View,Text,StyleSheet,FlatList,StatusBar,TouchableOpacity,Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Calendar from '../../components/CalendarPicker'
@@ -39,6 +39,9 @@ const TeacherHome = ({ navigation }) => {
   
       },
     ];
+
+    
+
     const renderItem = ({ item }) => {
         const Item = ({ item, onPress, style }) => (
             

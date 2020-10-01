@@ -10,6 +10,9 @@ import StudentHome from './src/screens/students/Home'
 import InClassRoom from './src/screens/students/InClassroom'
 import CheckInCamera from './src/screens/students/faceCheckInCamera'
 import Stat from './src/screens/teachers/SessionStat'
+import Create from './src/screens/teachers/SessionCreate'
+import CheckBox from './src/components/testCheckedBox'
+import WifiTest from './src/screens/teachers/settingLoc'
 
 const App = () => {
   
@@ -26,6 +29,9 @@ const App = () => {
     // <InClassRoom/>
     // <CheckInCamera/>
     // <Stat/>
+    // <Create/>
+    // <CheckBox/>
+    // <WifiTest/>
     
     
     );
@@ -33,12 +39,5 @@ const App = () => {
     
   
 }
+
 export default App
-
-
-
-
-
-
-
-

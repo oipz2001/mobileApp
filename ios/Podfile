@@ -12,6 +12,8 @@ target 'mobileAttendanceCheck' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
+  pod 'RNCPicker', :path => '../node_modules/@react-native-community/picker'
+
   target 'mobileAttendanceCheckTests' do
     inherit! :complete
     # Pods for testing

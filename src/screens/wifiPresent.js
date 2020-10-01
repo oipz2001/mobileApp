@@ -39,31 +39,7 @@ class WifiPresent extends Component {
   onSelectedItemsChange = selectedWifi => {
     this.setState({ selectedWifi });
   };
-  // pressButtonGetWifi = () =>{
-  //   var wifi = this.state.wifiList.sort((a, b) => parseInt(b.level) - parseInt(a.level))
-  //   var wifiName,level ,quality
-  //   var result = [wifi.length]
-  //   for(var i=0;i<wifi.length;i++){
-  //     // wifiMac=wifi[i].BSSID
-  //     wifiName=wifi[i].SSID
-  //     level=wifi[i].level
-  //     console.log(level);
-  //     if(level>=-40){
-  //       quality='Excellent'
-  //     }else if(level>=-60){
-  //       quality='Very Strong'
-  //     }else if(level>=-67){
-  //       quality='Good'
-  //     }else if(level>=-72){
-  //       quality='Reliable'
-  //     }else if(level>=-90){
-  //       quality='Weak'
-  //     }
-  //     result[i]=' '+wifiName+'  '+quality
-      
-      
-  //   }
-  //   this.setState({wifiArr:result})
+  
     
 
 
@@ -190,11 +166,11 @@ class WifiPresent extends Component {
     
     return (
       // <View>
-        <View style={{flex:1,backgroundColor:"red",margin:0,padding:0,justifyContent:'space-evenly'}}>
+        <View style={{flex:1,backgroundColor:"red",justifyContent:'space-evenly'}}>
         {/* <Button title="Get Wifi" onPress={this.pressButtonGetWifi}/> */}
         
         
-        <View style={{margin:10}} >
+        <View style={{margin:10,backgroundColor:'blue'}} >
         <MultiSelect
           hideTags
           items={this.state.wifiList}
@@ -218,6 +194,8 @@ class WifiPresent extends Component {
           submitButtonText="Submit"
           hideSubmitButton={true}
           fixedHeight={true}
+          styleListContainer={{margin:30}}
+          
           
         />
         </View>

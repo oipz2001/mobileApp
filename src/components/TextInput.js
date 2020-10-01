@@ -21,8 +21,7 @@ const styles = StyleSheet.create({
         justifyContent:"center"
     },
     textInput:{
-        borderColor: '#000000', 
-        borderWidth: 0.2, 
+        borderWidth: 0.1, 
         width:300 , 
         borderRadius:25,
         padding: 8,

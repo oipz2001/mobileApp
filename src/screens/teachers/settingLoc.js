@@ -54,12 +54,17 @@ const SettingLoc = ({navigation}) => {
     useEffect(() => {
         askForUserPermissions();
         getWifiList()
-        getWifiList()
-        getWifiList()
+        // setInterval(() => {
+        //    getWifiList()
+        //  }, 30000);
+        
+        // getWifiList()
+        // getWifiList()
         
     },[])
 
     const onSelectedItemsChange = (selectedItems) => {
+        
         setSelectedItems(selectedItems) 
      };
 
@@ -80,9 +85,27 @@ const SettingLoc = ({navigation}) => {
             delete wifiArray[i][keyfre]
             delete wifiArray[i][keytime]
         }   
-          console.log(wifiArray);
+
+        var wifiArray_modified = wifiArray
+          for( var i=0;i<wifiArray.length;i++){
+            if(wifiArray[i].level > -45){
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Very Strong)')
+            }
+            else if(wifiArray[i].level > -60){
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Strong)')
+            }
+            else if(wifiArray[i].level > -70){
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Good)')
+            }else{
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Poor)')
+            }
             
-            setWifiList(wifiArray.sort((a, b) => parseInt(b.level) - parseInt(a.level)))
+            wifiArray_modified[i] = { BSSID_dotConcat: wifiArray[i].BSSID.concat('.'+ i.toString())  ,  SSID:wifiArray[i].SSID  , level:wifiArray[i].level}
+            console.log(wifiArray_modified[i]);
+          }
+            
+          // setWifiList(wifiArray.sort((a, b) => parseInt(b.level) - parseInt(a.level)))
+          setWifiList( wifiArray_modified.sort((a, b) => parseInt(b.level) - parseInt(a.level)))
             
           },(error)=>{
             console.log(error);
@@ -90,16 +113,21 @@ const SettingLoc = ({navigation}) => {
        
     }
 
-    const showWifiList = () => {
+      const showWifiList = () => {
             getWifiList()
-            console.log(wifiList);
+            console.log('Name: ' +wifiList[0].SSID + ' level: ' +wifiList[0].level );
             
             
         
     }
 
     const showSelectedWifi = () => {
-      console.log(selectedItems);
+      var selectedItems_result = []
+      for(var i=0;i<selectedItems.length;i++){
+           selectedItems_result.push(selectedItems[i].split(".")[0])
+      }
+      console.log(selectedItems_result);
+
       
       
   
@@ -128,27 +156,36 @@ const SettingLoc = ({navigation}) => {
     
     return(
         <>
-        {/* <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-        <TouchableOpacity onPress={() => navigation.navigate('TeacherHome')} style={{backgroundColor:'red',padding:20}}>
-            <Text>Create Session</Text>
-        </TouchableOpacity>
-        <Button title='Get Wifi List' onPress={getWifiList} /> */}
-        <Button title='Show Wifi List' onPress={showWifiList} />
-        <Button title='Show selected wifi' onPress={showSelectedWifi} />
-        <View>
+        
+        
+        <View style={{backgroundColor:'white', margin:10,padding:10,borderRadius:20,elevation:7,paddingBottom:25}}>
+        <Text style={{fontSize:20,backgroundColor:'#9E76B4',alignSelf:'center',padding:10,elevation:7,borderRadius:20,color:'white'}}>Set Location</Text>
         <SectionedMultiSelect
-          items={items}
+          items={wifiList}
           IconRenderer={Icon}
-          uniqueKey="id"
-          subKey="children"
-          selectText="Choose some things..."
+          uniqueKey="BSSID_dotConcat"
+          selectText="Choose your local Wifi"
           showDropDowns={true}
-          readOnlyHeadings={true}
+          readOnlyHeadings={false}
           onSelectedItemsChange={onSelectedItemsChange}
           selectedItems={selectedItems}
+          displayKey='SSID'
         />
+        
       </View>
         
+      
+        {/* <Text style={{fontSize:20,backgroundColor:'#9E76B4',alignSelf:'center',padding:10,elevation:7,borderRadius:20,color:'white'}}>Create Session</Text> */}
+        <TouchableOpacity onPress={() => navigation.navigate('TeacherHome')} style={{backgroundColor:'#9E76B4',alignSelf:'center',padding:10,elevation:7,borderRadius:20}}>
+            <Text style={{fontSize:20,color:'white'}}>Create Session</Text>
+        </TouchableOpacity>
+        <View style={{padding:40}}>
+          <Button title='Show Wifi List' onPress={showWifiList} />
+          <Button title='Show selected wifi' onPress={showSelectedWifi}  />
+          {/* <Text>SSID: {wifiList[0].SSID}  level:  {wifiList[0].level}</Text> */}
+          <Text>{JSON.stringify(wifiList)}</Text>
+          
+        </View>
         </>
     )
 

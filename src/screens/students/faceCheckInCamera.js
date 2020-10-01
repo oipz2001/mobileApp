@@ -1,22 +1,22 @@
 import React,{useState} from 'react'
 import { Button, View,Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Camera from '../cameraTest'
 
 
 
 
 
-
-const StudentHome = () => {
+const FaceCheckIn = () => {
 
     return(
         <>
-                <SafeAreaView style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-                <View>
-                    <Text style={{fontSize:20}}>Face regcognition camera</Text>
-                </View>
                 
-                </SafeAreaView>
+                
+        <Camera  />
+
+                
+                
 
         </>
             
@@ -29,4 +29,4 @@ const StudentHome = () => {
 
 }
 
-export default StudentHome
+export default FaceCheckIn

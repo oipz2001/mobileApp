@@ -151,9 +151,9 @@ const TeacherSessionCreate = ({navigation}) => {
         
                 
                 <SafeAreaView style={{flex:1}}>
-                  <ScrollView>
+                  {/* <ScrollView> */}
                 
-                <View style={{backgroundColor:'white',margin:20,padding:30,borderRadius:20,elevation:7,paddingBottom:25}}>
+                <View style={{backgroundColor:'white',margin:14,padding:30,borderRadius:20,elevation:7,paddingBottom:10}}>
                 <View style={{alignItems:'center'}}>
                 <View style={{flexDirection:'column',justifyContent:'space-between'}} >
                 <View style={{flexDirection:'row',justifyContent:'space-between',backgroundColor:'#9E76B4',paddingLeft:15,borderRadius:20,elevation:7}}>
@@ -237,7 +237,7 @@ const TeacherSessionCreate = ({navigation}) => {
                     <TextInput placeholder='Network'/>
                     <Text style={styles.title}>Description</Text>
                     <TextInput placeholder='Room 516 CPE Building'/>
-                    <View style={{flexDirection:'row',justifyContent:'space-around',marginTop:25}}>
+                    <View style={{flexDirection:'row',justifyContent:'space-around'}}>
                         <View>
                             <Text style={styles.title}>Start time</Text>
                             
@@ -263,7 +263,7 @@ const TeacherSessionCreate = ({navigation}) => {
 
                     <View style={{alignItems:'center'}}>
                         <TouchableOpacity onPress={() => navigation.navigate('TeacherSettingLocation')} style={{backgroundColor:'#9E76B4',padding:10,marginTop:20,elevation:7,borderRadius:30}}>
-                            <Text style={styles.title}>Continue </Text>
+                            <Text style={{fontSize:20,color:'white'}}>Continue </Text>
                         </TouchableOpacity>
                     </View>
                     
@@ -298,7 +298,7 @@ const TeacherSessionCreate = ({navigation}) => {
                 
                 
                 
-                </ScrollView>  
+                {/* </ScrollView>   */}
                 </SafeAreaView>
 
         </>

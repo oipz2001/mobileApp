@@ -45,13 +45,13 @@ const Login = ({navigation}) => {
           <Text>Name: {user} </Text>
           <Text>Mail: {mail} </Text>
           <Text>ID: {userId} </Text> */}
-          <View>
-            <Text style={{fontSize:20}}>Login screen</Text>
+          <View >
+            <Text style={{fontSize:20}} >Login screen</Text>
           </View>
-          <View style={{marginTop:30}}>
+          <View style={{marginTop:30}} >
             <Button title="Go to Teacher Home" onPress={() => navigation.navigate('TeacherHome') } />
           </View>
-          <View style={{marginTop:30}}>
+          <View style={{marginTop:30}} >
             <Button title="Go to Student Home" onPress={() => navigation.navigate('StudentHome')}  />
           </View>
         </SafeAreaView>

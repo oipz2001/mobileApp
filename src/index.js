@@ -12,7 +12,7 @@ import StudentFaceCheckIn from './screens/students/faceCheckInCamera'
 import InClass from './screens/students/InClassroom'
 import ScanQR from './screens/students/ScanQR'
 import MyQR from './screens/students/MyQR'
-import StudentReport from './screens/students/Report'
+import StudentReport from './screens/students/RoomReport'
 import SettingLocation from './screens/teachers/settingLoc'
 
 
@@ -34,7 +34,7 @@ const NavigatorScreens = () =>{
         <Stack.Screen name="InClass" component={InClass}/>
         <Stack.Screen name="ScanQR" component={ScanQR}/>
         <Stack.Screen name="MyQR" component={MyQR}/>
-        <Stack.Screen name="Report" component={StudentReport}/>
+        <Stack.Screen name="SessionReport" component={StudentReport}/>
       </Stack.Navigator>
     </NavigationContainer>
     

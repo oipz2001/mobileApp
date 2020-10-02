@@ -134,11 +134,17 @@ const TeacherSessionStat = ({route}) => {
               <Text style={styles.name}>{item.name}</Text>
               <Text style={styles.faculty}>{item.faculty}</Text>
                 </View>
-                <View style={{flexDirection:'column',justifyContent:'center'}}>
-                {item.status == 'checked' ? 
-                <Image source={require('../../assets/vectors/check.png')} style={{width:25,height:25}} /> :  
+                <View style={{flexDirection:'column',justifyContent:'flex-end'}}>
+                {item.status == 'checked' ?
+                <View>
+                <Image source={require('../../assets/vectors/check.png')} style={{width:25,height:25}} />
+                <Text>14:35</Text>
+                </View>
+                :  
                 <Image source={require('../../assets/vectors/close.png')} style={{width:20,height:20}} />
                 }
+
+                
                 
               </View>
           </View>
@@ -190,7 +196,7 @@ const TeacherSessionStat = ({route}) => {
         <>
         
                 
-                <SafeAreaView style={{flex:1,alignItems:'center',backgroundColor:'#9E76B4'}}>
+                <SafeAreaView style={{flex:1,alignItems:'center'}}>
                 
                 <FlatList
                     data={StudentDATA}

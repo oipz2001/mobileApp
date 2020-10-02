@@ -12,7 +12,7 @@ import StudentFaceCheckIn from './screens/students/faceCheckInCamera'
 import InClass from './screens/students/InClassroom'
 import ScanQR from './screens/students/ScanQR'
 import MyQR from './screens/students/MyQR'
-import StudentReport from './screens/students/RoomReport'
+import StudentReport from './screens/students/SessionReport'
 import SettingLocation from './screens/teachers/settingLoc'
 
 

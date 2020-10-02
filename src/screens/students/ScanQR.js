@@ -1,84 +1,10 @@
-// import React,{useState} from 'react'
-// import { Button, View,Text,StyleSheet } from 'react-native'
-// import { SafeAreaView } from 'react-native-safe-area-context';
-// import { RNCamera } from 'react-native-camera';
-
-
-
-
-
-// const ScanQR = () => {
-
-//     return(
-//         <>
-//                 <SafeAreaView style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-//                 {/* <View>
-//                     <Text style={{fontSize:20}}>Student Scan QR Code</Text>
-//                 </View> */}
-//                 <RNCamera
-//                     ref={ref => {
-//                         this.camera = ref;
-//                     }}
-//                     style={styles.preview}
-//                     type={RNCamera.Constants.Type.front}
-
-//                     androidCameraPermissionOptions={{
-//                         title: 'Permission to use camera',
-//                         message: 'We need your permission to use your camera',
-//                         buttonPositive: 'Ok',
-//                         buttonNegative: 'Cancel',
-//                     }}
-                    
-//                     // onGoogleVisionBarcodesDetected={({ barcodes }) => {
-//                     //   console.log(barcodes);
-//                     // }}
-                    
-//                 />
-                
-//                 </SafeAreaView>
-
-//         </>
-            
-        
-        
-        
-        
-
-//     );
-
-// }
-
-// const styles = StyleSheet.create({
-//     container: {
-//       flex: 1,
-//       flexDirection: 'column',
-//       backgroundColor: 'black',
-//     },
-//     preview: {
-//       flex: 1,
-//       justifyContent: 'flex-end',
-//       alignItems: 'center',
-//     },
-//     capture: {
-//       flex: 0,
-//       backgroundColor: '#fff',
-//       borderRadius: 5,
-//       padding: 15,
-//       paddingHorizontal: 20,
-//       alignSelf: 'center',
-//       margin: 20,
-//     },
-//   });
-
-// export default ScanQR
-
 
 'use strict';
 import React, { PureComponent } from 'react';
 import { AppRegistry, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 
-class ExampleApp extends PureComponent {
+class QR_Scan extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
@@ -91,6 +17,12 @@ class ExampleApp extends PureComponent {
 
     return (
       <View style={styles.container}>
+        <View>
+        <TouchableOpacity style={styles.capture}>
+            <Text style={{ fontSize: 14 }}>Data: {this.state.receivedBarcodeData} </Text>
+        </TouchableOpacity>
+         
+        </View>
         <RNCamera
           ref={ref => {
             this.camera = ref;
@@ -110,6 +42,8 @@ class ExampleApp extends PureComponent {
         onGoogleVisionBarcodesDetected={this.state.shouldBarcodeDetect ? this.handleBarcodeDetected : null}
         barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
         />
+        
+        
         <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
           {/* <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
             <Text style={{ fontSize: 14 }}> SNAP </Text>
@@ -119,6 +53,7 @@ class ExampleApp extends PureComponent {
           </TouchableOpacity>
           <TouchableOpacity onPress={this.showBarcodeData.bind(this)} style={styles.capture}>
             <Text style={{ fontSize: 14 }}> Show Data </Text>
+            
           </TouchableOpacity>
         </View>
       </View>
@@ -151,7 +86,7 @@ class ExampleApp extends PureComponent {
   showBarcodeData = () => {
     console.log(this.state.receivedBarcodeData);
     
-    this.props.navigation.navigate('StudentHome')
+    // this.props.navigation.navigate('StudentHome')
 
   }
 }
@@ -178,4 +113,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ExampleApp
+export default QR_Scan

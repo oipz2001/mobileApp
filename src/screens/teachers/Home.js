@@ -101,14 +101,18 @@ const TeacherHome = ({ navigation }) => {
        const HeaderFlatlistComponent = () => {
           return(
             <>
+                
                 <Calendar style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}} />
                 
-                <View style={{alignItems:'center'}}>
-                    <TouchableOpacity onPress={() => navigation.navigate('TeacherCreateRoom')}>
-                        <Image source={require('../../assets/vectors/add-button.png')} style={{width:50,height:50}} />
-                    </TouchableOpacity>
-                    <Text style={{color:'white'}}>Add Sessions</Text>
-                </View>
+                
+                <View style={{alignItems:'center'}}>     
+                 <TouchableOpacity  style={{alignItems:'center',backgroundColor:'white',padding:17,borderRadius:20,elevation:8}} onPress={() => navigation.navigate('TeacherCreateRoom')}>
+                    <Image source={require('../../assets/vectors/add-button.png')} style={{width:60,height:60}} />
+                    <Text >Add Sessions</Text>
+                 </TouchableOpacity>
+                 </View>          
+                      
+               
             </>
           )
       }

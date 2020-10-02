@@ -151,7 +151,6 @@ const TeacherSessionCreate = ({navigation}) => {
         
                 
                 <SafeAreaView style={{flex:1}}>
-                  {/* <ScrollView> */}
                 
                 <View style={{backgroundColor:'white',margin:14,padding:30,borderRadius:20,elevation:7,paddingBottom:10}}>
                 <View style={{alignItems:'center'}}>
@@ -298,7 +297,7 @@ const TeacherSessionCreate = ({navigation}) => {
                 
                 
                 
-                {/* </ScrollView>   */}
+                
                 </SafeAreaView>
 
         </>

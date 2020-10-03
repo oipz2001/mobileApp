@@ -120,7 +120,7 @@ const TeacherHome = ({ navigation }) => {
 
     return(
         <>
-            <SafeAreaView style={{flex:1,backgroundColor:'#9E76B4'}}>
+            <SafeAreaView style={{flex:1}}>
                 <FlatList
                     data={DATA}
                     renderItem={renderItem}

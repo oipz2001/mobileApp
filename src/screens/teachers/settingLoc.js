@@ -61,7 +61,7 @@ const SettingLoc = ({navigation}) => {
         getWifiList()
         const interval =  setInterval(() => {
           getWifiList()
-        }, 2000);
+        }, 30000);
         return () => clearInterval(interval);
         
          

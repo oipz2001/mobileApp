@@ -49,12 +49,12 @@ const StudentHome = ({navigation}) => {
             </View>
             <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-around',marginTop:15}}>
                 <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                <TouchableOpacity onPress={() => navigation.navigate('StudentFaceCheckIn')} >
-                    <Text style={{color:'white'}}>Check-In</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('StudentFaceCheckIn',{sessionTitle:item.title})} >
+                    <Text style={{color:'white'}}>Check-in</Text>
                 </TouchableOpacity>
                 </View>
                 <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                <TouchableOpacity onPress={() => navigation.navigate('InClass')} >
+                <TouchableOpacity onPress={() => navigation.navigate('InClass',{sessionTitle:item.title})} >
                     <Text style={{color:'white'}}>My Session</Text>
                 </TouchableOpacity>
                 </View>

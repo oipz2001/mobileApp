@@ -45,9 +45,7 @@ const TeacherHome = ({ navigation }) => {
     const renderItem = ({ item }) => {
         const Item = ({ item, onPress, style }) => (
             
-            <TouchableOpacity onPress={() => {
-              navigation.navigate('RoomStat',{selectedSessionId:item.id})
-              }}  style={[styles.item, style]}>
+            <TouchableOpacity   style={[styles.item, style]}>
             <View style={{flexDirection:'column'}}>
                 <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                     <View >
@@ -76,6 +74,18 @@ const TeacherHome = ({ navigation }) => {
               
               
               </View>
+              <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-around',marginTop:15}}>
+                <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
+                <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',{selectedSessionId:item.id})}} >
+                    <Text style={{color:'white'}}>Statistics</Text>
+                </TouchableOpacity>
+                </View>
+                <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
+                <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap')} >
+                    <Text style={{color:'white'}}>Seat map</Text>
+                </TouchableOpacity>
+                </View>
+            </View>
             </View>
             </TouchableOpacity>
             

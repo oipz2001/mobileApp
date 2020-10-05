@@ -2,7 +2,7 @@ import React,{useEffect, useState} from 'react'
 import { Button, View,Text,StyleSheet,FlatList,StatusBar,TouchableOpacity,Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Calendar from '../../components/CalendarPicker'
-
+import Icon from 'react-native-vector-icons/FontAwesome';
   
   
   
@@ -59,15 +59,18 @@ const TeacherHome = ({ navigation }) => {
                     </View>
               <View style={{marginTop:20,flexDirection:'row',justifyContent:'space-around'}}>
                     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                        <Image source={require('../../assets/vectors/multiple-users-silhouette.png')} style={{width:20,height:20}} />
+                        {/* <Image source={require('../../assets/vectors/multiple-users-silhouette.png')} style={{width:20,height:20}} /> */}
+                        <Icon name="users" size={20} />
                         <Text>  {item.all} </Text>
                     </View>
                     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                        <Image source={require('../../assets/vectors/check.png')} style={{width:25,height:25}} />
+                        {/* <Image source={require('../../assets/vectors/check.png')} style={{width:25,height:25}} /> */}
+                        <Icon name="check" size={25} color='green'/>
                         <Text>  {item.present}</Text>
                     </View>
                     <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                        <Image source={require('../../assets/vectors/close.png')} style={{width:20,height:20}} />
+                        {/* <Image source={require('../../assets/vectors/close.png')} style={{width:20,height:20}} /> */}
+                        <Icon name="times" size={25} color='red'/>
                         <Text>  {item.absent}</Text>
                     </View>
               
@@ -76,12 +79,12 @@ const TeacherHome = ({ navigation }) => {
               </View>
               <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-around',marginTop:15}}>
                 <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',{selectedSessionId:item.id})}} >
+                <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',{sessionTitle:item.title,sessionID:item.id})}} >
                     <Text style={{color:'white'}}>Statistics</Text>
                 </TouchableOpacity>
                 </View>
                 <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap')} >
+                <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{sessionTitle:item.title,sessionID:item.id})} >
                     <Text style={{color:'white'}}>Seat map</Text>
                 </TouchableOpacity>
                 </View>
@@ -117,7 +120,9 @@ const TeacherHome = ({ navigation }) => {
                 
                 <View style={{alignItems:'center'}}>     
                  <TouchableOpacity  style={{alignItems:'center',backgroundColor:'white',padding:17,borderRadius:20,elevation:8}} onPress={() => navigation.navigate('TeacherCreateRoom')}>
-                    <Image source={require('../../assets/vectors/add-button.png')} style={{width:60,height:60}} />
+                    {/* <Image source={require('../../assets/vectors/add-button.png')} style={{width:60,height:60}} /> */}
+                    <Icon name="plus-circle" size={60}/>
+                    
                     <Text >Add Sessions</Text>
                  </TouchableOpacity>
                  </View>          

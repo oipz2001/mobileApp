@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { FlatList, StatusBar, StyleSheet, Text, TouchableOpacity,View,Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -7,7 +7,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
-const SessionReport = () => {
+const SessionReport = ({route}) => {
     const DATA = [
         {
           id: "0",
@@ -34,6 +34,8 @@ const SessionReport = () => {
             title: "1/10/63",
         },
       ];
+
+
     
       const Item = ({ item }) => (
         <View style={styles.item}>
@@ -47,6 +49,10 @@ const SessionReport = () => {
       const renderItem = ({ item }) => (
         <Item item={item} />
       );
+
+      useEffect(() => {
+        console.log(route.params.sessionID + ' ' +route.params.sessionTitle + '(Report)');
+    })
       
 
     return(

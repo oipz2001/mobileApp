@@ -2,7 +2,7 @@ import React,{useEffect, useState} from 'react'
 import { Button, View,Text,StyleSheet,FlatList,StatusBar,TouchableOpacity,Image,Modal } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-const TeacherSeatmap = () => {
+const TeacherSeatmap = ({route}) => {
     const [showSeatmapModal,setShowSeatmapModal] = useState(false)
     const [modalData,setModalData] = useState('')
 
@@ -18,6 +18,11 @@ const TeacherSeatmap = () => {
         setModalData(seatmapArray[i][j])
         setShowSeatmapModal(!showSeatmapModal)
     }
+
+    useEffect(() => {
+        console.log(route.params.sessionID + ' ' +route.params.sessionTitle + '(Seatmap)');
+
+    })
 
     
     return(

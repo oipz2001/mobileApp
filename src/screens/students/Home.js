@@ -10,22 +10,22 @@ import Calendar from '../../components/CalendarPicker'
 const StudentHome = ({navigation}) => {
     const DATA = [
         {
-            id: "261123",
-            title: "Calculas1",
+            id: "206100",
+            title: "Math100",
             time:"13:00-14.30",
             desc: "Room 516 Math Building",
             teacher: "Tommy"
         },
         {
-            id: "261321",
-            title: "Calculas15",
+            id: "261458",
+            title: "Computer Vision",
             time:"11:00-12.30",
             desc: "Room 516 Math Building",
             teacher: "Tommy"
         },
         {
-            id: "261999",
-            title: "Calculas12",
+            id: "261434",
+            title: "Network Design",
             time:"8:00-9:30",
             desc: "Room 516 Math Building",
             teacher: "Tommy"
@@ -49,12 +49,12 @@ const StudentHome = ({navigation}) => {
             </View>
             <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-around',marginTop:15}}>
                 <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                <TouchableOpacity onPress={() => navigation.navigate('StudentFaceCheckIn',{sessionTitle:item.title})} >
+                <TouchableOpacity onPress={() => navigation.navigate('StudentFaceCheckIn',{sessionTitle:item.title,sessionID:item.id})} >
                     <Text style={{color:'white'}}>Check-in</Text>
                 </TouchableOpacity>
                 </View>
                 <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                <TouchableOpacity onPress={() => navigation.navigate('InClass',{sessionTitle:item.title})} >
+                <TouchableOpacity onPress={() => navigation.navigate('InClass',{sessionTitle:item.title,sessionID:item.id})} >
                     <Text style={{color:'white'}}>My Session</Text>
                 </TouchableOpacity>
                 </View>

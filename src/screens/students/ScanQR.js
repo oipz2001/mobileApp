@@ -13,6 +13,10 @@ class QR_Scan extends PureComponent {
             
         }
     }
+
+    componentDidMount(){
+      console.log(this.props.route.params.sessionID + ' ' +this.props.route.params.sessionTitle + '(Scan QR)');
+    }
   render() {
 
     return (

@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import { Button, View,Text } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import QRCode from 'react-native-qrcode-generator';
@@ -8,9 +8,13 @@ import QRCode from 'react-native-qrcode-generator';
 
 
 
-const MyQR = () => {
+const MyQR = ({route}) => {
 
     const [myTextQR,setMyTextQR] = useState('Parinya Seetawan 2542')
+
+    useEffect(() => {
+        console.log(route.params.sessionID + ' ' +route.params.sessionTitle + '(My QR)');
+    })
 
     return(
         <>

@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useEffect, useState} from 'react'
 import { Button, View,Text,Image,StyleSheet } from 'react-native'
 import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -7,35 +7,28 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
-const InClassRoom = ({navigation}) => {
+const InClassRoom = ({route,navigation}) => {
+
+    useEffect(() => {
+        console.log(route.params.sessionID + ' ' +route.params.sessionTitle + '(In Class)');
+
+    })
 
     return(
         <>
         
                 <SafeAreaView style={{flex:1}}>
-                {/* <View>
-                    <Text style={{fontSize:20}}>Classroom Screen</Text>
-                </View>
-                <View style={{marginTop:30}}>
-                <Button title="Go to ScanQR Screen"  onPress={() => navigation.navigate('ScanQR')}  />
-                </View>
-                <View style={{marginTop:30}}>
-                <Button title="Go to MyQR Screen" onPress={() => navigation.navigate('MyQR')}  />
-                </View>
-                <View style={{marginTop:30}}>
-                <Button title="Go to Report Screen" onPress={() => navigation.navigate('Report')}  />
-                </View> */}
                 <View style={{marginTop:25}} >
                     <Text style={{alignSelf:'center',fontSize:25}} >Seat Map Creation</Text>
                 
                     <View style={{flexDirection:'row',justifyContent:'space-around',padding:10}}>
                         
-                        <TouchableOpacity style={styles.QR} onPress={() => navigation.navigate('ScanQR')}>
+                        <TouchableOpacity style={styles.QR} onPress={() => navigation.navigate('ScanQR',{sessionID:route.params.sessionID,sessionTitle:route.params.sessionTitle})}>
                             <Image source={require('../../assets/vectors/qr-code_scan.png')} style={{width:50,height:50}} />
                             <Text style={{marginTop:10}}>Scan QR</Text>
                         </TouchableOpacity>
                         
-                        <TouchableOpacity style={styles.QR} onPress={() => navigation.navigate('MyQR')}>
+                        <TouchableOpacity style={styles.QR} onPress={() => navigation.navigate('MyQR',{sessionID:route.params.sessionID,sessionTitle:route.params.sessionTitle})}>
                             <Image source={require('../../assets/vectors/qr-code.png')} style={{width:50,height:50}} />
                             <Text style={{marginTop:10}}>My QR</Text>
                         </TouchableOpacity>
@@ -46,7 +39,7 @@ const InClassRoom = ({navigation}) => {
                 <View>
                     <Text style={{alignSelf:'center',fontSize:25}} >Session Report</Text>
                     <View style={{alignSelf:'center',marginTop:15}}>
-                        <TouchableOpacity style={styles.QR} onPress={() => navigation.navigate('SessionReport')}>
+                        <TouchableOpacity style={styles.QR} onPress={() => navigation.navigate('SessionReport',{sessionID:route.params.sessionID,sessionTitle:route.params.sessionTitle})}>
                             <Image source={require('../../assets/vectors/report.png')} style={{width:50,height:50}} />
                             <Text style={{marginTop:10}}>Report</Text>
                         </TouchableOpacity>

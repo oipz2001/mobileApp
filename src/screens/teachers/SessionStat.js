@@ -28,8 +28,9 @@ const TeacherSessionStat = ({route}) => {
     const [selectedId, setSelectedId] = useState(null);
 
     useEffect(() => {
-        console.log(route.params);
-    })
+      console.log(route.params.sessionID + ' ' +route.params.sessionTitle + '(Statistics)');
+
+  })
 
   const renderItem = ({ item }) => {
     const backgroundColor = item.id === selectedId ? "#c0c0c0" : "#fffafa";

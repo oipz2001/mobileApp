@@ -6,13 +6,13 @@ import {LocaleConfig} from 'react-native-calendars';
 
 
 
-const CalendarPicker = () => {
+const CalendarPicker = ({...props}) => {
 
     return(
         
         <SafeAreaView>
             <View>
-                <Calendar style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}} />
+                <Calendar {...props}  />
             </View>
         
         </SafeAreaView>

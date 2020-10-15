@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:33470561986:android:771c1de831297bff52855b",
+        "mobilesdk_app_id": "1:33470561986:android:97b2c45cd1ddf7cb52855b",
         "android_client_info": {
-          "package_name": "RN.Camera99"
+          "package_name": "com.mobileattendancecheck"
         }
       },
       "oauth_client": [

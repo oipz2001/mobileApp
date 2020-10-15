@@ -52,11 +52,6 @@ const SettingLoc = ({navigation}) => {
     const [selectedItems,setSelectedItems] = useState([])
 
     useEffect(() => {
-        // askForUserPermissions();
-        // getWifiList()
-        // setInterval(() => {
-        //    getWifiList()
-        //  }, 30000);
         askForUserPermissions();
         getWifiList()
         const interval =  setInterval(() => {

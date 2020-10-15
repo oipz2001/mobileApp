@@ -1,15 +1,17 @@
 import React, {
-  useState
+  useState,useEffect
 } from 'react'
 import {
   View,
   Text,
   Button,
   TouchableHighlight,
-  SafeAreaView
+  SafeAreaView,
 } from 'react-native';
 import TextInput from '../components/TextInput'
 import AzureAuth from 'react-native-azure-auth';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import AsyncStorage from '@react-native-community/async-storage'
 
 const azureAuth = new AzureAuth({
   clientId: '234c43b9-e653-4646-97c6-1903cfac1c03'
@@ -22,7 +24,7 @@ const azureAuth = new AzureAuth({
 const Login = ({navigation}) => {
   const [accessToken, setaccessToken] = useState('')
   const [user, setuser] = useState('')
-  const [mail, setmail] = useState([])
+  const [mail, setmail] = useState('')
   const [userId, setuserId] = useState('')
   const [jobtitle, setjobtitle] = useState('')
 
@@ -36,7 +38,11 @@ const Login = ({navigation}) => {
         token: tokens.accessToken,
         path: '/me'
       })
-      console.log(tokens.expireOn);
+      // console.log(tokens.expireOn);
+      AsyncStorage.setItem('name',info.displayName);
+      AsyncStorage.setItem('mail',info.mail);
+      AsyncStorage.setItem('id',info.id);
+      AsyncStorage.setItem('jobtitle',info.jobTitle);
       setuser(info.displayName);
       setmail(info.mail)
       setuserId(info.id)
@@ -55,9 +61,42 @@ const Login = ({navigation}) => {
         setmail(null)
         setuserId(null)
         setjobtitle(null)
+        AsyncStorage.removeItem('name')
+        AsyncStorage.removeItem('mail')
+        AsyncStorage.removeItem('id')
+        AsyncStorage.removeItem('jobtitle')
       })
       .catch(error => console.log(error));
   };
+
+  const _storeData = async () => {
+    try {
+      await AsyncStorage.setItem(
+        'name',
+        'Parinya'
+      );
+    } catch (error) {
+      // Error saving data
+    }
+  };
+
+  const _retrieveData = async () => {
+    try {
+      const value = await AsyncStorage.getItem('name');
+      if (value !== null) {
+        // We have data!!
+        console.log(value);
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
+
+  useEffect(() => {
+    _retrieveData()
+  })
+
+  
 
 
 
@@ -66,7 +105,10 @@ const Login = ({navigation}) => {
 
 
     <SafeAreaView style = {{flex: 1, justifyContent: 'center',alignItems: 'center'}} >
-    <Button title = "LOGIN" onPress = {_Login}/>
+    {/* <Button title = "LOGIN" onPress = {_Login}/> */}
+    <TouchableOpacity onPress={_Login} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20}}>
+      <Text style={{color:'white'}}>Login with CMU</Text>
+    </TouchableOpacity>
 
     <Text > Name: {user} </Text> 
     <Text> Mail: {mail} </Text> 

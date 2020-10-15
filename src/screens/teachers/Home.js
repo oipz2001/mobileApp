@@ -3,12 +3,14 @@ import { Button, View,Text,StyleSheet,FlatList,StatusBar,TouchableOpacity,Image 
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Calendar from '../../components/CalendarPicker'
 import Icon from 'react-native-vector-icons/FontAwesome';
-  
-  
+import {useFocusEffect} from '@react-navigation/native';
+import AsyncStorage from '@react-native-community/async-storage'
   
 
+const moment = require('moment')
 const TeacherHome = ({ navigation }) => {
     const [selectedId, setSelectedId] = useState(null);
+    const [selectedDate,setSelectedDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
     const DATA = [
       {
         id: "111111",
@@ -39,6 +41,20 @@ const TeacherHome = ({ navigation }) => {
   
       },
     ];
+
+    useFocusEffect(
+      React.useCallback(() => {
+        // Do something when the screen is focused
+        console.log("Home is focused");
+        console.log(selectedDate);
+  
+        return () => {
+          // Do something when the screen is unfocused
+          // Useful for cleanup functions
+          console.log("Home is unfocused");
+        };
+      }, [])
+    );
 
     
 
@@ -114,10 +130,16 @@ const TeacherHome = ({ navigation }) => {
        const HeaderFlatlistComponent = () => {
           return(
             <>
+                <Text style={{alignSelf:'center'}}>Select {selectedDate}</Text>
+                <Calendar 
+                style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}}
+                onDayPress={(day) => {
+                  setSelectedDate(day.year+'-'+day.month+'-'+day.day)
+                  }}
+                  
+                />
                 
-                <Calendar style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}} />
-                
-                
+
                 <View style={{alignItems:'center'}}>     
                  <TouchableOpacity  style={{alignItems:'center',backgroundColor:'white',padding:17,borderRadius:20,elevation:8}} onPress={() => navigation.navigate('TeacherCreateRoom')}>
                     {/* <Image source={require('../../assets/vectors/add-button.png')} style={{width:60,height:60}} /> */}

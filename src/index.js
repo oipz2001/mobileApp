@@ -16,17 +16,19 @@ import StudentReport from './screens/students/SessionReport'
 import SettingLocation from './screens/teachers/settingLoc'
 import TeacherSeatmap from './screens/teachers/Seatmap'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MyProfile from './screens/Profile'
+import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 
 const Stack = createStackNavigator();
 
 const NavigatorScreens = () =>{
   const [user,setUser] = useState(null)
 
-  const _hearderProfile = () => {
+const _hearderProfile = ({...props}) => {
     return(
-      <View style={{flexDirection:'row',marginRight:10,justifyContent:'space-around',padding:5}}>
+      <TouchableOpacity {...props}  style={{flexDirection:'row',marginRight:10,justifyContent:'space-around',padding:5}}>
         <Icon name="user-circle" size={30} color="black" />
-      </View>
+      </TouchableOpacity>
       
     )
   }
@@ -43,18 +45,22 @@ const NavigatorScreens = () =>{
       <Stack.Navigator initialRouteName="Login" screenOptions={{headerTitleAlign:'center'}}   >
 
         <Stack.Screen name="Login" component={Login}  /> 
-        <Stack.Screen name="TeacherHome" component={TeacherHome} options={{headerTitle:'My Sessions',headerRight:_hearderProfile}} />
-        <Stack.Screen name="TeacherCreateRoom" component={TeacherSessionCreate} options={{headerTitle:'Create Session'}} />
+        {/* <Stack.Screen name="TeacherHome" component={TeacherHome} options={{headerTitle:'My Sessions',headerRight:_hearderProfile}} /> */}
+        {/* <Stack.Screen name="TeacherHome" component={TeacherHome} options={({ navigation, route }) => ({headerRight: () => <Button title="ss" onPress={() => navigation.navigate('MyProfile')} />,})} /> */}
+        <Stack.Screen name="TeacherHome" component={TeacherHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'My Sessions'})} />
+        <Stack.Screen name="TeacherCreateRoom" component={TeacherSessionCreate} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'Create Session'})} />
         <Stack.Screen name="TeacherSettingLocation" component={SettingLocation} options={{headerTitle:'Setting Location'}} />
-        <Stack.Screen name="RoomStat" component={TeacherSessionStat} options={{headerTitle:'Statistic',headerRight:_hearderProfile}}/>
-        <Stack.Screen name="TeacherSeatmap" component={TeacherSeatmap} options={{headerTitle:'Seat map',headerRight:_hearderProfile}}/>
+        <Stack.Screen name="RoomStat" component={TeacherSessionStat} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'Statistics'})}/>
+        <Stack.Screen name="TeacherSeatmap" component={TeacherSeatmap} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'Seat map'})}/>
 
-        <Stack.Screen name="StudentHome" component={StudentHome} options={{headerTitle:'My Sessions',headerRight:_hearderProfile}}/>
+        <Stack.Screen name="StudentHome" component={StudentHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'My Sessions'})}/>
         <Stack.Screen name="StudentFaceCheckIn" component={StudentFaceCheckIn} options={({route}) => ({headerTitle:'Check-in ('+route.params.sessionTitle+')'})}/>
-        <Stack.Screen name="InClass" component={InClass} options={({route}) => ({headerTitle:route.params.sessionTitle,headerRight:_hearderProfile})}/>
+        <Stack.Screen name="InClass" component={InClass} options={({navigation,route}) => ({headerTitle:route.params.sessionTitle,headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>})}/>
         <Stack.Screen name="ScanQR" component={ScanQR} />
         <Stack.Screen name="MyQR" component={MyQR}/>
-        <Stack.Screen name="SessionReport" component={StudentReport} options={{headerRight:_hearderProfile}}/>
+        <Stack.Screen name="SessionReport" component={StudentReport} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'Report'})}/>
+
+        <Stack.Screen name="MyProfile" component={MyProfile}/>
         
       </Stack.Navigator>
     </NavigationContainer>

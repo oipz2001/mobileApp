@@ -5,59 +5,24 @@ import wifi from 'react-native-android-wifi';
 import MultiSelect from 'react-native-multiple-select';
 import Icon from 'react-native-vector-icons/MaterialIcons'
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
-
-var items = [
-  // this is the parent or 'item'
-  {
-    name: 'Fruits',
-    id: 0,
-    // these are the children or 'sub items'
-    children: [
-      {
-        name: 'Apple',
-        id: 10,
-      },
-      {
-        name: 'Strawberry',
-        id: 17,
-      },
-      {
-        name: 'Pineapple',
-        id: 13,
-      },
-      {
-        name: 'Banana',
-        id: 14,
-      },
-      {
-        name: 'Watermelon',
-        id: 15,
-      },
-      {
-        name: 'Kiwi fruit',
-        id: 16,
-      },
-    ],
-  },
-  {
-    
-  },
-
-];
+import CheckBox from '@react-native-community/checkbox'
 
   
 
 const SettingLoc = ({navigation}) => {
     const [wifiList,setWifiList] = useState([])
     const [selectedItems,setSelectedItems] = useState([])
+    const [isAutoSelected, setAutoSelection] = useState(false);
+    const [isCustomSelected, setCustomSelection] = useState(false);
 
     useEffect(() => {
         askForUserPermissions();
         getWifiList()
-        const interval =  setInterval(() => {
-          getWifiList()
-        }, 30000);
-        return () => clearInterval(interval);
+        // const interval =  setInterval(() => {
+        //   getWifiList()
+        // }, 60000);
+        // return () => clearInterval(interval);
+
         
          
         
@@ -95,15 +60,15 @@ const SettingLoc = ({navigation}) => {
         var wifiArray_modified = wifiArray
           for( var i=0;i<wifiArray.length;i++){
             if(wifiArray[i].level > -45){
-              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Very Strong) ' + wifiArray[i].level)
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (แรงมาก) ' + wifiArray[i].level + ' dBm')
             }
             else if(wifiArray[i].level > -60){
-              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Strong) '+ wifiArray[i].level)
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (แรง) '+ wifiArray[i].level+ ' dBm')
             }
             else if(wifiArray[i].level > -70){
-              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Good) '+ wifiArray[i].level)
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (ดี) '+ wifiArray[i].level+ ' dBm')
             }else{
-              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Poor) '+ wifiArray[i].level)
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (อ่อน) '+ wifiArray[i].level+ ' dBm')
             }
             
             wifiArray_modified[i] = { BSSID_dotConcat: wifiArray[i].BSSID.concat('.'+ i.toString())  ,  SSID:wifiArray[i].SSID  , level:wifiArray[i].level}
@@ -164,35 +129,44 @@ const SettingLoc = ({navigation}) => {
         <>
         
         
-        <View style={{backgroundColor:'white', margin:10,padding:10,borderRadius:20,elevation:7,paddingBottom:25}}>
+        <View style={{backgroundColor:'white', margin:10,padding:10,borderRadius:20,elevation:7,paddingBottom:25,flex:1,alignItems:'center',justifyContent:'space-between'}}>
         <Text style={{fontSize:20,backgroundColor:'#9E76B4',alignSelf:'center',padding:10,elevation:7,borderRadius:20,color:'white'}}>Set Location</Text>
+        <Text>กรุณาเลือกสัญญาณ Wi-Fi ในบริเวณที่ต้องการให้ทำการเช็คชื่อ โดยควรเลือกจากความแรงของสัญญาณที่มากที่สุด เพื่อจำกัดขอบเขตการเช็คชื่อให้อยู่ในบริเวณมากที่สุด</Text>
+        <View style={{flexDirection:'row'}}>
+          
+          {/* <View style={{flexDirection:'row'}}>
+            <CheckBox value={isCustomSelected} onValueChange={setCustomSelection}/>
+            <Text>Custom selection</Text>
+          </View>  */}
+        </View>
+        { !isAutoSelected &&
+        <View style={{backgroundColor:'#9E76B4',width:350,borderRadius:25,elevation:8,padding:15}}>
         <SectionedMultiSelect
           items={wifiList}
           IconRenderer={Icon}
           uniqueKey="BSSID_dotConcat"
-          selectText="Choose your local Wifi"
-          // showDropDowns={true}
-          // readOnlyHeadings={false}
+          selectText="เลือกด้วยตนเอง"
           onSelectedItemsChange={onSelectedItemsChange}
           selectedItems={selectedItems}
           displayKey='SSID'
-          expandDropDowns={true}
+          // expandDropDowns={true}
+          colors={{selectToggleTextColor:'#ffffff',chipColor:'#ffffff'}}
         />
-        <TouchableOpacity onPress={() => navigation.navigate('TeacherHome')} style={{backgroundColor:'#9E76B4',alignSelf:'center',padding:10,elevation:7,borderRadius:20}}>
+        </View>
+        
+        }
+        <View style={{flexDirection:'row'}}>
+            <CheckBox value={isAutoSelected} onValueChange={setAutoSelection}/>
+            <Text>เลือกอัตโนมัติ</Text>
+          </View> 
+        <TouchableOpacity onPress={() => navigation.navigate('TeacherHome')} style={{backgroundColor:'#9E76B4',padding:10,elevation:7,borderRadius:20}}>
             <Text style={{fontSize:20,color:'white'}}>Create Session</Text>
         </TouchableOpacity>
       </View>
+      {/* <Button title='test' onPress={showSelectedWifi}/> */}
         
       
-        {/* <Text style={{fontSize:20,backgroundColor:'#9E76B4',alignSelf:'center',padding:10,elevation:7,borderRadius:20,color:'white'}}>Create Session</Text> */}
-        
-        {/* <View style={{padding:40}}> */}
-          {/* <Button title='Show Wifi List' onPress={showWifiList} /> */}
-          {/* <Button title='Show selected wifi' onPress={showSelectedWifi}  /> */}
-          {/* <Text>SSID: {wifiList[0].SSID}  level:  {wifiList[0].level}</Text> */}
-          {/* <Text>{JSON.stringify(wifiList)}</Text> */}
-          
-        {/* </View> */}
+       
         </>
     )
 

@@ -25,6 +25,8 @@ const TeacherSessionCreate = ({navigation}) => {
     const [showDatePicker_start,setShowDatePicker_start] = useState(false)
     const [showDatePicker_end,setShowDatePicker_end] = useState(false)
 
+    const [isLocationSelected, setLocationSelection] = useState(false);
+
 
     //Sessions Time
 
@@ -229,11 +231,21 @@ const TeacherSessionCreate = ({navigation}) => {
                         <Text style={styles.title}>Duplicate days </Text>
                         <DupDayComponent/>
                     </View>
+                    <View style={{flexDirection:'row',alignSelf:'center',marginTop:10}}>
+                        <CheckBox value={isLocationSelected} onValueChange={setLocationSelection}/>
+                        <Text>Set location</Text>
+                    </View> 
 
                     <View style={{alignItems:'center'}}>
+                        { isLocationSelected ?
                         <TouchableOpacity onPress={() => navigation.navigate('TeacherSettingLocation')} style={{backgroundColor:'#9E76B4',padding:10,marginTop:20,elevation:7,borderRadius:30}}>
                             <Text style={{fontSize:20,color:'white'}}>Continue </Text>
                         </TouchableOpacity>
+                        :
+                        <TouchableOpacity onPress={() => navigation.navigate('TeacherHome')} style={{backgroundColor:'#9E76B4',padding:10,marginTop:20,elevation:7,borderRadius:30}}>
+                            <Text style={{fontSize:20,color:'white'}}>Create </Text>
+                        </TouchableOpacity>
+                        }
                     </View>
                     
                     

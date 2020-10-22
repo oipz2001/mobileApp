@@ -25,7 +25,7 @@ const App = () => {
     // <Login />
     
     // <Calendar/>
-    // <MyAppNavigator/>
+    <MyAppNavigator/>
     // <TeacherHome />
     // <StudentHome/>
     // <InClassRoom/>
@@ -35,7 +35,7 @@ const App = () => {
     // <CheckBox/>
     // <WifiTest/>
     // <ExpoTest/>
-    <TestCamera/>
+    // <TestCamera/>
     
     
     );

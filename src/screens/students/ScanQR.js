@@ -23,7 +23,7 @@ class QR_Scan extends PureComponent {
       <View style={styles.container}>
         <View>
         <TouchableOpacity style={styles.capture}>
-            <Text style={{ fontSize: 14 }}>Data: {this.state.receivedBarcodeData} </Text>
+            <Text style={{ fontSize: 14 }}>กรุณาสแกน QR Code {this.state.receivedBarcodeData} </Text>
         </TouchableOpacity>
          
         </View>
@@ -52,13 +52,13 @@ class QR_Scan extends PureComponent {
           {/* <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
             <Text style={{ fontSize: 14 }}> SNAP </Text>
           </TouchableOpacity> */}
-          <TouchableOpacity onPress={this.setDetectBarcode.bind(this)} style={styles.capture}>
+          {/* <TouchableOpacity onPress={this.setDetectBarcode.bind(this)} style={styles.capture}>
             <Text style={{ fontSize: 14 }}>Barcode Detect Enable</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={this.showBarcodeData.bind(this)} style={styles.capture}>
             <Text style={{ fontSize: 14 }}> Show Data </Text>
             
-          </TouchableOpacity>
+          </TouchableOpacity> */}
         </View>
       </View>
     );

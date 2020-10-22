@@ -23,6 +23,9 @@ class ExampleApp extends PureComponent {
   render() {
     return (
       <View style={styles.container}>
+        <TouchableOpacity  style={styles.capture}>
+            <Text style={{ fontSize: 14 }}> กรุณายิ้ม หรือ กระพริบตา   </Text>
+          </TouchableOpacity>
         <RNCamera
           ref={ref => {
             this.camera = ref;

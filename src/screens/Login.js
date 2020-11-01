@@ -28,6 +28,8 @@ const Login = ({navigation}) => {
   const [userId, setuserId] = useState('')
   const [jobtitle, setjobtitle] = useState('')
 
+  const [isInfoShow,setInfoShow] = useState(false)
+
 
   const _Login = async () => {
     try {
@@ -47,6 +49,7 @@ const Login = ({navigation}) => {
       setmail(info.mail)
       setuserId(info.id)
       setjobtitle(info.jobTitle)
+      setInfoShow(true)
     } catch (error) {
       console.log(error)
     }
@@ -61,6 +64,7 @@ const Login = ({navigation}) => {
         setmail(null)
         setuserId(null)
         setjobtitle(null)
+        setInfoShow(false)
         AsyncStorage.removeItem('name')
         AsyncStorage.removeItem('mail')
         AsyncStorage.removeItem('id')
@@ -83,10 +87,10 @@ const Login = ({navigation}) => {
   const _retrieveData = async () => {
     try {
       const value = await AsyncStorage.getItem('name');
-      if (value !== null) {
-        // We have data!!
+      if (value !== null) 
         console.log(value);
-      }
+      else
+      console.log('No data is stored');
     } catch (error) {
       // Error retrieving data
     }
@@ -94,7 +98,7 @@ const Login = ({navigation}) => {
 
   useEffect(() => {
     _retrieveData()
-  })
+  },[])
 
   
 
@@ -105,23 +109,30 @@ const Login = ({navigation}) => {
 
 
     <SafeAreaView style = {{flex: 1, justifyContent: 'center',alignItems: 'center'}} >
-    {/* <Button title = "LOGIN" onPress = {_Login}/> */}
+      
     <TouchableOpacity onPress={_Login} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20}}>
       <Text style={{color:'white'}}>Login with CMU</Text>
     </TouchableOpacity>
-
-    <Text > Name: {user} </Text> 
-    <Text> Mail: {mail} </Text> 
-    <Text> ID: {userId} </Text> 
-    <Text> JobTitle: {jobtitle} </Text>
-
-    <Button title = "LOGOUT" onPress = {_onLogout}/> 
-    <View style = {{marginTop: 30}} >
-    <Button title = "Go to Teacher Home" onPress = {() => navigation.navigate('TeacherHome')}/> 
-    </View> 
-    <View style = {{marginTop: 30 }} >
-    <Button title = "Go to Student Home" onPress = {() => navigation.navigate('StudentHome')}/> 
-    </View> 
+    {isInfoShow &&
+    <View style={{backgroundColor:'#9E76B4',marginTop:30,padding:10,elevation:5,borderRadius:20}}>
+      <Text style={{color:"white"}} > Name: {user} </Text> 
+      <Text style={{color:"white"}} > Mail: {mail} </Text> 
+      <Text style={{color:"white"}} > ID: {userId} </Text> 
+      <Text style={{color:"white"}} > JobTitle: {jobtitle} </Text>
+    </View>
+    }
+    
+    <TouchableOpacity onPress={_onLogout} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20,marginTop:30}}>
+      <Text style={{color:'white'}}>Logout</Text>
+    </TouchableOpacity> 
+    <View >
+      <View style = {{marginTop: 30}} >
+        <Button title = "Go to Teacher Home" onPress = {() => navigation.navigate('TeacherHome')}/> 
+      </View> 
+      <View style = {{marginTop: 30 }} >
+        <Button title = "Go to Student Home" onPress = {() => navigation.navigate('StudentHome')}/> 
+      </View> 
+    </View>
     </SafeAreaView>
   );
 

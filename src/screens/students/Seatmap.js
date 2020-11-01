@@ -10,7 +10,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const InClassRoom = ({route,navigation}) => {
 
     useEffect(() => {
-        console.log(route.params.sessionID + ' ' +route.params.sessionTitle + '(In Class)');
+        console.log(route.params.sessionID + ' ' +route.params.sessionTitle + '(Seat map)');
 
     })
 
@@ -36,7 +36,7 @@ const InClassRoom = ({route,navigation}) => {
                     </View>
                 </View>
 
-                <View>
+                {/* <View>
                     <Text style={{alignSelf:'center',fontSize:25}} >Session Report</Text>
                     <View style={{alignSelf:'center',marginTop:15}}>
                         <TouchableOpacity style={styles.QR} onPress={() => navigation.navigate('SessionReport',{sessionID:route.params.sessionID,sessionTitle:route.params.sessionTitle})}>
@@ -44,7 +44,7 @@ const InClassRoom = ({route,navigation}) => {
                             <Text style={{marginTop:10}}>Report</Text>
                         </TouchableOpacity>
                     </View>
-                </View>
+                </View> */}
                 </SafeAreaView>
 
         </>

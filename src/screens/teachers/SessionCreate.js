@@ -25,7 +25,8 @@ const TeacherSessionCreate = ({navigation}) => {
     const [showDatePicker_start,setShowDatePicker_start] = useState(false)
     const [showDatePicker_end,setShowDatePicker_end] = useState(false)
 
-    const [isLocationSelected, setLocationSelection] = useState(false);
+    const [isLocationSelected, setLocationSelection] = useState(true);
+    const [isSeatmapCreate,setSeatmapCreate] = useState(true)
 
 
     //Sessions Time
@@ -231,10 +232,16 @@ const TeacherSessionCreate = ({navigation}) => {
                         <Text style={styles.title}>Duplicate days </Text>
                         <DupDayComponent/>
                     </View>
-                    <View style={{flexDirection:'row',alignSelf:'center',marginTop:10}}>
-                        <CheckBox value={isLocationSelected} onValueChange={setLocationSelection}/>
-                        <Text>Set location</Text>
-                    </View> 
+                    <View style={{flexDirection:'row',alignSelf:'center'}}>
+                        <View style={{flexDirection:'row',alignSelf:'center',marginTop:10}}>
+                            <CheckBox value={isLocationSelected} onValueChange={setLocationSelection}/>
+                            <Text>Set location</Text>
+                        </View> 
+                        <View style={{flexDirection:'row',alignSelf:'center',marginTop:10,marginLeft:15}}>
+                            <CheckBox value={isSeatmapCreate} onValueChange={setSeatmapCreate}/>
+                            <Text>Create seat map</Text>
+                        </View> 
+                    </View>
 
                     <View style={{alignItems:'center'}}>
                         { isLocationSelected ?

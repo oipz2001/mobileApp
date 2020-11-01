@@ -9,7 +9,7 @@ import TeacherSessionStat from './screens/teachers/SessionStat'
 import Login from './screens/Login'
 import StudentHome from './screens/students/Home'
 import StudentFaceCheckIn from './screens/students/faceCheckInCamera'
-import InClass from './screens/students/InClassroom'
+import Seatmap from './screens/students/Seatmap'
 import ScanQR from './screens/students/ScanQR'
 import MyQR from './screens/students/MyQR'
 import StudentReport from './screens/students/SessionReport'
@@ -55,7 +55,7 @@ const _hearderProfile = ({...props}) => {
 
         <Stack.Screen name="StudentHome" component={StudentHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'My Sessions'})}/>
         <Stack.Screen name="StudentFaceCheckIn" component={StudentFaceCheckIn} options={({route}) => ({headerTitle:'Check-in ('+route.params.sessionTitle+')'})}/>
-        <Stack.Screen name="InClass" component={InClass} options={({navigation,route}) => ({headerTitle:route.params.sessionTitle,headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>})}/>
+        <Stack.Screen name="Seatmap" component={Seatmap} options={({navigation,route}) => ({headerTitle:route.params.sessionTitle,headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>})}/>
         <Stack.Screen name="ScanQR" component={ScanQR} />
         <Stack.Screen name="MyQR" component={MyQR}/>
         <Stack.Screen name="SessionReport" component={StudentReport} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'Report'})}/>

@@ -5,7 +5,6 @@ import Calendar from '../../components/CalendarPicker'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage'
-  
 
 const moment = require('moment')
 const TeacherHome = ({ navigation }) => {
@@ -104,7 +103,15 @@ const TeacherHome = ({ navigation }) => {
                     <Text style={{color:'white'}}>Seat map</Text>
                 </TouchableOpacity>
                 </View>
-            </View>
+              </View>
+              <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20,alignSelf:'center',marginTop:15}}>
+                <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{sessionTitle:item.title,sessionID:item.id})} >
+                  <View style={{flexDirection:'row'}}>
+                    <Icon name="map-marker" size={25} color="white" /> 
+                    <Text style={{color:'white',marginLeft:7}}>Update location</Text>      
+                  </View>
+                </TouchableOpacity>
+              </View>
             </View>
             </TouchableOpacity>
             

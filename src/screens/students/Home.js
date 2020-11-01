@@ -47,17 +47,24 @@ const StudentHome = ({navigation}) => {
                         <Text>(Status)</Text>
                     </View>
             </View>
-            <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-around',marginTop:15}}>
-                <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                <TouchableOpacity onPress={() => navigation.navigate('StudentFaceCheckIn',{sessionTitle:item.title,sessionID:item.id})} >
-                    <Text style={{color:'white'}}>Check-in</Text>
-                </TouchableOpacity>
-                </View>
-                <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                <TouchableOpacity onPress={() => navigation.navigate('InClass',{sessionTitle:item.title,sessionID:item.id})} >
-                    <Text style={{color:'white'}}>My Session</Text>
-                </TouchableOpacity>
-                </View>
+            <View >
+              <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-evenly',marginTop:15}}>
+                  <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
+                  <TouchableOpacity onPress={() => navigation.navigate('StudentFaceCheckIn',{sessionTitle:item.title,sessionID:item.id})} >
+                      <Text style={{color:'white'}}>Check-in</Text>
+                  </TouchableOpacity>
+                  </View>
+                  <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
+                  <TouchableOpacity onPress={() => navigation.navigate('Seatmap',{sessionTitle:item.title,sessionID:item.id})} >
+                      <Text style={{color:'white'}}>Seat map</Text>
+                  </TouchableOpacity>
+                  </View>
+              </View>
+              <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20,alignSelf:'center',marginTop:15}}>
+                  <TouchableOpacity onPress={() => navigation.navigate('SessionReport',{sessionTitle:item.title,sessionID:item.id})} >
+                    <Text style={{color:'white'}}>Report</Text>
+                  </TouchableOpacity>
+              </View>
             </View>
           
         </View>

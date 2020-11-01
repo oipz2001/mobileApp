@@ -12,7 +12,7 @@ import CheckBox from '@react-native-community/checkbox'
 const SettingLoc = ({navigation}) => {
     const [wifiList,setWifiList] = useState([])
     const [selectedItems,setSelectedItems] = useState([])
-    const [isAutoSelected, setAutoSelection] = useState(false);
+    const [isAutoSelected, setAutoSelection] = useState(true);
     const [isCustomSelected, setCustomSelection] = useState(false);
 
     useEffect(() => {
@@ -131,13 +131,8 @@ const SettingLoc = ({navigation}) => {
         
         <View style={{backgroundColor:'white', margin:10,padding:10,borderRadius:20,elevation:7,paddingBottom:25,flex:1,alignItems:'center',justifyContent:'space-between'}}>
         <Text style={{fontSize:20,backgroundColor:'#9E76B4',alignSelf:'center',padding:10,elevation:7,borderRadius:20,color:'white'}}>Set Location</Text>
-        <Text>กรุณาเลือกสัญญาณ Wi-Fi ในบริเวณที่ต้องการให้ทำการเช็คชื่อ โดยควรเลือกจากความแรงของสัญญาณที่มากที่สุด เพื่อจำกัดขอบเขตการเช็คชื่อให้อยู่ในบริเวณมากที่สุด</Text>
+        <Text>กรุณาอยู่ในบริเวณที่ต้องการทำการสร้างห้องเรียนเช็คชื่อ และเลือกสัญญาณ Wi-Fi โดยจะให้ระบบเลือกอัตโนมัติ หรือเลือกด้วยตนเอง ควรเลือกจากความแรงของสัญญาณที่มากที่สุด เพื่อจำกัดขอบเขตให้อยู่ในบริเวณมากที่สุด</Text>
         <View style={{flexDirection:'row'}}>
-          
-          {/* <View style={{flexDirection:'row'}}>
-            <CheckBox value={isCustomSelected} onValueChange={setCustomSelection}/>
-            <Text>Custom selection</Text>
-          </View>  */}
         </View>
         { !isAutoSelected &&
         <View style={{backgroundColor:'#9E76B4',width:350,borderRadius:25,elevation:8,padding:15}}>

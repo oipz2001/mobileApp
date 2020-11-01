@@ -157,7 +157,7 @@ const TeacherSessionStat = ({route}) => {
         return(
             <>
             <View style={{marginTop:25,alignItems:'center'}}>
-                <Text style={{fontSize:20}}>Statatistics</Text>
+                <Text style={{fontSize:20,marginBottom:10}}>Statistics</Text>
                <PieChart
                     data={presentData}
                     width={375}
@@ -169,9 +169,9 @@ const TeacherSessionStat = ({route}) => {
                 />
             </View>
 
-            <View style={{marginTop:20,alignItems:'center',marginBottom:30}}>
-                <Text style={{fontSize:20}}>Faculty</Text>
-                <PieChart
+            {/* <View style={{marginTop:10,alignItems:'center',marginBottom:30}}> */}
+                {/* <Text style={{fontSize:20}}>Faculty</Text> */}
+                {/* <PieChart
                     data={facultyData}
                     width={375}
                     height={250}
@@ -180,10 +180,10 @@ const TeacherSessionStat = ({route}) => {
                     paddingLeft="15"
                     style={{ borderRadius:20,elevation:5,backgroundColor:"white"}}
                     absolute
-                />
-            </View >
+                /> */}
+            {/* </View > */}
             <View>
-                <Text style={{fontSize:20,alignSelf:'center'}}>Student List</Text>
+                <Text style={{fontSize:20,alignSelf:'center',marginTop:10}}>Student list</Text>
             </View>
             
             </>

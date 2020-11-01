@@ -59,7 +59,7 @@ const SessionReport = ({route}) => {
         <>
                 <SafeAreaView style={{flex:1}}>
                 <View style={{marginTop:30,padding:15}}>
-                <Text style={{fontSize:25,alignSelf:'center'}}>261111 Calculus 1</Text>
+    <Text style={{fontSize:25,alignSelf:'center'}}>{route.params.sessionID} {route.params.sessionTitle}</Text>
                 <FlatList
                     data={DATA}
                     renderItem={renderItem}

@@ -119,6 +119,7 @@ const Login = ({navigation}) => {
       <Text style={{color:"white"}} > Mail: {mail} </Text> 
       <Text style={{color:"white"}} > ID: {userId} </Text> 
       <Text style={{color:"white"}} > JobTitle: {jobtitle} </Text>
+      {/* <Text style={{color:"white"}} > JobTitle: Student </Text> */}
     </View>
     }
     

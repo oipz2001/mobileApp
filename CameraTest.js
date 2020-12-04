@@ -3,22 +3,42 @@ import React, { PureComponent,useEffect } from 'react';
 import { AppRegistry, StyleSheet, Text, TouchableOpacity, View,TextInput } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import storage from '@react-native-firebase/storage';
+import { Buffer } from 'buffer'
 
-
-
-
+const key = '8b4bdfc570514b1d9e71628238368e3e'
 
 
 class ExampleApp extends PureComponent {
 
+
   state = {
-      faceName : ''
+      faceName : '',
+      matchFaceName : ''
+
   }
 
 
-  _onChangeText(text){
+  _onChangeTextFaceName(text){
     this.setState({faceName:text})
     console.log(text);
+  }
+
+  _onChangeTextmatchFaceName(text){
+    this.setState({matchFaceName:text})
+    console.log(text);
+  }
+
+  _checkMatchFace = async (bufferValue) => {
+     await fetch('http://localhost:5000/studentchecking/us-central1/checkapp/mobileApp/matchFaceResult', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          firstParam: bufferValue
+        })
+      });
   }
   
 
@@ -33,7 +53,6 @@ class ExampleApp extends PureComponent {
           }}
           style={styles.preview}
           type={RNCamera.Constants.Type.front}
-        //   flashMode={RNCamera.Constants.FlashMode.on}
           androidCameraPermissionOptions={{
             title: 'Permission to use camera',
             message: 'We need your permission to use your camera',
@@ -52,16 +71,16 @@ class ExampleApp extends PureComponent {
         />
         <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
           <View>
-          <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
-          <TextInput placeholder="Add Face name" onChangeText={text => this._onChangeText(text)} />
+          <TouchableOpacity onPress={this.takePictureAdd.bind(this)} style={styles.capture}>
+          <TextInput placeholder="Add Face name" onChangeText={text => this._onChangeTextFaceName(text)} />
             <Text style={{ fontSize: 14 }}> Add Face List </Text>
 
           </TouchableOpacity>
           </View>
           <View>
-          <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
+          <TouchableOpacity onPress={this.takePictureMatch.bind(this)} style={styles.capture}>
             <Text style={{ fontSize: 14 }}> Check similarity </Text>
-            <TextInput placeholder="Face Name for match" onChangeText={text => this._onChangeText(text)}/>
+            <TextInput placeholder="Face Name for match" onChangeText={text => this._onChangeTextmatchFaceName(text)}/>
             <Text style={{backgroundColor:'red',padding:5,alignSelf:'center'}} >True</Text>
           </TouchableOpacity>
           
@@ -72,22 +91,74 @@ class ExampleApp extends PureComponent {
     );
   }
 
-  takePicture = async () => {
+  takePictureAdd = async () => {
     if (this.camera) {
       const options = { quality: 0.5, base64: true };
       const data = await this.camera.takePictureAsync(options);
       console.log(data.uri);
-      // var dataSplit = data.uri.split('/')
-      // const filenameWithjpg = dataSplit[dataSplit.length-1]
-      // const filename = filenameWithjpg.split('.')
-      // console.log(filename);
-      const reference = await storage().ref().child(this.state.faceName+'Image');
+      const reference = await storage().ref().child(this.state.faceName+'|add');
       await reference.putFile(data.uri)
       
       
     }
   };
+
+  takePictureMatch = async () => {
+    if (this.camera) {
+      const options = { quality: 0.5, base64: true };
+      const data = await this.camera.takePictureAsync(options);
+      var base64String = await data.base64; // your base64 string
+      var bufferValue = await Buffer.from(base64String,"base64");
+      console.log(bufferValue);
+      console.log(data.uri);
+
+      // await fetch('https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/matchFaceResult', {
+      //   method: 'POST',
+      //   headers: {
+      //     Accept: 'application/json',
+      //     'Content-Type': 'application/json'
+      //   },
+      //   body: JSON.stringify({
+      //     firstParam: bufferValue
+      //   })
+        
+      //   // body: {firstParam: bufferValue}
+        
+      // })
+      // .then(res => res.json())
+      // .then(data => {
+      //   console.log(data);
+      
+      // })
+      
+      await fetch('https://southeastasia.api.cognitive.microsoft.com/face/v1.0/detect', {
+        method: 'POST',
+        headers: {
+          'Ocp-Apim-Subscription-Key': key,
+          'Content-Type':'application/octet-stream'
+        },
+        body: JSON.stringify({
+          bufferValue
+        })
+        
+        
+      })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+      
+      })
+      
+      // const reference = await storage().ref().child(this.state.matchFaceName+'|match');
+      // await reference.putFile(data.uri)
+
+      
+      
+    }
+  };
 }
+
+
 
 const styles = StyleSheet.create({
   container: {

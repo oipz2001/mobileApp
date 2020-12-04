@@ -15,6 +15,7 @@ import CheckBox from './src/components/testCheckedBox'
 import WifiTest from './src/screens/teachers/settingLoc'
 import ExpoTest from './testExpo'
 import TestCamera from './CameraTest'
+import TestAPI from './testFetchAPI'
 
 const App = () => {
   
@@ -25,7 +26,7 @@ const App = () => {
     // <Login />
     
     // <Calendar/>
-    <MyAppNavigator/>
+    // <MyAppNavigator/>
     // <TeacherHome />
     // <StudentHome/>
     // <InClassRoom/>
@@ -36,6 +37,7 @@ const App = () => {
     // <WifiTest/>
     // <ExpoTest/>
     // <TestCamera/>
+    <TestAPI/>
     
     
     );

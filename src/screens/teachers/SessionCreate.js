@@ -10,8 +10,7 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 const TeacherSessionCreate = ({navigation}) => {
     //Term and Year
-    const [selectedTermValue, setSelectedTermValue] = useState("1");
-    const [selectedYearValue,setSelectedYearValue] = useState("2563");
+    const [selectedTermValue, setSelectedTermValue] = useState("2/2563");
 
     //Date Peroid
 
@@ -19,8 +18,8 @@ const TeacherSessionCreate = ({navigation}) => {
     const [date_start,setDate_start] = useState(new Date())
     const [date_end,setDate_end] = useState(new Date())
         //Date Setected
-    const [selectedMonthStart,setSelectedMonthStart] = useState(moment(new Date()).format('DD-MM-YYYY').toString())
-    const [selectedMonthEnd,setSelectedMonthEnd] = useState(moment(new Date()).format('DD-MM-YYYY').toString())
+    const [selectedDateStart,setSelectedDateStart] = useState(moment(new Date()).format('DD-MM-YYYY').toString())
+    const [selectedDateEnd,setSelectedDateEnd] = useState(moment(new Date()).format('DD-MM-YYYY').toString())
         //Show Date Picker
     const [showDatePicker_start,setShowDatePicker_start] = useState(false)
     const [showDatePicker_end,setShowDatePicker_end] = useState(false)
@@ -41,6 +40,12 @@ const TeacherSessionCreate = ({navigation}) => {
     const [selectedTime_start,setSelectedTime_start] = useState(moment(new Date()).format('HH:mm').toString());
     const [selectedTime_end,setSelectedTime_end] = useState(moment(new Date()).format('HH:mm').toString());
 
+    //Session ID 
+    const [sessionID,setSessionID] = useState("")
+    //Session name
+    const [sessionName,setSessionName] = useState("")
+    //Session Desc
+    const [sessionDesc,setSessionDesc] = useState("")
 
     // Duplicate Day
     const [isMon, setIsMon] = useState(false);
@@ -73,7 +78,7 @@ const TeacherSessionCreate = ({navigation}) => {
     const onChange_DateStart = (event, selectedTime) => {
         setShowDatePicker_start(false)
         // const currentTime = selectedTime || time_end;
-        setSelectedMonthStart(moment(selectedTime).format('DD-MM-YYYY').toString())
+        setSelectedDateStart(moment(selectedTime).format('DD-MM-YYYY').toString())
         
 
 
@@ -82,7 +87,7 @@ const TeacherSessionCreate = ({navigation}) => {
     const onChange_DateEnd = (event, selectedTime) => {
         setShowDatePicker_end(false)
         // const currentTime = selectedTime || time_end;
-        setSelectedMonthEnd(moment(selectedTime).format('DD-MM-YYYY').toString())
+        setSelectedDateEnd(moment(selectedTime).format('DD-MM-YYYY').toString())
         
 
 
@@ -105,6 +110,61 @@ const TeacherSessionCreate = ({navigation}) => {
 
     const _showDatePicker_end = () => {
         setShowDatePicker_end(true)
+    }
+
+    const _onChangeSessionIDText = (text) => {
+        console.log(text);
+        // setSessionID(text)
+    }
+
+    const _addSessionAPI = async () => {
+        var classID = sessionID
+        var className = sessionName
+        var desc = sessionDesc
+        var semester = selectedTermValue
+        var teacherID = "600610749"
+        var startDate = date_start
+        var endDate = date_end
+        var startTime = time_start
+        var endTime = time_end
+        var isLocationSet = isLocationSelected
+        var isSeatmapSet = isSeatmapCreate
+        var isAutoSelectMACSet = false
+        var macAddrList = ["AAAA:AAAA","BBBB:BBBB","CCCC:CCCC"]
+        var dupDay = [isSun,isMon,isTue,isWed,isThu,isFri,isSat]
+
+        await fetch('http://192.168.0.100:5000/studentchecking/us-central1/checkapp/mobileApp/addSession', {
+        method: 'POST',
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+             classID : sessionID,
+            className : sessionName,
+            desc : sessionDesc,
+            semester : selectedTermValue,
+            teacherID : "600610749",
+            startDate : selectedDateStart,
+            endDate : selectedDateEnd,
+            startTime : selectedTime_start,
+            endTime : selectedTime_end,
+            isLocationSet : isLocationSelected,
+            isSeatmapSet : isSeatmapCreate,
+            isAutoSelectMACSet : false,
+            macAddrList : [],
+            dupDay : [isSun,isMon,isTue,isWed,isThu,isFri,isSat]
+        })
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            
+            console.log(data);
+            
+        })
+        .catch((error) => {
+        console.error(error);
+        });
     }
 
 
@@ -173,11 +233,13 @@ const TeacherSessionCreate = ({navigation}) => {
                     <Text style={{fontSize:20,color:'white'}}>Semester</Text>
                      <Picker
                         selectedValue={selectedTermValue}
-                        style={{ height: 39, width: 80,color:'white'}}
+                        style={{ height: 39, width: 130,color:'white'}}
                         onValueChange={(itemValue, itemIndex) => {setSelectedTermValue(itemValue)}}
                     >
-                        <Picker.Item label="1" value="1"  />
-                        <Picker.Item label="2" value="2" />
+                        <Picker.Item label="1/2020" value="1/2020"  />
+                        <Picker.Item label="2/2020" value="2/2020" />
+                        <Picker.Item label="1/2019" value="1/2019"  />
+                        <Picker.Item label="2/2019" value="2/2019" />
                     </Picker>
                 </View>
                 </View>
@@ -190,25 +252,25 @@ const TeacherSessionCreate = ({navigation}) => {
                             <Text style={styles.title}>Start date</Text>
                             
                             <TouchableOpacity onPress={_showDatePicker_start}  style={styles.picker}>
-                                <Text style={{color:'white'}}>{selectedMonthStart}</Text>
+                                <Text style={{color:'white'}}>{selectedDateStart}</Text>
                             </TouchableOpacity>
                             
                         </View>
                         <View>
                             <Text style={styles.title}>End date</Text>
                             <TouchableOpacity onPress={_showDatePicker_end}  style={styles.picker}>
-                                <Text style={{color:'white'}}>{selectedMonthEnd}</Text>
+                                <Text style={{color:'white'}}>{selectedDateEnd}</Text>
                             </TouchableOpacity>
                         </View>
 
                         
                 </View>
                     <Text style={styles.title}>Session ID</Text>
-                    <TextInput placeholder='261434'/>
+                    <TextInput placeholder='Your session ID' onChangeText={text => setSessionID(text)} />
                     <Text style={styles.title}>Session Name</Text>
-                    <TextInput placeholder='Network'/>
+                    <TextInput placeholder='Your session name' onChangeText={text => setSessionName(text)}/>
                     <Text style={styles.title}>Description</Text>
-                    <TextInput placeholder='Room 516 CPE Building'/>
+                    <TextInput placeholder='Your session description' onChangeText={text => setSessionDesc(text)}/>
                     <View style={{flexDirection:'row',justifyContent:'space-around'}}>
                         <View>
                             <Text style={styles.title}>Start time</Text>
@@ -249,7 +311,11 @@ const TeacherSessionCreate = ({navigation}) => {
                             <Text style={{fontSize:20,color:'white'}}>Continue </Text>
                         </TouchableOpacity>
                         :
-                        <TouchableOpacity onPress={() => navigation.navigate('TeacherHome')} style={{backgroundColor:'#9E76B4',padding:10,marginTop:20,elevation:7,borderRadius:30}}>
+                        <TouchableOpacity onPress={() => {
+                            _addSessionAPI()
+                            // navigation.navigate('TeacherHome')
+                        }} 
+                        style={{backgroundColor:'#9E76B4',padding:10,marginTop:20,elevation:7,borderRadius:30}}>
                             <Text style={{fontSize:20,color:'white'}}>Create </Text>
                         </TouchableOpacity>
                         }

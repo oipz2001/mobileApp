@@ -21,7 +21,7 @@ const TeacherSeatmap = ({route}) => {
 
     useEffect(() => {
         console.log(route.params.sessionID + ' ' +route.params.sessionTitle + '(Seatmap)');
-
+        console.log(route.params.uqID);
     },[])
 
     

@@ -9,15 +9,19 @@ import CheckBox from '@react-native-community/checkbox'
 
   
 
-const SettingLoc = ({navigation}) => {
+const SettingLoc = ({navigation,route}) => {
     const [wifiList,setWifiList] = useState([])
     const [selectedItems,setSelectedItems] = useState([])
     const [isAutoSelected, setAutoSelection] = useState(true);
-    const [isCustomSelected, setCustomSelection] = useState(false);
+
+    const [classData,setClassData] = useState(null)
 
     useEffect(() => {
+        setClassData(route.params)
+        // console.log(route.params);
         askForUserPermissions();
         getWifiList()
+        
         // const interval =  setInterval(() => {
         //   getWifiList()
         // }, 60000);
@@ -33,6 +37,8 @@ const SettingLoc = ({navigation}) => {
         
         
     },[])
+
+    
 
     const onSelectedItemsChange = (selectedItems) => {
         
@@ -60,19 +66,19 @@ const SettingLoc = ({navigation}) => {
         var wifiArray_modified = wifiArray
           for( var i=0;i<wifiArray.length;i++){
             if(wifiArray[i].level > -45){
-              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (แรงมาก) ' + wifiArray[i].level + ' dBm')
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Great)' + wifiArray[i].level + ' dBm')
             }
             else if(wifiArray[i].level > -60){
-              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (แรง) '+ wifiArray[i].level+ ' dBm')
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Strong)'+ wifiArray[i].level+ ' dBm')
             }
             else if(wifiArray[i].level > -70){
-              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (ดี) '+ wifiArray[i].level+ ' dBm')
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Good)'+ wifiArray[i].level+ ' dBm')
             }else{
-              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (อ่อน) '+ wifiArray[i].level+ ' dBm')
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Weak)'+ wifiArray[i].level+ ' dBm')
             }
             
             wifiArray_modified[i] = { BSSID_dotConcat: wifiArray[i].BSSID.concat('.'+ i.toString())  ,  SSID:wifiArray[i].SSID  , level:wifiArray[i].level}
-            console.log(wifiArray_modified[i]);
+            // console.log(wifiArray_modified[i]);
           }
             
           // setWifiList(wifiArray.sort((a, b) => parseInt(b.level) - parseInt(a.level)))
@@ -86,7 +92,8 @@ const SettingLoc = ({navigation}) => {
 
       const showWifiList = () => {
             getWifiList()
-            console.log('Name: ' +wifiList[0].SSID + ' level: ' +wifiList[0].level );
+            // console.log('Name: ' +wifiList[0].SSID + ' level: ' +wifiList[0].level );
+            console.log(wifiList[0].BSSID_dotConcat.split('.')[0]);
             
             
         
@@ -103,6 +110,49 @@ const SettingLoc = ({navigation}) => {
       
   
 }
+
+    
+
+    const _addSessionAPI = async () => {
+      var myClassDataJSON = classData
+      myClassDataJSON.isAutoSelectMACSet = isAutoSelected
+      var topSixWifiList = []
+      if(isAutoSelected == true){
+        for(var i=0;i<wifiList.length;i++){
+          if(i==6) break
+          topSixWifiList.push(wifiList[i].BSSID_dotConcat.split('.')[0])
+        }
+        myClassDataJSON.macAddrList = topSixWifiList
+      }
+      else{
+        myClassDataJSON.macAddrList = selectedItems
+      }
+
+      
+
+      
+      console.log(JSON.stringify( myClassDataJSON));
+      
+// https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/addSession
+// https://us-central1-studentchecking.cloudfunctions.net/checkapp
+      await fetch('https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/addSession', {
+      method: 'POST',
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify( myClassDataJSON)
+      })
+      .then((response) => response.json())
+      .then((data) => {
+          
+          console.log(data);
+          
+      })
+      .catch((error) => {
+      console.error(error);
+      });
+    }
 
 
      async function askForUserPermissions() {
@@ -140,7 +190,7 @@ const SettingLoc = ({navigation}) => {
           items={wifiList}
           IconRenderer={Icon}
           uniqueKey="BSSID_dotConcat"
-          selectText="เลือกด้วยตนเอง"
+          selectText="Select Wi-Fi"
           onSelectedItemsChange={onSelectedItemsChange}
           selectedItems={selectedItems}
           displayKey='SSID'
@@ -151,14 +201,19 @@ const SettingLoc = ({navigation}) => {
         
         }
         <View style={{flexDirection:'row'}}>
-            <CheckBox value={isAutoSelected} onValueChange={setAutoSelection}/>
-            <Text>เลือกอัตโนมัติ</Text>
+            <CheckBox value={isAutoSelected} onValueChange={setAutoSelection} />
+            <Text>Auto select</Text>
           </View> 
-        <TouchableOpacity onPress={() => navigation.navigate('TeacherHome')} style={{backgroundColor:'#9E76B4',padding:10,elevation:7,borderRadius:20}}>
-            <Text style={{fontSize:20,color:'white'}}>Create Session</Text>
+          <Button title="show wifi list" onPress={showSelectedWifi}/>
+        <TouchableOpacity onPress={() => {
+                    if(wifiList.length != 0){
+                      _addSessionAPI()
+                    navigation.navigate('TeacherHome')
+                    }
+          }} style={{backgroundColor:'#9E76B4',padding:10,elevation:7,borderRadius:20}}>
+          <Text style={{fontSize:20,color:'white'}}>Create Session</Text>
         </TouchableOpacity>
       </View>
-      {/* <Button title='test' onPress={showSelectedWifi}/> */}
         
       
        

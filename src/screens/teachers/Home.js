@@ -9,7 +9,10 @@ import AsyncStorage from '@react-native-community/async-storage'
 const moment = require('moment')
 const TeacherHome = ({ navigation }) => {
     const [selectedId, setSelectedId] = useState(null);
-    const [selectedDate,setSelectedDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
+    const [selectedDate,setSelectedDate] = useState(moment(new Date()).format('DD-MM-YYYY').toString())
+
+    const [sessionsData,setSessionsData] = useState(null)
+
     const DATA = [
       {
         id: "111111",
@@ -18,7 +21,8 @@ const TeacherHome = ({ navigation }) => {
         desc: "Room 516 Math Building",
         all:100,
         present:80,
-        absent:20
+        absent:20,
+        isStudentAdded:true
       },
       {
         id: "222222",
@@ -27,7 +31,8 @@ const TeacherHome = ({ navigation }) => {
         desc: "Room 517 Math Building",
         all:1000,
         present:750,
-        absent:250
+        absent:250,
+        isStudentAdded:false
       },
       {
         id: "333333",
@@ -36,16 +41,29 @@ const TeacherHome = ({ navigation }) => {
         desc: "Room 588 Math Building",
         all:21,
         present:17,
-        absent:4
+        absent:4,
+        isStudentAdded:true
   
       },
+      {
+        id: "333444",
+        title: "Calculas8",
+        time:"8:00-9:30",
+        desc: "Room 588 Math Building",
+        all:21,
+        present:17,
+        absent:4,
+        isStudentAdded:false
+  
+      }
     ];
 
     useFocusEffect(
       React.useCallback(() => {
         // Do something when the screen is focused
         console.log("Home is focused");
-        console.log(selectedDate);
+        var currentDate =moment(new Date()).format('DD-MM-YYYY').toString()
+        _fetchSessionsAPI(currentDate)
   
         return () => {
           // Do something when the screen is unfocused
@@ -55,64 +73,203 @@ const TeacherHome = ({ navigation }) => {
       }, [])
     );
 
+
+    const _fetchSessionsAPI = async (selectDate) => {
+      var teacherID = '600610749'
+      var date  = selectDate
+      // https://us-central1-studentchecking.cloudfunctions.net/checkapp
+      // http://192.168.0.100:5000/studentchecking/us-central1/checkapp
+      await fetch('https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/getSession?date='+date+'&teacherID='+teacherID)
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            setSessionsData(data)
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+    }
+
+    const _addStudentTestAPI = async (classUqID) => {
+      var uqID = classUqID
+      var teacherID = '600610749'
+      console.log(uqID);
+      await fetch('https://us-central1-studentchecking.cloudfunctions.net/checkapp/webApp/addNewStudents', {
+        method: 'POST',
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          uqID: uqID,
+          teacherID:teacherID
+
+        })
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            
+            console.log(data);
+        })
+        .catch((error) => {
+        console.error(error);
+        });
+    }
+
+
+    // useEffect(() => {
+    //   console.log('Test');
+    // })
+
     
 
     const renderItem = ({ item }) => {
         const Item = ({ item, onPress, style }) => (
             
             <TouchableOpacity   style={[styles.item, style]}>
-            <View style={{flexDirection:'column'}}>
-                <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+              <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                     <View >
-                        <Text style={styles.title}>{item.title}</Text>
-                        <Text style={styles.descrption} >Time: {item.time} </Text>
+                        <View style={{flexDirection:'row'}}>
+                        <Text style={styles.title}>{item.name}</Text>
+                        <Text style={{fontSize:16,alignSelf:'center'}}>  ({item.id})</Text>
+                        </View>
+                        <Text style={styles.descrption} >Time: {item.startTime} - {item.endTime} </Text>
                         <Text style={styles.descrption}>Description: {item.desc} </Text>
                     </View>
                     <View style={{justifyContent:'space-between'}}>
                         <Text>Closed</Text>
                     </View>
-                    </View>
-              <View style={{marginTop:20,flexDirection:'row',justifyContent:'space-around'}}>
-                    <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                        {/* <Image source={require('../../assets/vectors/multiple-users-silhouette.png')} style={{width:20,height:20}} /> */}
-                        <Icon name="users" size={20} />
-                        <Text>  {item.all} </Text>
-                    </View>
-                    <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                        {/* <Image source={require('../../assets/vectors/check.png')} style={{width:25,height:25}} /> */}
-                        <Icon name="check" size={25} color='green'/>
-                        <Text>  {item.present}</Text>
-                    </View>
-                    <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                        {/* <Image source={require('../../assets/vectors/close.png')} style={{width:20,height:20}} /> */}
-                        <Icon name="times" size={25} color='red'/>
-                        <Text>  {item.absent}</Text>
-                    </View>
-              
-              
-              
               </View>
-              <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-around',marginTop:15}}>
-                <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',{sessionTitle:item.title,sessionID:item.id})}} >
-                    <Text style={{color:'white'}}>Statistics</Text>
-                </TouchableOpacity>
+              
+              {/* {
+                item.isClassAccept ? 
+                (item.isStudentAdded ? 
+                // isClassAccept = T , isStudentAdded = T
+                <View style={{flexDirection:'column',margin:15}}>
+                  <View style={{marginTop:20,flexDirection:'row',justifyContent:'space-around'}}>
+                        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                            <Icon name="users" size={20} />
+                            <Text>  {item.all} </Text>
+                        </View>
+                        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                            <Icon name="check" size={25} color='green'/>
+                            <Text>  {item.present}</Text>
+                        </View>
+                        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                            <Icon name="times" size={25} color='red'/>
+                            <Text>  {item.absent}</Text>
+                        </View>
+                    </View>
+                    <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-around',marginTop:15}}>
+                      <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
+                      <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',{sessionTitle:item.title,sessionID:item.id})}} >
+                          <Text style={{color:'white'}}>Statistics</Text>
+                      </TouchableOpacity>
+                      </View>
+                      <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
+                      <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{sessionTitle:item.title,sessionID:item.id})} >
+                          <Text style={{color:'white'}}>Seat map</Text>
+                      </TouchableOpacity>
+                    </View>
+                  </View>
+                
+              </View> 
+                :  
+                // isClassAccept = T , isStudentAdded = F
+                <View style={{flexDirection:'row',alignSelf:'center',margin:15}}>
+                  <TouchableOpacity style={{backgroundColor:'yellow',padding:10,borderRadius:10}}>
+                    <Text style={{color:'red'}}>Please add your students</Text>
+                  </TouchableOpacity>
+                </View> 
+                ) 
+                :  
+                // isClassAccept = F
+                <View style={{flexDirection:'row',justifyContent:'space-evenly',margin:15}}>
+                  <TouchableOpacity style={{backgroundColor:'green',padding:15,elevation:5,borderRadius:20}}>
+                    <Text style={{color:'white'}}>Accept</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={{backgroundColor:'red',padding:15,elevation:5,borderRadius:20}}>
+                    <Text style={{color:'white'}}>Cancel</Text>
+                  </TouchableOpacity>
                 </View>
-                <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{sessionTitle:item.title,sessionID:item.id})} >
-                    <Text style={{color:'white'}}>Seat map</Text>
-                </TouchableOpacity>
-                </View>
-              </View>
-              <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20,alignSelf:'center',marginTop:15}}>
-                <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{sessionTitle:item.title,sessionID:item.id})} >
+
+                
+
+              } */}
+
+              {
+                item.isStudentAdded ?
+                <View style={{flexDirection:'column',margin:15}}>
+                    <View style={{marginTop:20,flexDirection:'row',justifyContent:'space-around'}}>
+                          <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                              <Icon name="users" size={20} />
+                              <Text>  {item.totalStudent} </Text>
+                          </View>
+                          <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                              <Icon name="check" size={25} color='green'/>
+                              <Text>  {item.checkedStudent}</Text>
+                          </View>
+                          <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                              <Icon name="times" size={25} color='red'/>
+                              <Text>  {item.uncheckedStudent}</Text>
+                          </View>
+                      </View>
+                      <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-around',marginTop:15}}>
+                        <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
+                        <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',{sessionTitle:item.title,sessionID:item.id,uqID:item.uqID})}} >
+                            <Text style={{color:'white'}}>Statistics</Text>
+                        </TouchableOpacity>
+                        </View>
+                        <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{sessionTitle:item.title,sessionID:item.id,uqID:item.uqID})} >
+                            <Text style={{color:'white'}}>Seat map</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                    
+                  
+                  </View> 
+                :
+                <View style={{flexDirection:'row',alignSelf:'center',margin:15}}>
+                  <TouchableOpacity style={{backgroundColor:'yellow',padding:10,borderRadius:10}}>
+                    <Text style={{color:'red'}}>Please add your students</Text>
+                  </TouchableOpacity>
+                </View> 
+
+
+
+              }
+
+            
+            <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20,alignSelf:'center'}}>
+                <TouchableOpacity  >
                   <View style={{flexDirection:'row'}}>
                     <Icon name="map-marker" size={25} color="white" /> 
                     <Text style={{color:'white',marginLeft:7}}>Update location</Text>      
                   </View>
                 </TouchableOpacity>
-              </View>
+                
+            
+                
+                
             </View>
+
+            <View>
+                <TouchableOpacity style={{backgroundColor:'red',padding:15,elevation:5,borderRadius:25,alignSelf:'center',marginTop:15}}>
+                      <Text style={{color:'white'}}>Cancel</Text>
+                </TouchableOpacity>
+            </View>
+            <View>
+                <TouchableOpacity style={{backgroundColor:'green',padding:15,elevation:5,borderRadius:25,alignSelf:'center',marginTop:15}}
+                onPress={() => {
+                  _addStudentTestAPI(item.uqID)
+                  _fetchSessionsAPI(selectedDate)
+                  }} >
+                      <Text style={{color:'white'}}>Test Add Students</Text>
+                </TouchableOpacity>
+            </View>
+            
+            
             </TouchableOpacity>
             
             
@@ -140,21 +297,26 @@ const TeacherHome = ({ navigation }) => {
                 <Text style={{alignSelf:'center'}}>Select {selectedDate}</Text>
                 <Calendar 
                 style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}}
-                onDayPress={(day) => {
-                  setSelectedDate(day.year+'-'+day.month+'-'+day.day)
+                onDayPress={async day => {
+                  var selectDate = day.day+'-'+day.month+'-'+day.year
+                  console.log(selectDate);
+                  setSelectedDate(selectDate)
+                  await _fetchSessionsAPI(selectDate)
+
+                  
                   }}
                   
                 />
                 
 
-                <View style={{alignItems:'center'}}>     
+                <View style={{alignItems:'center',margin:15,marginBottom:20}}>     
                  <TouchableOpacity  style={{alignItems:'center',backgroundColor:'white',padding:17,borderRadius:20,elevation:8}} onPress={() => navigation.navigate('TeacherCreateRoom')}>
-                    {/* <Image source={require('../../assets/vectors/add-button.png')} style={{width:60,height:60}} /> */}
+                
                     <Icon name="plus-circle" size={60}/>
-                    
                     <Text >Add Sessions</Text>
                  </TouchableOpacity>
-                 </View>          
+                 </View>  
+                 <Text style={{alignSelf:'center'}}>Select {selectedDate}</Text>        
                       
                
             </>
@@ -166,7 +328,7 @@ const TeacherHome = ({ navigation }) => {
         <>
             <SafeAreaView style={{flex:1}}>
                 <FlatList
-                    data={DATA}
+                    data={sessionsData}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.id}
                     extraData={selectedId}

@@ -14,38 +14,49 @@ import React,{useEffect,useState} from 'react'
 
 
     const  _fetchAPI = async () => {
-        
 
-        // await fetch('http://192.168.0.100:5000/studentchecking/us-central1/checkapp/mobileApp/test')
+        
+        var teacherID = '600610749'
+        var date  = '14-12-2020'
+        await fetch('http://192.168.0.100:5000/studentchecking/us-central1/checkapp/mobileApp/getSession?date='+date+'&teacherID='+teacherID)
+            .then((response) => response.json())
+            .then((data) => {
+                console.log(data);
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+
+        // await fetch('http://192.168.0.100:5000/studentchecking/us-central1/checkapp/mobileApp/getSession')
         // .then((response) => response.json())
         // .then((data) => {
         //     console.log(data);
-        //     // setData(data)
+        //     setData(data)
         // })
         // .catch((error) => {
         //     console.error(error);
         // });
        
-        await fetch('http://192.168.0.100:5000/studentchecking/us-central1/checkapp/mobileApp/test', {
-        method: 'POST',
-        headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            firstParam: 'yourValue',
-            secondParam: 'yourOtherValue'
-        })
-        })
-        .then((response) => response.json())
-        .then((data) => {
+        // await fetch('http://192.168.0.100:5000/studentchecking/us-central1/checkapp/webApp/addNewStudents', {
+        // method: 'POST',
+        // headers: {
+        //     Accept: "application/json",
+        //     "Content-Type": "application/json"
+        // },
+        // body: JSON.stringify({
+        //     firstParam: 'yourValue',
+        //     secondParam: 'yourOtherValue'
+        // })
+        // })
+        // .then((response) => response.json())
+        // .then((data) => {
             
-            console.log(data);
-            setData(data)
-        })
-        .catch((error) => {
-        console.error(error);
-        });
+        //     console.log(data);
+        //     setData(data)
+        // })
+        // .catch((error) => {
+        // console.error(error);
+        // });
         
        
 

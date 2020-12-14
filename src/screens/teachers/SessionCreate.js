@@ -132,15 +132,17 @@ const TeacherSessionCreate = ({navigation}) => {
         var isAutoSelectMACSet = false
         var macAddrList = ["AAAA:AAAA","BBBB:BBBB","CCCC:CCCC"]
         var dupDay = [isSun,isMon,isTue,isWed,isThu,isFri,isSat]
-
-        await fetch('http://192.168.0.100:5000/studentchecking/us-central1/checkapp/mobileApp/addSession', {
+        
+        // https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/addSession
+        // https://us-central1-studentchecking.cloudfunctions.net/checkapp
+        await fetch('https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/addSession', {
         method: 'POST',
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-             classID : sessionID,
+            classID : sessionID,
             className : sessionName,
             desc : sessionDesc,
             semester : selectedTermValue,
@@ -307,13 +309,30 @@ const TeacherSessionCreate = ({navigation}) => {
 
                     <View style={{alignItems:'center'}}>
                         { isLocationSelected ?
-                        <TouchableOpacity onPress={() => navigation.navigate('TeacherSettingLocation')} style={{backgroundColor:'#9E76B4',padding:10,marginTop:20,elevation:7,borderRadius:30}}>
+                        <TouchableOpacity onPress={() => navigation.navigate('TeacherSettingLocation',
+                            
+                                {
+                                    classID : sessionID,
+                                    className : sessionName,
+                                    desc : sessionDesc,
+                                    semester : selectedTermValue,
+                                    teacherID : "600610749",
+                                    startDate : selectedDateStart,
+                                    endDate : selectedDateEnd,
+                                    startTime : selectedTime_start,
+                                    endTime : selectedTime_end,
+                                    isLocationSet : isLocationSelected,
+                                    isSeatmapSet : isSeatmapCreate,
+                                    dupDay : [isSun,isMon,isTue,isWed,isThu,isFri,isSat]
+                                }
+                            
+                        )} style={{backgroundColor:'#9E76B4',padding:10,marginTop:20,elevation:7,borderRadius:30}}>
                             <Text style={{fontSize:20,color:'white'}}>Continue </Text>
                         </TouchableOpacity>
                         :
                         <TouchableOpacity onPress={() => {
                             _addSessionAPI()
-                            // navigation.navigate('TeacherHome')
+                            navigation.navigate('TeacherHome')
                         }} 
                         style={{backgroundColor:'#9E76B4',padding:10,marginTop:20,elevation:7,borderRadius:30}}>
                             <Text style={{fontSize:20,color:'white'}}>Create </Text>

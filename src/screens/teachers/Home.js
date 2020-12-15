@@ -6,80 +6,54 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage'
 
+const URL = require('../../config/endpointConfig')
+
+
+
+
 const moment = require('moment')
 const TeacherHome = ({ navigation }) => {
     const [selectedId, setSelectedId] = useState(null);
-    const [selectedDate,setSelectedDate] = useState(moment(new Date()).format('DD-MM-YYYY').toString())
-
+    // DD-MM-YYYY
+    // YYYY-MM-DD
+    const [selectedDate,setSelectedDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
     const [sessionsData,setSessionsData] = useState(null)
+    const [teacherIDState,setTeacherIDState] = useState(null)
 
-    const DATA = [
-      {
-        id: "111111",
-        title: "Calculas1",
-        time:"13:00-14.30",
-        desc: "Room 516 Math Building",
-        all:100,
-        present:80,
-        absent:20,
-        isStudentAdded:true
-      },
-      {
-        id: "222222",
-        title: "Calculas2",
-        time:"11:00-12.30",
-        desc: "Room 517 Math Building",
-        all:1000,
-        present:750,
-        absent:250,
-        isStudentAdded:false
-      },
-      {
-        id: "333333",
-        title: "Calculas3",
-        time:"8:00-9:30",
-        desc: "Room 588 Math Building",
-        all:21,
-        present:17,
-        absent:4,
-        isStudentAdded:true
-  
-      },
-      {
-        id: "333444",
-        title: "Calculas8",
-        time:"8:00-9:30",
-        desc: "Room 588 Math Building",
-        all:21,
-        present:17,
-        absent:4,
-        isStudentAdded:false
-  
-      }
-    ];
+    const _retrieveUserData = async () => {
+      const  teacherID = await AsyncStorage.getItem('uniqueID');
+      setTeacherIDState(teacherID)
+
+    }
+
+
 
     useFocusEffect(
       React.useCallback(() => {
         // Do something when the screen is focused
+        
         console.log("Home is focused");
-        var currentDate =moment(new Date()).format('DD-MM-YYYY').toString()
-        _fetchSessionsAPI(currentDate)
+        // var currentDate =moment(new Date()).format('DD-MM-YYYY').toString()
+        _retrieveUserData()
+        _fetchSessionsAPI(selectedDate)
+
+        console.log(teacherIDState);
+
   
         return () => {
           // Do something when the screen is unfocused
           // Useful for cleanup functions
           console.log("Home is unfocused");
         };
-      }, [])
+      }, [teacherIDState,selectedDate])
     );
 
 
     const _fetchSessionsAPI = async (selectDate) => {
-      var teacherID = '600610749'
+      var teacherID = teacherIDState
       var date  = selectDate
-      // https://us-central1-studentchecking.cloudfunctions.net/checkapp
-      // http://192.168.0.100:5000/studentchecking/us-central1/checkapp
-      await fetch('https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/getSession?date='+date+'&teacherID='+teacherID)
+
+      await fetch(URL.localEndpoint+'/mobileApp/getSession?date='+date+'&teacherID='+teacherID)
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
@@ -88,13 +62,16 @@ const TeacherHome = ({ navigation }) => {
         .catch((error) => {
             console.error(error);
         });
+
+      
+      
     }
 
     const _addStudentTestAPI = async (classUqID) => {
       var uqID = classUqID
-      var teacherID = '600610749'
+      var teacherID = teacherIDState
       console.log(uqID);
-      await fetch('https://us-central1-studentchecking.cloudfunctions.net/checkapp/webApp/addNewStudents', {
+      await fetch(URL.localEndpoint+'/webApp/addNewStudents', {
         method: 'POST',
         headers: {
             Accept: "application/json",
@@ -116,10 +93,37 @@ const TeacherHome = ({ navigation }) => {
         });
     }
 
+    const _cancelSession = async (date,uqClassID) => {
+      console.log(date);
+      console.log(uqClassID);
+      teacherID = teacherIDState
 
-    // useEffect(() => {
-    //   console.log('Test');
-    // })
+      console.log(teacherID);
+
+       
+        await fetch(URL.localEndpoint+'/mobileApp/cancelSession', {
+        method: 'POST',
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            uqID:uqClassID,
+            date:date,
+            teacherID:teacherID
+        })
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            
+            console.log(data);
+        })
+        .catch((error) => {
+        console.error(error);
+        });
+
+    };
+
 
     
 
@@ -133,8 +137,11 @@ const TeacherHome = ({ navigation }) => {
                         <Text style={styles.title}>{item.name}</Text>
                         <Text style={{fontSize:16,alignSelf:'center'}}>  ({item.id})</Text>
                         </View>
+                        <Text style={styles.descrption}>Semester: {item.semester} </Text>
+                        <Text style={styles.descrption}>Date: {item.currentDate} </Text>
                         <Text style={styles.descrption} >Time: {item.startTime} - {item.endTime} </Text>
                         <Text style={styles.descrption}>Description: {item.desc} </Text>
+                        <Text style={styles.descrption}>Checking format: {item.isLocationSet ? 'On Location' : 'Online'} </Text>
                     </View>
                     <View style={{justifyContent:'space-between'}}>
                         <Text>Closed</Text>
@@ -255,15 +262,19 @@ const TeacherHome = ({ navigation }) => {
             </View>
 
             <View>
-                <TouchableOpacity style={{backgroundColor:'red',padding:15,elevation:5,borderRadius:25,alignSelf:'center',marginTop:15}}>
-                      <Text style={{color:'white'}}>Cancel</Text>
+                <TouchableOpacity style={{backgroundColor:'red',padding:15,elevation:5,borderRadius:25,alignSelf:'center',marginTop:15}}
+                onPress={async () => {
+                  await _cancelSession(item.currentDate,item.uqID)
+                  await _fetchSessionsAPI(item.currentDate)
+                  }} >
+                  <Text style={{color:'white'}}>Cancel</Text>
                 </TouchableOpacity>
             </View>
             <View>
                 <TouchableOpacity style={{backgroundColor:'green',padding:15,elevation:5,borderRadius:25,alignSelf:'center',marginTop:15}}
-                onPress={() => {
-                  _addStudentTestAPI(item.uqID)
-                  _fetchSessionsAPI(selectedDate)
+                onPress={async () => {
+                   await _addStudentTestAPI(item.uqID)
+                  await _fetchSessionsAPI(item.currentDate)
                   }} >
                       <Text style={{color:'white'}}>Test Add Students</Text>
                 </TouchableOpacity>
@@ -298,7 +309,8 @@ const TeacherHome = ({ navigation }) => {
                 <Calendar 
                 style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}}
                 onDayPress={async day => {
-                  var selectDate = day.day+'-'+day.month+'-'+day.year
+                  // day.day+'-'+day.month+'-'+day.year
+                  var selectDate = day.year+'-'+day.month+'-'+day.day
                   console.log(selectDate);
                   setSelectedDate(selectDate)
                   await _fetchSessionsAPI(selectDate)
@@ -330,7 +342,7 @@ const TeacherHome = ({ navigation }) => {
                 <FlatList
                     data={sessionsData}
                     renderItem={renderItem}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.uqID}
                     extraData={selectedId}
                     style={{marginTop:10}}
                     ListHeaderComponent={<HeaderFlatlistComponent/>}

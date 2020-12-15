@@ -7,7 +7,7 @@ import Icon from 'react-native-vector-icons/MaterialIcons'
 import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import CheckBox from '@react-native-community/checkbox'
 
-  
+const URL = require('../../config/endpointConfig')
 
 const SettingLoc = ({navigation,route}) => {
     const [wifiList,setWifiList] = useState([])
@@ -135,7 +135,7 @@ const SettingLoc = ({navigation,route}) => {
       
 // https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/addSession
 // https://us-central1-studentchecking.cloudfunctions.net/checkapp
-      await fetch('https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/addSession', {
+      await fetch(URL.localEndpoint+'/mobileApp/addSession', {
       method: 'POST',
       headers: {
           Accept: "application/json",
@@ -205,9 +205,9 @@ const SettingLoc = ({navigation,route}) => {
             <Text>Auto select</Text>
           </View> 
           <Button title="show wifi list" onPress={showSelectedWifi}/>
-        <TouchableOpacity onPress={() => {
+        <TouchableOpacity onPress={async () => {
                     if(wifiList.length != 0){
-                      _addSessionAPI()
+                    await _addSessionAPI()
                     navigation.navigate('TeacherHome')
                     }
           }} style={{backgroundColor:'#9E76B4',padding:10,elevation:7,borderRadius:20}}>

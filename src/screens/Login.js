@@ -30,6 +30,11 @@ const Login = ({navigation}) => {
 
   const [isInfoShow,setInfoShow] = useState(false)
 
+  useEffect(() => {
+    console.log("test");
+    AsyncStorage.setItem('uniqueID','600610749')
+  },[])
+
 
   const _Login = async () => {
     try {

@@ -7,6 +7,7 @@ import React,{useEffect,useState} from 'react'
     SafeAreaView,
   } from 'react-native';
   
+  const URL = require('./src/config/endpointConfig')
 
   const TestAPI = () => {
 
@@ -17,8 +18,8 @@ import React,{useEffect,useState} from 'react'
 
         
         var teacherID = '600610749'
-        var date  = '14-12-2020'
-        await fetch('http://192.168.0.100:5000/studentchecking/us-central1/checkapp/mobileApp/getSession?date='+date+'&teacherID='+teacherID)
+        var date  = '21-12-2020'
+        await fetch(URL.localEndpoint+'/mobileApp/getSession?date='+date+'&teacherID='+teacherID)
             .then((response) => response.json())
             .then((data) => {
                 console.log(data);

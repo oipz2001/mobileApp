@@ -8,6 +8,9 @@ const moment = require('moment')
 import CheckBox from '@react-native-community/checkbox'
 import { ScrollView } from 'react-native-gesture-handler';
 
+const URL = require('../../config/endpointConfig')
+
+
 const TeacherSessionCreate = ({navigation}) => {
     //Term and Year
     const [selectedTermValue, setSelectedTermValue] = useState("2/2563");
@@ -18,8 +21,9 @@ const TeacherSessionCreate = ({navigation}) => {
     const [date_start,setDate_start] = useState(new Date())
     const [date_end,setDate_end] = useState(new Date())
         //Date Setected
-    const [selectedDateStart,setSelectedDateStart] = useState(moment(new Date()).format('DD-MM-YYYY').toString())
-    const [selectedDateEnd,setSelectedDateEnd] = useState(moment(new Date()).format('DD-MM-YYYY').toString())
+        // YYYY-MM-DD
+    const [selectedDateStart,setSelectedDateStart] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
+    const [selectedDateEnd,setSelectedDateEnd] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
         //Show Date Picker
     const [showDatePicker_start,setShowDatePicker_start] = useState(false)
     const [showDatePicker_end,setShowDatePicker_end] = useState(false)
@@ -78,7 +82,7 @@ const TeacherSessionCreate = ({navigation}) => {
     const onChange_DateStart = (event, selectedTime) => {
         setShowDatePicker_start(false)
         // const currentTime = selectedTime || time_end;
-        setSelectedDateStart(moment(selectedTime).format('DD-MM-YYYY').toString())
+        setSelectedDateStart(moment(selectedTime).format('YYYY-MM-DD').toString())
         
 
 
@@ -87,7 +91,7 @@ const TeacherSessionCreate = ({navigation}) => {
     const onChange_DateEnd = (event, selectedTime) => {
         setShowDatePicker_end(false)
         // const currentTime = selectedTime || time_end;
-        setSelectedDateEnd(moment(selectedTime).format('DD-MM-YYYY').toString())
+        setSelectedDateEnd(moment(selectedTime).format('YYYY-MM-DD').toString())
         
 
 
@@ -133,9 +137,7 @@ const TeacherSessionCreate = ({navigation}) => {
         var macAddrList = ["AAAA:AAAA","BBBB:BBBB","CCCC:CCCC"]
         var dupDay = [isSun,isMon,isTue,isWed,isThu,isFri,isSat]
         
-        // https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/addSession
-        // https://us-central1-studentchecking.cloudfunctions.net/checkapp
-        await fetch('https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/addSession', {
+        await fetch(URL.localEndpoint+'/mobileApp/addSession', {
         method: 'POST',
         headers: {
             Accept: "application/json",
@@ -330,8 +332,8 @@ const TeacherSessionCreate = ({navigation}) => {
                             <Text style={{fontSize:20,color:'white'}}>Continue </Text>
                         </TouchableOpacity>
                         :
-                        <TouchableOpacity onPress={() => {
-                            _addSessionAPI()
+                        <TouchableOpacity onPress={async () => {
+                            await _addSessionAPI()
                             navigation.navigate('TeacherHome')
                         }} 
                         style={{backgroundColor:'#9E76B4',padding:10,marginTop:20,elevation:7,borderRadius:30}}>

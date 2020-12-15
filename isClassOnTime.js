@@ -2,19 +2,15 @@
 const moment = require('moment')
 
 var classDate = '2020-12-15'
-var classStartTime = '00:01'
-var classEndTime = '02:46'
+var classStartTime = '8:20'
+var classEndTime = '22:00'
 
 var currentDate = moment(new Date()).format('YYYY-MM-DD')
 var currentTime = moment(new Date()).format('HH:mm')
 
-//.toString()
 
-// console.log(moment(moment(currentTime, 'HH:mm')).isBefore(moment('23:00', 'HH:mm')));
 
-var compareDate = moment('2020-12-09').isBefore('2020-12-13');
-
-const sessionState = (classDate,startTime,endTime,currentDate,currentTime) => {
+const getSessionState = (classDate,startTime,endTime,currentDate,currentTime) => {
 
     if(moment(currentDate).isBefore(classDate))
     {
@@ -26,9 +22,8 @@ const sessionState = (classDate,startTime,endTime,currentDate,currentTime) => {
     }
     else
     {
-        console.log('ttt');
         
-        if(moment(moment(currentTime, 'HH:mm')).isBefore(moment(classStartTime , 'HH:mm')))
+        if(moment(moment(currentTime, 'HH:mm')).isBefore(moment(startTime , 'HH:mm')))
         {
             return -1
         }
@@ -41,7 +36,7 @@ const sessionState = (classDate,startTime,endTime,currentDate,currentTime) => {
         }
     }
 }
-console.log(sessionState(classDate,classStartTime,classEndTime,currentDate,currentTime));
-console.log(currentTime);
+console.log(getSessionState(classDate,classStartTime,classEndTime,currentDate,currentTime));
+
 
 

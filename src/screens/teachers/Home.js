@@ -144,7 +144,21 @@ const TeacherHome = ({ navigation }) => {
                         <Text style={styles.descrption}>Checking format: {item.isLocationSet ? 'On Location' : 'Online'} </Text>
                     </View>
                     <View style={{justifyContent:'space-between'}}>
-                        <Text>Closed</Text>
+                      {
+                        item.sessionStatus == -1 ? 
+                        <Text style={{color:'orange'}} >Waiting</Text>
+                        :
+                        (item.sessionStatus == 0 ? 
+                        <Text style={{color:'green'}}>Opening</Text> 
+                        : 
+                        (item.sessionStatus == 1 ? 
+                        <Text style={{color:'red'}}>Closed</Text> 
+                        :
+                        <Text style={{color:'red'}}>In progress</Text> 
+                        )
+                        ) 
+
+                      }
                     </View>
               </View>
               

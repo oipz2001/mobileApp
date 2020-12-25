@@ -12,6 +12,7 @@ import TextInput from '../components/TextInput'
 import AzureAuth from 'react-native-azure-auth';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage'
+import TeacherHome from './teachers/Home';
 
 const URL = require('../config/endpointConfig')
 
@@ -35,14 +36,31 @@ const Login = ({navigation}) => {
   const [mail, setmail] = useState('')
   const [userId, setuserId] = useState('')
   const [jobtitle, setjobtitle] = useState('')
-  const [isStudentFaceAdded,SetIsStudentFaceAdded] = useState(false)
   const [isInfoShow,setInfoShow] = useState(false)
+  const [studentUserID,setStudentUserID] = useState(null)
+  const [teacherUserID,setTeacherUserID] = useState(null)
+
 
   useEffect(() => {
-    console.log("test");
+
+    const retrieveUserID = async () => {
+      const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+      const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
+      setStudentUserID(studentID)
+      setTeacherUserID(teacherID)
+    }
+
     AsyncStorage.setItem('uniqueIDTeacher','600610749')
-    AsyncStorage.setItem('uniqueIDStudent','600610750')
+    AsyncStorage.setItem('uniqueIDStudent','600610777')
+
+    retrieveUserID()
+
   },[])
+
+ 
+
+
+ 
 
   
   const _isStudentFaceAdded = async (studentID) => {
@@ -51,14 +69,16 @@ const Login = ({navigation}) => {
           .then((response) => response.json())
           .then((data) => {
               console.log(data);
+              
               if(data.response == true){
-                SetIsStudentFaceAdded(true)
+                navigation.navigate('StudentHome')
               }
               else if(data.response == false)
               {
-                SetIsStudentFaceAdded(false)
-              }else{
-                SetIsStudentFaceAdded(null)
+                navigation.navigate('StudentAddFaceList')
+              }else if(data.response == null)
+              {
+                navigation.navigate('StudentAddFaceList')
               }
           })
           .catch((error) => {
@@ -166,24 +186,21 @@ const Login = ({navigation}) => {
       <View style = {{marginTop: 30}} >
         <Button title = "Go to Teacher Home" onPress = {() => navigation.navigate('TeacherHome')}/> 
       </View> 
+      <Text>{teacherUserID}</Text>
       <View style = {{marginTop: 30 }} >
         <Button title = "Go to Student Home" onPress = {async () => {
           navigation.navigate('StudentHome')
           } }/> 
       </View> 
+      <Text>{studentUserID}</Text>
       <View style = {{marginTop: 30 }} >
         <Button title = "Go to Add Face List" onPress = {async () => {
           const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
-          await _isStudentFaceAdded(studentID)
-          console.log(isStudentFaceAdded);
-          if(!isStudentFaceAdded){
-            navigation.navigate('StudentAddFaceList')
-          }
-          else{
-            navigation.navigate('StudentHome')
-          }
+          await _isStudentFaceAdded(studentID);
+          
           }}/> 
       </View> 
+      
     </View>
     </SafeAreaView>
   );

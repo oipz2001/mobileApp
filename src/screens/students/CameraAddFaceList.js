@@ -5,6 +5,7 @@ import {  StyleSheet, Text, TouchableOpacity, View,Image } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { Buffer } from 'buffer'
 import AsyncStorage from '@react-native-community/async-storage'
+import { myEndpointStudent } from '../../config/endpointConfig';
 const key = '8b4bdfc570514b1d9e71628238368e3e'
 
 
@@ -15,8 +16,7 @@ class CameraAddFaceList extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            studentIDState:'',
-            isFaceListAdded:false
+            studentIDState:''
             
         }
     }
@@ -62,9 +62,6 @@ class CameraAddFaceList extends PureComponent {
         <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
           <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
             <Text style={{ fontSize: 14 }}> SNAP </Text>
-          </TouchableOpacity>
-          <TouchableOpacity  style={styles.capture}>
-            <Text style={{ fontSize: 14 }}> {this.state.isFaceListAdded.toString()} </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -129,12 +126,13 @@ class CameraAddFaceList extends PureComponent {
             
         })
         .then(res => res.json())
-        .then(data => {
-            this.setState({isFaceListAdded:true})
-            console.log(data);
+        .then(async data => {
+            // this.setState({isFaceListAdded:true})
+            // console.log(data);
+            await this._AddStudentFaceList(this.state.studentIDState)
+
             
-            this.props.navigation.goBack()
-            this.props.navigation.navigate('StudentHome')
+            
             
         })
         .catch((error) => {
@@ -158,6 +156,33 @@ class CameraAddFaceList extends PureComponent {
             console.log(error);
         });
     }
+
+
+    _AddStudentFaceList = async (studentID) => {
+      console.log(studentID);
+      await fetch(myEndpointStudent+'/addFaceListToStudent', {
+        method: 'POST',
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          faceListId:studentID
+
+        })
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            
+            this.props.navigation.goBack()
+            this.props.navigation.navigate('StudentHome')
+        })
+        .catch((error) => {
+        console.error(error);
+        });
+    }
+
+    
 
     
 

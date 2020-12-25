@@ -17,6 +17,7 @@ import SettingLocation from './screens/teachers/settingLoc'
 import TeacherSeatmap from './screens/teachers/Seatmap'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MyProfile from './screens/Profile'
+import CameraAddFaceList from './screens/students/CameraAddFaceList'
 import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 
 const Stack = createStackNavigator();
@@ -53,6 +54,7 @@ const _hearderProfile = ({...props}) => {
         <Stack.Screen name="RoomStat" component={TeacherSessionStat} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'Statistics'})}/>
         <Stack.Screen name="TeacherSeatmap" component={TeacherSeatmap} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'Seat map'})}/>
 
+        <Stack.Screen name="StudentAddFaceList" component={CameraAddFaceList}/>
         <Stack.Screen name="StudentHome" component={StudentHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'My Sessions'})}/>
         <Stack.Screen name="StudentFaceCheckIn" component={StudentFaceCheckIn} options={({route}) => ({headerTitle:'Check-in ('+route.params.sessionTitle+')'})}/>
         <Stack.Screen name="Seatmap" component={Seatmap} options={({navigation,route}) => ({headerTitle:route.params.sessionTitle,headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>})}/>

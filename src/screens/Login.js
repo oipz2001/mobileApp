@@ -13,9 +13,17 @@ import AzureAuth from 'react-native-azure-auth';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-community/async-storage'
 
+const URL = require('../config/endpointConfig')
+
+const myEndpointURL =  URL.myEndpointStudent
+
 const azureAuth = new AzureAuth({
   clientId: '234c43b9-e653-4646-97c6-1903cfac1c03'
 });
+
+
+
+
 
 
 
@@ -27,13 +35,36 @@ const Login = ({navigation}) => {
   const [mail, setmail] = useState('')
   const [userId, setuserId] = useState('')
   const [jobtitle, setjobtitle] = useState('')
-
+  const [isStudentFaceAdded,SetIsStudentFaceAdded] = useState(false)
   const [isInfoShow,setInfoShow] = useState(false)
 
   useEffect(() => {
     console.log("test");
-    AsyncStorage.setItem('uniqueID','600610749')
+    AsyncStorage.setItem('uniqueIDTeacher','600610749')
+    AsyncStorage.setItem('uniqueIDStudent','600610750')
   },[])
+
+  
+  const _isStudentFaceAdded = async (studentID) => {
+
+    await fetch(myEndpointURL+'/isFaceListAdded?studentID='+studentID)
+          .then((response) => response.json())
+          .then((data) => {
+              console.log(data);
+              if(data.response == true){
+                SetIsStudentFaceAdded(true)
+              }
+              else if(data.response == false)
+              {
+                SetIsStudentFaceAdded(false)
+              }else{
+                SetIsStudentFaceAdded(null)
+              }
+          })
+          .catch((error) => {
+              console.error(error);
+          });
+  }
 
 
   const _Login = async () => {
@@ -89,21 +120,21 @@ const Login = ({navigation}) => {
     }
   };
 
-  const _retrieveData = async () => {
-    try {
-      const value = await AsyncStorage.getItem('name');
-      if (value !== null) 
-        console.log(value);
-      else
-      console.log('No data is stored');
-    } catch (error) {
-      // Error retrieving data
-    }
-  };
+  // const _retrieveData = async () => {
+  //   try {
+  //     const value = await AsyncStorage.getItem('name');
+  //     if (value !== null) 
+  //       console.log(value);
+  //     else
+  //     console.log('No data is stored');
+  //   } catch (error) {
+  //     // Error retrieving data
+  //   }
+  // };
 
-  useEffect(() => {
-    _retrieveData()
-  },[])
+  // useEffect(() => {
+  //   _retrieveData()
+  // },[])
 
   
 
@@ -136,7 +167,22 @@ const Login = ({navigation}) => {
         <Button title = "Go to Teacher Home" onPress = {() => navigation.navigate('TeacherHome')}/> 
       </View> 
       <View style = {{marginTop: 30 }} >
-        <Button title = "Go to Student Home" onPress = {() => navigation.navigate('StudentHome')}/> 
+        <Button title = "Go to Student Home" onPress = {async () => {
+          navigation.navigate('StudentHome')
+          } }/> 
+      </View> 
+      <View style = {{marginTop: 30 }} >
+        <Button title = "Go to Add Face List" onPress = {async () => {
+          const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+          await _isStudentFaceAdded(studentID)
+          console.log(isStudentFaceAdded);
+          if(!isStudentFaceAdded){
+            navigation.navigate('StudentAddFaceList')
+          }
+          else{
+            navigation.navigate('StudentHome')
+          }
+          }}/> 
       </View> 
     </View>
     </SafeAreaView>

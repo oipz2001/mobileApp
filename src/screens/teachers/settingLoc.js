@@ -8,6 +8,8 @@ import SectionedMultiSelect from 'react-native-sectioned-multi-select';
 import CheckBox from '@react-native-community/checkbox'
 
 const URL = require('../../config/endpointConfig')
+// const myEndpointURL =  URL.localEndpoint
+const myEndpointURL =  URL.myEndpointTeacher
 
 const SettingLoc = ({navigation,route}) => {
     const [wifiList,setWifiList] = useState([])
@@ -15,6 +17,10 @@ const SettingLoc = ({navigation,route}) => {
     const [isAutoSelected, setAutoSelection] = useState(true);
 
     const [classData,setClassData] = useState(null)
+
+    // useEffect(() => {
+    //   console.log(selectedItems);
+    // },[selectedItems])
 
     useEffect(() => {
         setClassData(route.params)
@@ -41,8 +47,13 @@ const SettingLoc = ({navigation,route}) => {
     
 
     const onSelectedItemsChange = (selectedItems) => {
+        // var selectedItems_modifiedList = []
+        // for(var i=0;i<selectedItems.length;i++){
+        //   selectedItems_modifiedList.push(selectedItems[i].split('.')[0])
+        // }
         
-        setSelectedItems(selectedItems) 
+        // setSelectedItems(selectedItems_modifiedList) 
+        setSelectedItems(selectedItems)
      };
 
     
@@ -50,9 +61,10 @@ const SettingLoc = ({navigation,route}) => {
 
 
     const getWifiList = () => {
-        
-        wifi.reScanAndLoadWifiList((wifiStringList) => {
-            var wifiArray = JSON.parse(wifiStringList);
+
+      wifi.reScanAndLoadWifiList(
+        wifis =>{
+          var wifiArray = JSON.parse(wifis);
             var keycap = 'capabilities'
             var keyfre = 'frequency'
             var keytime = 'timestamp'
@@ -83,10 +95,47 @@ const SettingLoc = ({navigation,route}) => {
             
           // setWifiList(wifiArray.sort((a, b) => parseInt(b.level) - parseInt(a.level)))
           setWifiList( wifiArray_modified.sort((a, b) => parseInt(b.level) - parseInt(a.level)))
-            
-          },(error)=>{
-            console.log(error);
-          });
+        },
+        error =>
+          console.error(error) ||
+          wifi.loadWifiList(
+            wifis =>{
+              var wifiArray = JSON.parse(wifis);
+              var keycap = 'capabilities'
+              var keyfre = 'frequency'
+              var keytime = 'timestamp'
+          for(var i=0;i<wifiArray.length;i++)
+          {
+              delete wifiArray[i][keycap]
+              delete wifiArray[i][keyfre]
+              delete wifiArray[i][keytime]
+          }   
+
+          var wifiArray_modified = wifiArray
+            for( var i=0;i<wifiArray.length;i++){
+              if(wifiArray[i].level > -45){
+                wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Great)' + wifiArray[i].level + ' dBm')
+              }
+              else if(wifiArray[i].level > -60){
+                wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Strong)'+ wifiArray[i].level+ ' dBm')
+              }
+              else if(wifiArray[i].level > -70){
+                wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Good)'+ wifiArray[i].level+ ' dBm')
+              }else{
+                wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Weak)'+ wifiArray[i].level+ ' dBm')
+              }
+              
+              wifiArray_modified[i] = { BSSID_dotConcat: wifiArray[i].BSSID.concat('.'+ i.toString())  ,  SSID:wifiArray[i].SSID  , level:wifiArray[i].level}
+              // console.log(wifiArray_modified[i]);
+            }
+              
+            // setWifiList(wifiArray.sort((a, b) => parseInt(b.level) - parseInt(a.level)))
+            setWifiList( wifiArray_modified.sort((a, b) => parseInt(b.level) - parseInt(a.level)))
+            },
+            error => console.error(error)
+          )
+      );
+        
        
     }
 
@@ -135,7 +184,7 @@ const SettingLoc = ({navigation,route}) => {
       
 // https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/addSession
 // https://us-central1-studentchecking.cloudfunctions.net/checkapp
-      await fetch(URL.localEndpoint+'/mobileApp/addSession', {
+      await fetch(myEndpointURL+'/addSession', {
       method: 'POST',
       headers: {
           Accept: "application/json",

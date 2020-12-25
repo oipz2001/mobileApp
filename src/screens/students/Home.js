@@ -1,56 +1,282 @@
-import React,{useState} from 'react'
-import { Button, View,Text,StyleSheet,StatusBar,FlatList,TouchableOpacity } from 'react-native'
+import React,{useState,useEffect,useRef} from 'react'
+import { Button, View,Text,StyleSheet,StatusBar,FlatList,TouchableOpacity,PermissionsAndroid } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Calendar from '../../components/CalendarPicker'
+import {useFocusEffect} from '@react-navigation/native';
+import wifi from 'react-native-android-wifi';
+import AsyncStorage from '@react-native-community/async-storage'
 
+const URL = require('../../config/endpointConfig')
 
+const myEndpointURL =  URL.myEndpointStudent
+
+const moment = require('moment')
+
+       // Hook
+  function usePrevious(value) {
+        // The ref object is a generic container whose current property is mutable ...
+        // ... and can hold any value, similar to an instance property on a class
+        const ref = useRef();
+        
+        // Store current value in ref
+        useEffect(() => {
+          ref.current = value;
+        }, [value]); // Only re-run if value changes
+        
+        // Return previous value (happens before update in useEffect above)
+        return ref.current;
+    }
 
 
 
 const StudentHome = ({navigation}) => {
-    const DATA = [
+
+  const [selectedDate,setSelectedDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
+  const [currentDate,setcurrentDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
+    const [currentTime,setcurrentTime] = useState(moment(new Date()).format('HH:mm').toString())
+    const [wifiList,setWifiList] = useState([])
+    const [sessionsData,setSessionsData] = useState(null)
+    const [selectedClassData,setSelectedClassData] = useState({uqID:null,teacherID:null})
+
+    const [locMatchResult,setLocMatchResult] = useState('')
+
+
+    const [studentIDState,setStudentIDState] = useState(null)
+
+    const _retrieveUserData = async () => {
+      const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+      // const  studentID = '600610748'
+      setStudentIDState(studentID)
+
+    }
+
+    // useEffect(() => {
+    //   const interval =  setInterval(async () => {
+    //      await getWifiList()
+    //     //  console.log(wifiList);
+    //     // setCount(count+1)
+    //     // console.log(count);
+        
+    //     }, 10000);
+    //     return () => clearInterval(interval);
+    // },[wifiListStr])
+
+    
+   
+
+   
+
+    useEffect(() => {
+
+        const matchWifiAPI = async () => {
+          await fetch(myEndpointURL+'/matchMAC', {
+            method: 'POST',
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                studentWifiList:wifiList,
+                classData:selectedClassData
+            })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                
+                console.log(data);
+                setLocMatchResult(data.matchResult)
+            })
+            .catch((error) => {
+            console.error(error);
+            });
+        }
+
+      if(wifiList.length!=0){
+        matchWifiAPI()
+      }
+
+    },[wifiList])
+
+    
+
+      useFocusEffect(
+        React.useCallback(() => {
+          // Do something when the screen is focused
+          console.log("Student Home is focused");
+          // var currentDate =moment(new Date()).format('DD-MM-YYYY').toString()
+          _retrieveUserData()
+
+          if(studentIDState !=  null)
+          _fetchSessionsAPI(selectedDate)
+
+          console.log(studentIDState);
+         
+  
+    
+          return () => {
+            // Do something when the screen is unfocused
+            // Useful for cleanup functions
+            console.log("Student Home is unfocused");
+          };
+        }, [studentIDState,selectedDate])
+      );
+
+
+      const getWifiList = async () => {
+
+        await wifi.reScanAndLoadWifiList(
+          wifis =>{
+            var tempWifis = JSON.parse(wifis)
+            var wifisArr = []
+            tempWifis.forEach(wifisData => {
+              wifisArr.push(wifisData.BSSID)
+            })
+            // console.log(wifisArr);
+            setWifiList(wifisArr);
+          },
+          error =>
+            console.error(error) ||
+            wifi.loadWifiList(
+              wifis =>{
+                var tempWifis = JSON.parse(wifis)
+                var wifisArr = []
+                tempWifis.forEach(wifisData => {
+                  wifisArr.push(wifisData.BSSID)
+                })
+                // console.log(wifisArr);
+                setWifiList(wifisArr);
+              },
+              error => console.error(error)
+            )
+        );
+        
+        
+       
+    }
+
+    const showWifiList = async () => {
+      await askForUserPermissions();
+      await getWifiList()
+
+      wifiList.forEach(wifiData => {
+        console.log(wifiData.BSSID_dotConcat.split('.')[0]+ '  level: '+wifiData.level);
+       
+      })
+      console.log("-------------------------------------------------------------------------");
+      console.log("-------------------------------------------------------------------------");
+      
+}
+  async function askForUserPermissions() {
+    try {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
         {
-            id: "206100",
-            title: "Math100",
-            time:"13:00-14.30",
-            desc: "Room 516 Math Building",
-            teacher: "Tommy"
-        },
-        {
-            id: "261458",
-            title: "Computer Vision",
-            time:"11:00-12.30",
-            desc: "Room 516 Math Building",
-            teacher: "Tommy"
-        },
-        {
-            id: "261434",
-            title: "Network Design",
-            time:"8:00-9:30",
-            desc: "Room 516 Math Building",
-            teacher: "Tommy"
-        },
-      ];
+          'title': 'Wifi networks',
+          'message': 'We need your permission in order to find wifi networks'
+        }
+      )
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        // console.log("Thank you for your permission! :)");
+      } else {
+        // console.log("You will not able to retrieve wifi available networks list");
+      }
+    } catch (err) {
+      console.warn(err)
+    }
+  }
+
+
+      const _fetchSessionsAPI = async (selectDate) => {
+        var studentID = studentIDState
+        var date  = selectDate
+  
+        await fetch(myEndpointURL+'/getClassroom?date='+date+'&studentID='+studentID+'&clientCurrentTime='+currentTime+'&clientCurrentDate='+currentDate)
+          .then((response) => response.json())
+          .then((data) => {
+              console.log(data);
+              setSessionsData(data)
+          })
+          .catch((error) => {
+              console.error(error);
+          });
+  
+        
+        
+      }
+
+     
+      
+      
+
+
+      const CalendarHeader = () => {
+        return(
+          <View>
+          <Text style={{alignSelf:'center'}}>StudentID: {studentIDState}</Text>
+          <Calendar style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}} 
+                    onDayPress={async day => {
+                      var selectDate = day.year+'-'+day.month+'-'+day.day
+                      setSelectedDate(selectDate)
+                      await _fetchSessionsAPI(selectDate)
+                    }}
+          />
+          <Text style={{alignSelf:'center'}}>Select: {selectedDate}</Text>
+          
+            {
+              locMatchResult ? 
+              <View style={{alignSelf:'center',backgroundColor:'green',padding:15,borderRadius:15}}>
+              <Text style={{color:'white'}}>{locMatchResult.toString()}</Text>
+              </View>
+              :
+              <View style={{alignSelf:'center',backgroundColor:'red',padding:15,borderRadius:15}}>
+              <Text style={{color:'white'}}>{locMatchResult.toString()}</Text>
+              </View>
+            }
+          
+          </View>
+        )
+      }
 
       
       const Item = ({ item }) => (
         <View style={styles.item}>
           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                     <View >
-                        <Text style={styles.title}>{item.title}</Text>
+                        <Text style={styles.title}>{item.name}</Text>
                         <Text style={{fontSize:17}}>({item.id})</Text>
-                        <Text style={{fontSize:12}}>Time: {item.time} </Text>
-                        <Text style={{fontSize:12}}>Teacher: {item.teacher} </Text>
+                        <Text style={{fontSize:12}}>Time: {item.startTime} - {item.endTime} </Text>
+                        <Text style={{fontSize:12}}>Teacher: {item.teacherID} </Text>
                         <Text style={{fontSize:12}}>Description: {item.desc} </Text>
                     </View>
                     <View style={{justifyContent:'space-between'}}>
-                        <Text>(Status)</Text>
+                        
+                          {
+                        item.sessionStatus == -1 ? 
+                        <Text style={{color:'orange'}} >Waiting</Text>
+                        :
+                        (item.sessionStatus == 0 ? 
+                        <Text style={{color:'green'}}>Opening</Text> 
+                        : 
+                        (item.sessionStatus == 1 ? 
+                        <Text style={{color:'red'}}>Closed</Text> 
+                        :
+                        <Text style={{color:'red'}}>In progress</Text> 
+                        )
+                        ) 
+
+                      }
+                          
                     </View>
             </View>
             <View >
               <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-evenly',marginTop:15}}>
                   <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                  <TouchableOpacity onPress={() => navigation.navigate('StudentFaceCheckIn',{sessionTitle:item.title,sessionID:item.id})} >
+                  <TouchableOpacity onPress={async () => {
+                    setSelectedClassData({uqID:item.uqID,teacherID:item.teacherID})
+                    await getWifiList()
+
+                    // navigation.navigate('StudentFaceCheckIn',{sessionTitle:item.title,sessionID:item.id})
+                    }} >
                       <Text style={{color:'white'}}>Check-in</Text>
                   </TouchableOpacity>
                   </View>
@@ -78,14 +304,12 @@ const StudentHome = ({navigation}) => {
         <>
         
                 
-                <SafeAreaView style={{flex:1,backgroundColor:'#9E76B4'}}>
-                
-                
+                <SafeAreaView style={{flex:1}}>
                 <FlatList
-                    data={DATA}
+                    data={sessionsData}
                     renderItem={renderItem}
-                    keyExtractor={item => item.id}
-                    ListHeaderComponent={<Calendar style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}} />}
+                    keyExtractor={item => item.uqID}
+                    ListHeaderComponent={<CalendarHeader/>}
                 />
                 </SafeAreaView>
 
@@ -99,6 +323,8 @@ const StudentHome = ({navigation}) => {
     );
 
 }
+
+    
 
 const styles = StyleSheet.create({
     container: {

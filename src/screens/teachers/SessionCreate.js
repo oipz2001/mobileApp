@@ -1,4 +1,4 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import { Button, View,Text,StyleSheet,Platform,TouchableOpacity  } from 'react-native'
 import {Picker} from '@react-native-community/picker'
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -6,9 +6,10 @@ import TextInput from '../../components/TextInput'
 import DateTimePicker from '@react-native-community/datetimepicker';
 const moment = require('moment')
 import CheckBox from '@react-native-community/checkbox'
-import { ScrollView } from 'react-native-gesture-handler';
-
+import AsyncStorage from '@react-native-community/async-storage'
 const URL = require('../../config/endpointConfig')
+// const myEndpointURL =  URL.localEndpoint
+const myEndpointURL =  URL.myEndpointTeacher
 
 
 const TeacherSessionCreate = ({navigation}) => {
@@ -59,6 +60,20 @@ const TeacherSessionCreate = ({navigation}) => {
     const [isFri, setIsFri] = useState(false);
     const [isSat, setIsSat] = useState(false);
     const [isSun, setIsSun] = useState(false);
+
+    const [teacherIDState,setTeacherIDState] = useState(null)
+    // retrive user data
+    const _retrieveUserData = async () => {
+        const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
+        setTeacherIDState(teacherID)
+  
+    }
+
+    useEffect(() => {
+        _retrieveUserData()
+    },[])
+
+    
 
     //Change Session Time Start
     const onChange_TimeStart = (event, selectedTime) => {
@@ -122,22 +137,8 @@ const TeacherSessionCreate = ({navigation}) => {
     }
 
     const _addSessionAPI = async () => {
-        var classID = sessionID
-        var className = sessionName
-        var desc = sessionDesc
-        var semester = selectedTermValue
-        var teacherID = "600610749"
-        var startDate = date_start
-        var endDate = date_end
-        var startTime = time_start
-        var endTime = time_end
-        var isLocationSet = isLocationSelected
-        var isSeatmapSet = isSeatmapCreate
-        var isAutoSelectMACSet = false
-        var macAddrList = ["AAAA:AAAA","BBBB:BBBB","CCCC:CCCC"]
-        var dupDay = [isSun,isMon,isTue,isWed,isThu,isFri,isSat]
-        
-        await fetch(URL.localEndpoint+'/mobileApp/addSession', {
+       
+        await fetch(myEndpointURL+'/addSession', {
         method: 'POST',
         headers: {
             Accept: "application/json",
@@ -148,7 +149,7 @@ const TeacherSessionCreate = ({navigation}) => {
             className : sessionName,
             desc : sessionDesc,
             semester : selectedTermValue,
-            teacherID : "600610749",
+            teacherID : teacherIDState,
             startDate : selectedDateStart,
             endDate : selectedDateEnd,
             startTime : selectedTime_start,
@@ -318,7 +319,7 @@ const TeacherSessionCreate = ({navigation}) => {
                                     className : sessionName,
                                     desc : sessionDesc,
                                     semester : selectedTermValue,
-                                    teacherID : "600610749",
+                                    teacherID : teacherIDState,
                                     startDate : selectedDateStart,
                                     endDate : selectedDateEnd,
                                     startTime : selectedTime_start,

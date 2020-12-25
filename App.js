@@ -17,6 +17,8 @@ import ExpoTest from './testExpo'
 import TestCamera from './CameraTest'
 import TestAPI from './testFetchAPI'
 
+import CameraAddFaceList from './src/screens/students/CameraAddFaceList'
+
 const App = () => {
   
     
@@ -25,6 +27,7 @@ const App = () => {
     // <Camera />
     // <Login />
     
+    // <CameraAddFaceList/>
     // <Calendar/>
     <MyAppNavigator/>
     // <TeacherHome />

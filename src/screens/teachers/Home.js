@@ -8,20 +8,27 @@ import AsyncStorage from '@react-native-community/async-storage'
 
 const URL = require('../../config/endpointConfig')
 
+const myEndpointURL =  URL.myEndpointTeacher
 
-
-
+const defaultEndpoint = URL.endpointDefault
 const moment = require('moment')
+
+
+
 const TeacherHome = ({ navigation }) => {
     const [selectedId, setSelectedId] = useState(null);
     // DD-MM-YYYY
     // YYYY-MM-DD
     const [selectedDate,setSelectedDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
+
+    const [currentDate,setcurrentDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
+    const [currentTime,setcurrentTime] = useState(moment(new Date()).format('HH:mm').toString())
+
     const [sessionsData,setSessionsData] = useState(null)
     const [teacherIDState,setTeacherIDState] = useState(null)
 
     const _retrieveUserData = async () => {
-      const  teacherID = await AsyncStorage.getItem('uniqueID');
+      const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
       setTeacherIDState(teacherID)
 
     }
@@ -31,10 +38,11 @@ const TeacherHome = ({ navigation }) => {
     useFocusEffect(
       React.useCallback(() => {
         // Do something when the screen is focused
-        
         console.log("Home is focused");
         // var currentDate =moment(new Date()).format('DD-MM-YYYY').toString()
         _retrieveUserData()
+
+        if(teacherIDState !=  null)
         _fetchSessionsAPI(selectedDate)
 
         console.log(teacherIDState);
@@ -53,7 +61,10 @@ const TeacherHome = ({ navigation }) => {
       var teacherID = teacherIDState
       var date  = selectDate
 
-      await fetch(URL.localEndpoint+'/mobileApp/getSession?date='+date+'&teacherID='+teacherID)
+      console.log(date);
+      console.log(currentDate);
+
+      await fetch(myEndpointURL+'/getSession?date='+date+'&teacherID='+teacherID+'&clientCurrentTime='+currentTime+'&clientCurrentDate='+currentDate)
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
@@ -70,8 +81,15 @@ const TeacherHome = ({ navigation }) => {
     const _addStudentTestAPI = async (classUqID) => {
       var uqID = classUqID
       var teacherID = teacherIDState
+      var studentList = [
+        {id:'600610748',name:'Pathomporn'},
+        {id:'600610750',name:'Parinyakorn'},
+        {id:'600610751',name:'Pawaris'},
+        {id:'600610777',name:'Paradee'},
+        {id:'600610888',name:'Paradee'}
+      ]
       console.log(uqID);
-      await fetch(URL.localEndpoint+'/webApp/addNewStudents', {
+      await fetch(defaultEndpoint+'/webApp/addNewStudents', {
         method: 'POST',
         headers: {
             Accept: "application/json",
@@ -79,7 +97,8 @@ const TeacherHome = ({ navigation }) => {
         },
         body: JSON.stringify({
           uqID: uqID,
-          teacherID:teacherID
+          teacherID:teacherID,
+          studentList:studentList
 
         })
         })
@@ -96,12 +115,12 @@ const TeacherHome = ({ navigation }) => {
     const _cancelSession = async (date,uqClassID) => {
       console.log(date);
       console.log(uqClassID);
-      teacherID = teacherIDState
+      var teacherID = teacherIDState
 
-      console.log(teacherID);
+      // console.log(teacherID);
 
        
-        await fetch(URL.localEndpoint+'/mobileApp/cancelSession', {
+        await fetch(myEndpointURL+'/cancelSession', {
         method: 'POST',
         headers: {
             Accept: "application/json",
@@ -162,61 +181,6 @@ const TeacherHome = ({ navigation }) => {
                     </View>
               </View>
               
-              {/* {
-                item.isClassAccept ? 
-                (item.isStudentAdded ? 
-                // isClassAccept = T , isStudentAdded = T
-                <View style={{flexDirection:'column',margin:15}}>
-                  <View style={{marginTop:20,flexDirection:'row',justifyContent:'space-around'}}>
-                        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                            <Icon name="users" size={20} />
-                            <Text>  {item.all} </Text>
-                        </View>
-                        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                            <Icon name="check" size={25} color='green'/>
-                            <Text>  {item.present}</Text>
-                        </View>
-                        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                            <Icon name="times" size={25} color='red'/>
-                            <Text>  {item.absent}</Text>
-                        </View>
-                    </View>
-                    <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-around',marginTop:15}}>
-                      <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                      <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',{sessionTitle:item.title,sessionID:item.id})}} >
-                          <Text style={{color:'white'}}>Statistics</Text>
-                      </TouchableOpacity>
-                      </View>
-                      <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                      <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{sessionTitle:item.title,sessionID:item.id})} >
-                          <Text style={{color:'white'}}>Seat map</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                
-              </View> 
-                :  
-                // isClassAccept = T , isStudentAdded = F
-                <View style={{flexDirection:'row',alignSelf:'center',margin:15}}>
-                  <TouchableOpacity style={{backgroundColor:'yellow',padding:10,borderRadius:10}}>
-                    <Text style={{color:'red'}}>Please add your students</Text>
-                  </TouchableOpacity>
-                </View> 
-                ) 
-                :  
-                // isClassAccept = F
-                <View style={{flexDirection:'row',justifyContent:'space-evenly',margin:15}}>
-                  <TouchableOpacity style={{backgroundColor:'green',padding:15,elevation:5,borderRadius:20}}>
-                    <Text style={{color:'white'}}>Accept</Text>
-                  </TouchableOpacity>
-                  <TouchableOpacity style={{backgroundColor:'red',padding:15,elevation:5,borderRadius:20}}>
-                    <Text style={{color:'white'}}>Cancel</Text>
-                  </TouchableOpacity>
-                </View>
-
-                
-
-              } */}
 
               {
                 item.isStudentAdded ?
@@ -320,16 +284,14 @@ const TeacherHome = ({ navigation }) => {
           return(
             <>
                 <Text style={{alignSelf:'center'}}>Select {selectedDate}</Text>
+                <Text style={{alignSelf:'center'}}>TeacherID: {teacherIDState}</Text>
                 <Calendar 
                 style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}}
                 onDayPress={async day => {
-                  // day.day+'-'+day.month+'-'+day.year
                   var selectDate = day.year+'-'+day.month+'-'+day.day
                   console.log(selectDate);
                   setSelectedDate(selectDate)
                   await _fetchSessionsAPI(selectDate)
-
-                  
                   }}
                   
                 />

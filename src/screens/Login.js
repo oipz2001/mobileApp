@@ -51,7 +51,10 @@ const Login = ({navigation}) => {
     }
 
     AsyncStorage.setItem('uniqueIDTeacher','600610749')
-    AsyncStorage.setItem('uniqueIDStudent','600610777')
+    AsyncStorage.setItem('NameTeacher','Parinya')
+
+    AsyncStorage.setItem('uniqueIDStudent','600610751')
+    AsyncStorage.setItem('NameStudent','Parinyakorn')
 
     retrieveUserID()
 
@@ -68,17 +71,16 @@ const Login = ({navigation}) => {
     await fetch(myEndpointURL+'/isFaceListAdded?studentID='+studentID)
           .then((response) => response.json())
           .then((data) => {
-              console.log(data);
               
               if(data.response == true){
                 navigation.navigate('StudentHome')
               }
               else if(data.response == false)
               {
-                navigation.navigate('StudentAddFaceList')
+                navigation.navigate('StudentAddFaceList',{response:false})
               }else if(data.response == null)
               {
-                navigation.navigate('StudentAddFaceList')
+                navigation.navigate('StudentAddFaceList',{response:null})
               }
           })
           .catch((error) => {

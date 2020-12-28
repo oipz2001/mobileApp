@@ -16,7 +16,8 @@ class CameraAddFaceList extends PureComponent {
     constructor(props) {
         super(props);
         this.state = {
-            studentIDState:''
+            studentIDState:'',
+            studentNameState : ''
             
         }
     }
@@ -25,12 +26,14 @@ class CameraAddFaceList extends PureComponent {
 
     _retrieveUserData = async () => {
         const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+        const studentName = await AsyncStorage.getItem('NameStudent');
         // const  studentID = '600610888'
-        this.setState({studentIDState:studentID})
+        this.setState({studentIDState:studentID,studentNameState:studentName})
   
     }
 
     componentDidMount(){
+      console.log(this.props.route.params.response);
         this._retrieveUserData()
     }
 
@@ -41,6 +44,7 @@ class CameraAddFaceList extends PureComponent {
   render() {
     return (
       <View style={styles.container}>
+        {/* <Text>{JSON.stringify(navigation.getParam('response'))}</Text> */}
         <TouchableOpacity  style={styles.capture}>
             <Text style={{ fontSize: 14 }}> ถ่ายภาพใบหน้าเพื่อบันทึกลงในฐานข้อมูล</Text>
           </TouchableOpacity>
@@ -127,9 +131,13 @@ class CameraAddFaceList extends PureComponent {
         })
         .then(res => res.json())
         .then(async data => {
-            // this.setState({isFaceListAdded:true})
-            // console.log(data);
-            await this._AddStudentFaceList(this.state.studentIDState)
+          
+            if(this.props.route.params.response == false){
+              await this._AddStudentFaceList(this.state.studentIDState)
+            }
+            else if(this.props.route.params.response == null){
+              await this._AddNewStudent(this.state.studentIDState,this.state.studentNameState)
+            }
 
             
             
@@ -180,6 +188,33 @@ class CameraAddFaceList extends PureComponent {
         .catch((error) => {
         console.error(error);
         });
+    }
+
+    _AddNewStudent = async (studentID,studentName) => {
+
+      await fetch(myEndpointStudent+'/addNewStudent', {
+        method: 'POST',
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          studentID: studentID,
+          faceListId:studentID ,
+          studentName: studentName,
+
+
+        })
+        })
+        .then((response) => response.json())
+        .then((data) => {
+          this.props.navigation.goBack()
+          this.props.navigation.navigate('StudentHome')
+        })
+        .catch((error) => {
+        console.error(error);
+        });
+
     }
 
     

@@ -9,9 +9,9 @@ import {
     ContributionGraph,
     StackedBarChart
   } from "react-native-chart-kit";
-
-  
- 
+import AsyncStorage from '@react-native-community/async-storage'
+  const URL = require('../../config/endpointConfig')
+  const myEndpointURL =  URL.myEndpointTeacher
 
 
   const chartConfig = {
@@ -26,65 +26,12 @@ import {
   };
 const TeacherSessionStat = ({route}) => {
     const [selectedId, setSelectedId] = useState(null);
+    const [teacherIDState,setTeacherIDState] = useState(null)
+    const [classStatData,setClassStatData] = useState({})
+    const [studentStatList,setStudentStatList] = useState([])
 
-    useEffect(() => {
-      console.log(route.params.sessionID + ' ' +route.params.sessionTitle + '(Statistics)');
-      console.log(route.params.uqID);
-
-  },[])
-
-  const renderItem = ({ item }) => {
-    const backgroundColor = item.id === selectedId ? "#c0c0c0" : "#fffafa";
-    return (
-      <Item
-        item={item}
-        onPress={() => {
-            console.log(item.id);
-            setSelectedId(item.id)
-           
-        }}
-      />
-    );
-  };
-    const facultyData = [
-        {
-          name: "Engineering",
-          population: 100,
-          color: "#00008b",
-          legendFontColor: "#7F7F7F",
-          legendFontSize: 15
-        },
-        {
-          name: "Education",
-          population: 30,
-          color: "#6495ed",
-          legendFontColor: "#7F7F7F",
-          legendFontSize: 15
-        },
-        {
-          name: "Humanities",
-          population: 40,
-          color: "#ff8c00",
-          legendFontColor: "#7F7F7F",
-          legendFontSize: 15
-        },
-        {
-          name: "Science",
-          population: 25,
-          color: "#ff00ff",
-          legendFontColor: "#7F7F7F",
-          legendFontSize: 15
-        },
-        {
-          name: "Economics",
-          population: 12,
-          color: "#adff2f",
-          legendFontColor: "#7F7F7F",
-          legendFontSize: 15
-        }
-      ];
-    
-      const presentData = [
+    const [chartData,setChartData] = useState(
+      [
         {
           name: "Present",
           population: 26,
@@ -99,48 +46,86 @@ const TeacherSessionStat = ({route}) => {
           legendFontColor: "#7F7F7F",
           legendFontSize: 15
         }
-      ];
-      const StudentDATA = [
-        {
-            id: "600610748",
-            name: "Pathomporn Pinkeaw",
-            status:'unchecked',
-            faculty:'Engineering'
-        },
-        {
-          id: "600610749",
-          name: "Parinya Seetawan",
-          status:'checked',
-          faculty:'Engineering'
-        },
-        {
-          id: "600610750",
-          name: "Parinyakorn Something",
-          status:'checked',
-          faculty:'Economics'
-        },
-        {
-          id: "600610751",
-          name: "Pawaris Suaaim",
-          status:'unchecked',
-          faculty:'Science'
-        },
-      ];
+      ]
+    );
+
+    
+
+    useEffect(() => {
+      if(teacherIDState != null){
+      console.log(route.params.uqID);
+      console.log(route.params.selectedDate);
+      console.log(teacherIDState);
+      classStatAPI(route.params.uqID,route.params.selectedDate,teacherIDState)
+    }
+
+  },[teacherIDState])
+
+  useEffect(() => {
+    _retrieveUserData()
+  },[])
+
+  const _retrieveUserData = async () => {
+    const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
+    setTeacherIDState(teacherID)
+
+  }
+
+  const classStatAPI = async (uqID,selectedDate,teacherID) => {
+
+    await fetch(myEndpointURL+'/getClassStat?uqID='+uqID+'&selectedDate='+selectedDate+'&teacherID='+teacherID)
+        .then((response) => response.json())
+        .then((data) => {
+            console.log(data);
+            setClassStatData(data)
+            setStudentStatList(data.statistics)
+
+            var myStatChartData = chartData
+            myStatChartData[0].population = data.present
+            myStatChartData[1].population = data.absent
+
+            setChartData(myStatChartData)
+
+        })
+        .catch((error) => {
+            console.error(error);
+        });
+  }
+  
+ 
+
+
+  const renderItem = ({ item }) => {
+    const backgroundColor = item.id === selectedId ? "#c0c0c0" : "#fffafa";
+    return (
+      <Item
+        item={item}
+        onPress={() => {
+            console.log(item.id);
+            setSelectedId(item.id)
+           
+        }}
+      />
+    );
+  };
+    
+    
+      
+      
       const Item = ({ item, onPress, style }) => (
       
         
         <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
               <View>
-              <Text style={styles.id}>{item.id}</Text>
-              <Text style={styles.name}>{item.name}</Text>
-              <Text style={styles.faculty}>{item.faculty}</Text>
+              <Text style={styles.id}>{item.studentID}</Text>
+              <Text style={styles.name}>{item.studentName}</Text>
                 </View>
                 <View style={{flexDirection:'column',justifyContent:'flex-end'}}>
-                {item.status == 'checked' ?
+                {item.isChecked ?
                 <View>
                 <Image source={require('../../assets/vectors/check.png')} style={{width:25,height:25}} />
-                <Text>14:35</Text>
+                <Text>{item.timestamp}</Text>
                 </View>
                 :  
                 <Image source={require('../../assets/vectors/close.png')} style={{width:20,height:20}} />
@@ -158,31 +143,20 @@ const TeacherSessionStat = ({route}) => {
         return(
             <>
             <View style={{marginTop:25,alignItems:'center'}}>
-                <Text style={{fontSize:20,marginBottom:10}}>Statistics</Text>
+            {/* <Text>{JSON.stringify( statData[0]['population'])}</Text> */}
+                <Text style={{fontSize:20,marginBottom:10}}>{classStatData.name} ({classStatData.id})</Text>
                <PieChart
-                    data={presentData}
+                    data={chartData}
                     width={375}
                     height={250}
                     chartConfig={chartConfig}
                     accessor="population"
                     paddingLeft="15"
                     style={{ borderRadius:20,elevation:5,backgroundColor:"white"}}
+                    absolute={true}
                 />
             </View>
 
-            {/* <View style={{marginTop:10,alignItems:'center',marginBottom:30}}> */}
-                {/* <Text style={{fontSize:20}}>Faculty</Text> */}
-                {/* <PieChart
-                    data={facultyData}
-                    width={375}
-                    height={250}
-                    chartConfig={chartConfig}
-                    accessor="population"
-                    paddingLeft="15"
-                    style={{ borderRadius:20,elevation:5,backgroundColor:"white"}}
-                    absolute
-                /> */}
-            {/* </View > */}
             <View>
                 <Text style={{fontSize:20,alignSelf:'center',marginTop:10}}>Student list</Text>
             </View>
@@ -201,9 +175,9 @@ const TeacherSessionStat = ({route}) => {
                 <SafeAreaView style={{flex:1,alignItems:'center'}}>
                 
                 <FlatList
-                    data={StudentDATA}
+                    data={studentStatList}
                     renderItem={renderItem}
-                    keyExtractor={(item) => item.id}
+                    keyExtractor={(item) => item.studentID}
                     extraData={selectedId}
                     ListHeaderComponent={ListHeaderComponent}
                 />

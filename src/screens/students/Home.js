@@ -37,8 +37,9 @@ const StudentHome = ({navigation}) => {
     const [wifiList,setWifiList] = useState([])
     const [sessionsData,setSessionsData] = useState(null)
     const [selectedClassData,setSelectedClassData] = useState({uqID:null,teacherID:null})
+    const [checkInFetchData,setCheckInFetchData] = useState({uqID:null,teacherID:null})
 
-    const [locMatchResult,setLocMatchResult] = useState('')
+    const [locMatchResult,setLocMatchResult] = useState(false)
 
 
     const [studentIDState,setStudentIDState] = useState(null)
@@ -62,6 +63,7 @@ const StudentHome = ({navigation}) => {
     // },[wifiListStr])
 
     
+    
    
 
    
@@ -81,10 +83,22 @@ const StudentHome = ({navigation}) => {
             })
             })
             .then((response) => response.json())
-            .then((data) => {
+            .then(async (data) => {
                 
                 console.log(data);
-                setLocMatchResult(data.matchResult)
+               
+
+                if(data.matchResult == true){
+                  setLocMatchResult(true)
+                  console.log("Location match");
+                  console.log(checkInFetchData);
+                  await checkInAPI()
+                }
+                else if(data.matchResult == false){
+                  setLocMatchResult(false)
+                  console.log("Location not match");
+
+                }
             })
             .catch((error) => {
             console.error(error);
@@ -204,6 +218,28 @@ const StudentHome = ({navigation}) => {
         
       }
 
+
+      const checkInAPI = async () => {
+        await fetch(myEndpointURL+'/checkIn', {
+          method: 'POST',
+          headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            checkInFetchData:checkInFetchData
+          })
+          })
+          .then((response) => response.json())
+          .then((data) => {
+              
+              console.log(data);
+          })
+          .catch((error) => {
+          console.error(error);
+          });
+      }
+
      
       
       
@@ -272,7 +308,25 @@ const StudentHome = ({navigation}) => {
               <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-evenly',marginTop:15}}>
                   <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
                   <TouchableOpacity onPress={async () => {
-                    setSelectedClassData({uqID:item.uqID,teacherID:item.teacherID})
+                    
+                    const studentID = studentIDState
+                    const teacherID = item.teacherID
+                    const uqID = item.uqID
+                    const checkDate = moment(new Date()).format('YYYY-MM-DD').toString()
+                    const timestamp = moment(new Date()).format('HH:mm').toString()
+                    setSelectedClassData({uqID:uqID,teacherID:teacherID})
+                    setCheckInFetchData({
+                      studentID:studentID,
+                      teacherID:teacherID,
+                      uqID:uqID,
+                      checkDate:checkDate,
+                      timestamp:timestamp
+                    })
+                    
+
+
+
+                    
                     await getWifiList()
 
                     // navigation.navigate('StudentFaceCheckIn',{sessionTitle:item.title,sessionID:item.id})

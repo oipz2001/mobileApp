@@ -88,6 +88,10 @@ const TeacherHome = ({ navigation }) => {
         {id:'600610777',name:'Paradee'},
         {id:'600610888',name:'Paradee'}
       ]
+      // var studentList = [
+      //   {id:'6006107488',name:'Pathomporn'},
+      //   {id:'600610750',name:'Parinyakorn'}
+      // ]
       console.log(uqID);
       await fetch(defaultEndpoint+'/webApp/addNewStudents', {
         method: 'POST',
@@ -201,12 +205,12 @@ const TeacherHome = ({ navigation }) => {
                       </View>
                       <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-around',marginTop:15}}>
                         <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                        <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',{sessionTitle:item.title,sessionID:item.id,uqID:item.uqID})}} >
+                        <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',{uqID:item.uqID,selectedDate:selectedDate})}} >
                             <Text style={{color:'white'}}>Statistics</Text>
                         </TouchableOpacity>
                         </View>
                         <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                        <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{sessionTitle:item.title,sessionID:item.id,uqID:item.uqID})} >
+                        <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{uqID:item.uqID,selectedDate:selectedDate})} >
                             <Text style={{color:'white'}}>Seat map</Text>
                         </TouchableOpacity>
                       </View>
@@ -248,6 +252,7 @@ const TeacherHome = ({ navigation }) => {
                   <Text style={{color:'white'}}>Cancel</Text>
                 </TouchableOpacity>
             </View>
+            {!item.isStudentAdded ? 
             <View>
                 <TouchableOpacity style={{backgroundColor:'green',padding:15,elevation:5,borderRadius:25,alignSelf:'center',marginTop:15}}
                 onPress={async () => {
@@ -257,6 +262,9 @@ const TeacherHome = ({ navigation }) => {
                       <Text style={{color:'white'}}>Test Add Students</Text>
                 </TouchableOpacity>
             </View>
+            :
+            <View></View>
+            }
             
             
             </TouchableOpacity>

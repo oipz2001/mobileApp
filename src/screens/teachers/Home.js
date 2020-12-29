@@ -5,6 +5,7 @@ import Calendar from '../../components/CalendarPicker'
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage'
+import wifi from 'react-native-android-wifi';
 
 const URL = require('../../config/endpointConfig')
 
@@ -27,11 +28,49 @@ const TeacherHome = ({ navigation }) => {
     const [sessionsData,setSessionsData] = useState(null)
     const [teacherIDState,setTeacherIDState] = useState(null)
 
+    const [wifiList,setWifiList] = useState([])
+
     const _retrieveUserData = async () => {
       const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
       setTeacherIDState(teacherID)
 
     }
+
+    // useEffect(() => {
+
+    //   const updateWifiLocAPI = async (uqID,teacherID,wifis) => {
+
+    //     if(wifis.length != 0){
+    //       await fetch(defaultEndpoint+'/webApp/addNewStudents', {
+    //         method: 'POST',
+    //         headers: {
+    //             Accept: "application/json",
+    //             "Content-Type": "application/json"
+    //         },
+    //         body: JSON.stringify({
+    //           uqID: uqID,
+    //           teacherID:teacherID,
+    //           wifiList: wifis
+    
+    //         })
+    //         })
+    //         .then((response) => response.json())
+    //         .then((data) => {
+                
+    //             console.log(data);
+    //         })
+    //         .catch((error) => {
+    //         console.error(error);
+    //         });
+    //     }
+
+    //   }
+
+
+
+    //   updateWifiLocAPI()
+
+    // },[wifiList])
 
 
 
@@ -148,6 +187,84 @@ const TeacherHome = ({ navigation }) => {
     };
 
 
+    const updateWifiLocAPI = async (uqID,teacherID) => {
+
+      await wifi.reScanAndLoadWifiList(
+        async wifis =>{
+          var tempWifis = JSON.parse(wifis)
+          var wifisArr = []
+          for(var i=0;i<6;i++){
+            wifisArr.push(tempWifis[i].BSSID)
+          }
+          
+              // setWifiList(wifisArr);
+              if(wifisArr.length != 0){
+                await fetch(myEndpointURL+'/updateClassLoc', {
+                  method: 'POST',
+                  headers: {
+                      Accept: "application/json",
+                      "Content-Type": "application/json"
+                  },
+                  body: JSON.stringify({
+                    uqID: uqID,
+                    teacherID:teacherID,
+                    wifiList: wifisArr
+          
+                  })
+                  })
+                  .then((response) => response.json())
+                  .then((data) => {
+                      
+                      console.log(data);
+                  })
+                  .catch((error) => {
+                  console.error(error);
+                  });
+            }
+        },
+        async error =>
+          console.error(error) ||
+          wifi.loadWifiList(
+            async wifis =>{
+              var tempWifis = JSON.parse(wifis)
+              var wifisArr = []
+              for(var i=0;i<6;i++){
+                wifisArr.push(tempWifis[i].BSSID)
+              }
+              // setWifiList(wifisArr);
+              if(wifisArr.length != 0){
+                  await fetch(myEndpointURL+'/updateClassLoc', {
+                    method: 'POST',
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                      uqID: uqID,
+                      teacherID:teacherID,
+                      wifiList: wifisArr
+            
+                    })
+                    })
+                    .then((response) => response.json())
+                    .then((data) => {
+                        
+                        console.log(data);
+                    })
+                    .catch((error) => {
+                    console.error(error);
+                    });
+              }
+            },
+            error => console.error(error)
+          )
+      );
+      
+      
+     
+  }
+
+
     
 
     const renderItem = ({ item }) => {
@@ -231,7 +348,9 @@ const TeacherHome = ({ navigation }) => {
 
             
             <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20,alignSelf:'center'}}>
-                <TouchableOpacity  >
+                <TouchableOpacity onPress={async () => {
+                    await updateWifiLocAPI(item.uqID,teacherIDState)
+                }}  >
                   <View style={{flexDirection:'row'}}>
                     <Icon name="map-marker" size={25} color="white" /> 
                     <Text style={{color:'white',marginLeft:7}}>Update location</Text>      

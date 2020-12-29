@@ -253,7 +253,6 @@ const SettingLoc = ({navigation,route}) => {
             <CheckBox value={isAutoSelected} onValueChange={setAutoSelection} />
             <Text>Auto select</Text>
           </View> 
-          <Button title="show wifi list" onPress={showSelectedWifi}/>
         <TouchableOpacity onPress={async () => {
                     if(wifiList.length != 0){
                     await _addSessionAPI()

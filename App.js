@@ -19,6 +19,8 @@ import TestAPI from './testFetchAPI'
 
 import CameraAddFaceList from './src/screens/students/CameraAddFaceList'
 
+import ActivityIndic from './testActivityIndicator'
+
 const App = () => {
   
     
@@ -41,7 +43,7 @@ const App = () => {
     // <ExpoTest/>
     // <TestCamera/>
     // <TestAPI/>
-    
+    // <ActivityIndic/>
     
     );
     

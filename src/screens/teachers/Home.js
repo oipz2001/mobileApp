@@ -22,8 +22,10 @@ const TeacherHome = ({ navigation }) => {
     // YYYY-MM-DD
     const [selectedDate,setSelectedDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
 
-    const [currentDate,setcurrentDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
-    const [currentTime,setcurrentTime] = useState(moment(new Date()).format('HH:mm').toString())
+    // const [currentDate,setcurrentDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
+    // const [currentTime,setcurrentTime] = useState(moment(new Date()).format('HH:mm').toString())
+
+    const [localTime,setLocalTime] = useState(moment(new Date()).format('HH:mm').toString())
 
     const [sessionsData,setSessionsData] = useState(null)
     const [teacherIDState,setTeacherIDState] = useState(null)
@@ -35,6 +37,33 @@ const TeacherHome = ({ navigation }) => {
       setTeacherIDState(teacherID)
 
     }
+
+    useEffect(() => {
+      _retrieveUserData()
+    },[])
+
+
+    useEffect(() =>{
+      const interval =  setInterval(async () => {
+        setLocalTime(moment(new Date()).format('HH:mm').toString())
+            
+      }, 1000);
+
+      
+
+      const funcFetchSession = async () => {
+      var localTime = moment(new Date()).format('HH:mm').toString()
+       var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+        await _fetchSessionsAPI(selectedDate,localTime,localDate)
+      };
+
+      funcFetchSession()
+        
+  
+      return () => clearInterval(interval);
+    },[localTime])
+
+
 
     // useEffect(() => {
 
@@ -74,34 +103,46 @@ const TeacherHome = ({ navigation }) => {
 
 
 
-    useFocusEffect(
-      React.useCallback(() => {
-        // Do something when the screen is focused
-        console.log("Home is focused");
-        // var currentDate =moment(new Date()).format('DD-MM-YYYY').toString()
-        _retrieveUserData()
+    // useFocusEffect(
+    //   React.useCallback(() => {
+    //     // Do something when the screen is focused
+    //     console.log("Home is focused");
+    //    var localTime = moment(new Date()).format('HH:mm').toString()
+    //    var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+
+    //     if(teacherIDState !=  null)
+    //     _fetchSessionsAPI(selectedDate,localTime,localDate)
+
+    //     console.log(teacherIDState);
+
+  
+    //     return () => {
+    //       // Do something when the screen is unfocused
+    //       // Useful for cleanup functions
+    //       console.log("Home is unfocused");
+    //     };
+    //   }, [teacherIDState,selectedDate])
+    // );
+
+    useEffect(() => {
+
+      var localTime = moment(new Date()).format('HH:mm').toString()
+      var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
 
         if(teacherIDState !=  null)
-        _fetchSessionsAPI(selectedDate)
+        _fetchSessionsAPI(selectedDate,localTime,localDate)
 
         console.log(teacherIDState);
 
-  
-        return () => {
-          // Do something when the screen is unfocused
-          // Useful for cleanup functions
-          console.log("Home is unfocused");
-        };
-      }, [teacherIDState,selectedDate])
-    );
+    }, [teacherIDState,selectedDate])
 
 
-    const _fetchSessionsAPI = async (selectDate) => {
+    const _fetchSessionsAPI = async (selectDate,currentTime,currentDate) => {
       var teacherID = teacherIDState
       var date  = selectDate
 
-      console.log(date);
-      console.log(currentDate);
+      // console.log(date);
+      // console.log(currentDate);
 
       await fetch(myEndpointURL+'/getSession?date='+date+'&teacherID='+teacherID+'&clientCurrentTime='+currentTime+'&clientCurrentDate='+currentDate)
         .then((response) => response.json())
@@ -365,8 +406,10 @@ const TeacherHome = ({ navigation }) => {
             <View>
                 <TouchableOpacity style={{backgroundColor:'red',padding:15,elevation:5,borderRadius:25,alignSelf:'center',marginTop:15}}
                 onPress={async () => {
+                  var localTime = moment(new Date()).format('HH:mm').toString()
+                  var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
                   await _cancelSession(item.currentDate,item.uqID)
-                  await _fetchSessionsAPI(item.currentDate)
+                  await _fetchSessionsAPI(item.currentDate,localTime,localDate)
                   }} >
                   <Text style={{color:'white'}}>Cancel</Text>
                 </TouchableOpacity>
@@ -375,8 +418,10 @@ const TeacherHome = ({ navigation }) => {
             <View>
                 <TouchableOpacity style={{backgroundColor:'green',padding:15,elevation:5,borderRadius:25,alignSelf:'center',marginTop:15}}
                 onPress={async () => {
+                  var localTime = moment(new Date()).format('HH:mm').toString()
+                  var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
                    await _addStudentTestAPI(item.uqID)
-                  await _fetchSessionsAPI(item.currentDate)
+                  await _fetchSessionsAPI(item.currentDate,localTime,localDate)
                   }} >
                       <Text style={{color:'white'}}>Test Add Students</Text>
                 </TouchableOpacity>
@@ -412,13 +457,16 @@ const TeacherHome = ({ navigation }) => {
             <>
                 <Text style={{alignSelf:'center'}}>Select {selectedDate}</Text>
                 <Text style={{alignSelf:'center'}}>TeacherID: {teacherIDState}</Text>
+                <Text style={{alignSelf:'center'}}>Local time:  {localTime}</Text>
                 <Calendar 
                 style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}}
                 onDayPress={async day => {
-                  var selectDate = day.year+'-'+day.month+'-'+day.day
+                  var localTime = moment(new Date()).format('HH:mm').toString()
+                  var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+                  var selectDate = day.dateString
                   console.log(selectDate);
                   setSelectedDate(selectDate)
-                  await _fetchSessionsAPI(selectDate)
+                  await _fetchSessionsAPI(selectDate,localTime,localDate)
                   }}
                   
                 />

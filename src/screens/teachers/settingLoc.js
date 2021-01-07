@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import { Button, View,Text,StyleSheet,FlatList,StatusBar,TouchableOpacity,Image,PermissionsAndroid } from 'react-native'
+import { Button, View,Text,StyleSheet,FlatList,StatusBar,TouchableOpacity,Image,PermissionsAndroid,ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import wifi from 'react-native-android-wifi';
 import MultiSelect from 'react-native-multiple-select';
@@ -23,15 +23,18 @@ const SettingLoc = ({navigation,route}) => {
     // },[selectedItems])
 
     useEffect(() => {
+      let isMounted = true;
+
+      if(isMounted){
         setClassData(route.params)
-        // console.log(route.params);
-        askForUserPermissions();
         getWifiList()
-        
+      }
         // const interval =  setInterval(() => {
         //   getWifiList()
         // }, 60000);
         // return () => clearInterval(interval);
+
+        return () => {isMounted = false }
 
         
          
@@ -60,9 +63,10 @@ const SettingLoc = ({navigation,route}) => {
 
 
 
-    const getWifiList = () => {
+    const getWifiList = async () => {
+      await askForUserPermissions();
 
-      wifi.reScanAndLoadWifiList(
+      await wifi.reScanAndLoadWifiList(
         wifis =>{
           var wifiArray = JSON.parse(wifis);
             var keycap = 'capabilities'
@@ -252,8 +256,11 @@ const SettingLoc = ({navigation,route}) => {
         <View style={{flexDirection:'row'}}>
             <CheckBox value={isAutoSelected} onValueChange={setAutoSelection} />
             <Text>Auto select</Text>
-          </View> 
-        <TouchableOpacity onPress={async () => {
+        </View> 
+        <View style={{marginBottom:50}}>
+        {
+          wifiList.length != 0 ? 
+          <TouchableOpacity onPress={async () => {
                     if(wifiList.length != 0){
                     await _addSessionAPI()
                     navigation.navigate('TeacherHome')
@@ -261,6 +268,12 @@ const SettingLoc = ({navigation,route}) => {
           }} style={{backgroundColor:'#9E76B4',padding:10,elevation:7,borderRadius:20}}>
           <Text style={{fontSize:20,color:'white'}}>Create Session</Text>
         </TouchableOpacity>
+        :
+        <ActivityIndicator size="large" color='red' animating={true} />
+        }
+        </View>
+        
+        
       </View>
         
       

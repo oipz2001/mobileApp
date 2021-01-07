@@ -4,64 +4,93 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 
 
+const URL = require('../../config/endpointConfig')
+
+const myEndpointURL =  URL.myEndpointStudent
 
 
 
 const SessionReport = ({route}) => {
-    const DATA = [
-        {
-          id: "0",
-          title: "1/9/63",
-        },
-        {
-          id: "1",
-          title: "7/9/63",
-        },
-        {
-          id: "2",
-          title: "14/9/63",
-        },
-        {
-            id: "3",
-            title: "21/9/63",
-        },
-        {
-            id: "4",
-            title: "25/9/63",
-        },
-        {
-            id: "5",
-            title: "1/10/63",
-        },
-      ];
+    
+      const [reportData,setReportData] = useState([])
+
+      useEffect(() => {
+        console.log(route.params);
+
+        const classReportAPI = async (uqID,teacherID,studentID) => {
+          await fetch(myEndpointURL+'/classReport', {
+            method: 'POST',
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              uqID: uqID,
+              teacherID:teacherID,
+              studentID:studentID
+    
+            })
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                
+                console.log(data);
+                setReportData(data)
+            })
+            .catch((error) => {
+            console.error(error);
+            });
+        }
+        
+
+        
+        classReportAPI(route.params.uqID,route.params.teacherID,route.params.studentID)
+
+        
+      },[])
+
+
+     
 
 
     
-      const Item = ({ item }) => (
+      const Item = ({ item }) => {
+        
+        return(
+        
         <View style={styles.item}>
-            <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                <Text style={styles.title}>{item.title}</Text>
-                <Image source={require('../../assets/vectors/check.png')} style={{width:25,height:25}} />
+           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                <Text style={styles.title}>{item.date}</Text>
+                {
+                  item.isChecked ?
+                  <View style={{flexDirection:'row'}}>
+                  <Image source={require('../../assets/vectors/check.png')} style={{width:25,height:25}} />
+                  <Text>{item.timestamp}</Text>
+                  </View>
+                  :
+                  <Image source={require('../../assets/vectors/close.png')} style={{width:25,height:25}} />
+                }
+                
            </View>
+          
         </View>
-      );
+        
+      )};
 
       const renderItem = ({ item }) => (
         <Item item={item} />
       );
 
-      useEffect(() => {
-        console.log(route.params.sessionID + ' ' +route.params.sessionTitle + '(Report)');
-    })
+      
       
 
     return(
         <>
                 <SafeAreaView style={{flex:1}}>
                 <View style={{marginTop:30,padding:15}}>
-    <Text style={{fontSize:25,alignSelf:'center'}}>{route.params.sessionID} {route.params.sessionTitle}</Text>
+            <Text style={{fontSize:25,alignSelf:'center'}}>{route.params.className} ({route.params.classID})</Text>
                 <FlatList
-                    data={DATA}
+                    data={reportData}
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
                 />

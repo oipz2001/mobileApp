@@ -53,7 +53,7 @@ const Login = ({navigation}) => {
     AsyncStorage.setItem('uniqueIDTeacher','600610749')
     AsyncStorage.setItem('NameTeacher','Parinya')
 
-    AsyncStorage.setItem('uniqueIDStudent','600610777')
+    AsyncStorage.setItem('uniqueIDStudent','600610748')
     AsyncStorage.setItem('NameStudent','Parinyakorn')
 
     retrieveUserID()

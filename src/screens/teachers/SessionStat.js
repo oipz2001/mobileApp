@@ -84,7 +84,7 @@ const TeacherSessionStat = ({route}) => {
             myStatChartData[0].population = data.present
             myStatChartData[1].population = data.absent
 
-            setChartData(myStatChartData)
+            setChartData(myStatbChartData)
 
         })
         .catch((error) => {

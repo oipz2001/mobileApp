@@ -32,8 +32,8 @@ const moment = require('moment')
 const StudentHome = ({navigation}) => {
 
   const [selectedDate,setSelectedDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
-  const [currentDate,setcurrentDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
-    const [currentTime,setcurrentTime] = useState(moment(new Date()).format('HH:mm').toString())
+  // const [currentDate,setcurrentDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
+  //   const [currentTime,setcurrentTime] = useState(moment(new Date()).format('HH:mm').toString())
     const [wifiList,setWifiList] = useState([])
     const [sessionsData,setSessionsData] = useState(null)
     const [selectedClassData,setSelectedClassData] = useState({uqID:null,teacherID:null})
@@ -41,6 +41,7 @@ const StudentHome = ({navigation}) => {
 
     const [locMatchResult,setLocMatchResult] = useState(false)
 
+    const [localTime,setLocalTime] = useState(moment(new Date()).format('HH:mm').toString())
 
     const [studentIDState,setStudentIDState] = useState(null)
 
@@ -50,6 +51,10 @@ const StudentHome = ({navigation}) => {
       setStudentIDState(studentID)
 
     }
+
+    useEffect(() => {
+      _retrieveUserData()
+    },[])
 
     // useEffect(() => {
     //   const interval =  setInterval(async () => {
@@ -61,6 +66,27 @@ const StudentHome = ({navigation}) => {
     //     }, 10000);
     //     return () => clearInterval(interval);
     // },[wifiListStr])
+
+    useEffect(() =>{
+      const interval =  setInterval(async () => {
+        setLocalTime(moment(new Date()).format('HH:mm').toString())
+            
+      }, 1000);
+
+      
+
+      const funcFetchSession = async () => {
+      var localTime = moment(new Date()).format('HH:mm').toString()
+       var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+        await _fetchSessionsAPI(selectedDate,localTime,localDate)
+      };
+
+      if(studentIDState!=null)
+        funcFetchSession()
+        
+  
+      return () => clearInterval(interval);
+    },[localTime])
 
     
     
@@ -92,7 +118,7 @@ const StudentHome = ({navigation}) => {
                   setLocMatchResult(true)
                   console.log("Location match");
                   console.log(checkInFetchData);
-                  await checkInAPI()
+                  await checkInOnLocAPI()
                 }
                 else if(data.matchResult == false){
                   setLocMatchResult(false)
@@ -113,27 +139,40 @@ const StudentHome = ({navigation}) => {
 
     
 
-      useFocusEffect(
-        React.useCallback(() => {
-          // Do something when the screen is focused
-          console.log("Student Home is focused");
-          // var currentDate =moment(new Date()).format('DD-MM-YYYY').toString()
-          _retrieveUserData()
+      // useFocusEffect(
+      //   React.useCallback(() => {
+      //     // Do something when the screen is focused
+      //     console.log("Student Home is focused");
+         
+      //     var localTime = moment(new Date()).format('HH:mm').toString()
+      //     var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
 
-          if(studentIDState !=  null)
-          _fetchSessionsAPI(selectedDate)
+      //     if(studentIDState !=  null)
+      //     _fetchSessionsAPI(selectedDate,localTime,localDate)
 
-          console.log(studentIDState);
+      //     console.log(studentIDState);
          
   
     
-          return () => {
-            // Do something when the screen is unfocused
-            // Useful for cleanup functions
-            console.log("Student Home is unfocused");
-          };
-        }, [studentIDState,selectedDate])
-      );
+      //     return () => {
+      //       // Do something when the screen is unfocused
+      //       // Useful for cleanup functions
+      //       console.log("Student Home is unfocused");
+      //     };
+      //   }, [studentIDState,selectedDate])
+      // );
+
+
+      useEffect(() =>{
+
+        var localTime = moment(new Date()).format('HH:mm').toString()
+        var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+
+        if(studentIDState !=  null)
+        _fetchSessionsAPI(selectedDate,localTime,localDate)
+
+        console.log(studentIDState);
+      }, [studentIDState,selectedDate])
 
 
       const getWifiList = async () => {
@@ -200,10 +239,11 @@ const StudentHome = ({navigation}) => {
   }
 
 
-      const _fetchSessionsAPI = async (selectDate) => {
+      const _fetchSessionsAPI = async (selectDate,currentTime,currentDate) => {
         var studentID = studentIDState
         var date  = selectDate
-  
+
+        
         await fetch(myEndpointURL+'/getClassroom?date='+date+'&studentID='+studentID+'&clientCurrentTime='+currentTime+'&clientCurrentDate='+currentDate)
           .then((response) => response.json())
           .then((data) => {
@@ -219,8 +259,8 @@ const StudentHome = ({navigation}) => {
       }
 
 
-      const checkInAPI = async () => {
-        await fetch(myEndpointURL+'/checkIn', {
+      const checkInOnLocAPI = async () => {
+        await fetch(myEndpointURL+'/checkInOnLoc', {
           method: 'POST',
           headers: {
               Accept: "application/json",
@@ -240,6 +280,8 @@ const StudentHome = ({navigation}) => {
           });
       }
 
+      
+
      
       
       
@@ -249,11 +291,14 @@ const StudentHome = ({navigation}) => {
         return(
           <View>
           <Text style={{alignSelf:'center'}}>StudentID: {studentIDState}</Text>
+          <Text style={{alignSelf:'center'}}>Local time: {localTime}</Text>
           <Calendar style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}} 
                     onDayPress={async day => {
-                      var selectDate = day.year+'-'+day.month+'-'+day.day
+                      var localTime = moment(new Date()).format('HH:mm').toString()
+                      var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+                      var selectDate = day.dateString
                       setSelectedDate(selectDate)
-                      await _fetchSessionsAPI(selectDate)
+                      await _fetchSessionsAPI(selectDate,localTime,localDate)
                     }}
           />
           <Text style={{alignSelf:'center'}}>Select: {selectedDate}</Text>
@@ -304,7 +349,11 @@ const StudentHome = ({navigation}) => {
                           
                     </View>
             </View>
+
             <View >
+              
+
+              {item.sessionStatus == 0 ? 
               <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-evenly',marginTop:15}}>
                   <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
                   <TouchableOpacity onPress={async () => {
@@ -323,10 +372,6 @@ const StudentHome = ({navigation}) => {
                       timestamp:timestamp
                     })
                     
-
-
-
-                    
                     await getWifiList()
 
                     // navigation.navigate('StudentFaceCheckIn',{sessionTitle:item.title,sessionID:item.id})
@@ -340,12 +385,30 @@ const StudentHome = ({navigation}) => {
                   </TouchableOpacity>
                   </View>
               </View>
-              <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20,alignSelf:'center',marginTop:15}}>
-                  <TouchableOpacity onPress={() => navigation.navigate('SessionReport',{sessionTitle:item.title,sessionID:item.id})} >
-                    <Text style={{color:'white'}}>Report</Text>
-                  </TouchableOpacity>
-              </View>
+              :
+              <View></View>
+              }
+
+             
+              
+              
+              {
+                (item.sessionStatus == -1 || item.sessionStatus == 0 ) ?
+                <View></View>
+                :
+                <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20,alignSelf:'center',marginTop:15}}>
+                <TouchableOpacity onPress={async () => {
+                  navigation.navigate('SessionReport',{className:item.name,classID:item.id,uqID:item.uqID,teacherID:item.teacherID,studentID:studentIDState})
+                  // await classReportAPI(item.uqID,item.teacherID,studentIDState)
+                  }} >
+                  <Text style={{color:'white'}}>Report</Text>
+                </TouchableOpacity>
+                </View>
+              }
+             
+              
             </View>
+            
           
         </View>
       );

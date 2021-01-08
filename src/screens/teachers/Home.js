@@ -103,38 +103,38 @@ const TeacherHome = ({ navigation }) => {
 
 
 
-    // useFocusEffect(
-    //   React.useCallback(() => {
-    //     // Do something when the screen is focused
-    //     console.log("Home is focused");
-    //    var localTime = moment(new Date()).format('HH:mm').toString()
-    //    var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
-
-    //     if(teacherIDState !=  null)
-    //     _fetchSessionsAPI(selectedDate,localTime,localDate)
-
-    //     console.log(teacherIDState);
-
-  
-    //     return () => {
-    //       // Do something when the screen is unfocused
-    //       // Useful for cleanup functions
-    //       console.log("Home is unfocused");
-    //     };
-    //   }, [teacherIDState,selectedDate])
-    // );
-
-    useEffect(() => {
-
-      var localTime = moment(new Date()).format('HH:mm').toString()
-      var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+    useFocusEffect(
+      React.useCallback(() => {
+        // Do something when the screen is focused
+        console.log("Home is focused");
+       var localTime = moment(new Date()).format('HH:mm').toString()
+       var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
 
         if(teacherIDState !=  null)
         _fetchSessionsAPI(selectedDate,localTime,localDate)
 
         console.log(teacherIDState);
 
-    }, [teacherIDState,selectedDate])
+  
+        return () => {
+          // Do something when the screen is unfocused
+          // Useful for cleanup functions
+          console.log("Home is unfocused");
+        };
+      }, [teacherIDState,selectedDate])
+    );
+
+    // useEffect(() => {
+
+    //   var localTime = moment(new Date()).format('HH:mm').toString()
+    //   var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+
+    //     if(teacherIDState !=  null)
+    //     _fetchSessionsAPI(selectedDate,localTime,localDate)
+
+    //     console.log(teacherIDState);
+
+    // }, [teacherIDState,selectedDate])
 
 
     const _fetchSessionsAPI = async (selectDate,currentTime,currentDate) => {
@@ -427,7 +427,7 @@ const TeacherHome = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
             :
-            <View></View>
+            <></>
             }
             
             

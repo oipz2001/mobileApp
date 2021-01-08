@@ -27,6 +27,12 @@ const TeacherSeatmap = ({route}) => {
     
     return(
         <SafeAreaView style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+             <Image
+                style={{width:200,height:200}}
+                source={{
+                uri: 'https://firebasestorage.googleapis.com/v0/b/studentchecking.appspot.com/o/600610748?alt=media&token=bbbc7209-23f9-45cf-926d-036b46239941',
+                }}
+            />
             <Modal
                 animationType="fade"
                 transparent={true}
@@ -62,15 +68,19 @@ const TeacherSeatmap = ({route}) => {
                 ))
             }
            
+
             
                 
             </View>
+
+           
             
            
         </SafeAreaView>
     )
 
 }
+
 
 
 export default TeacherSeatmap

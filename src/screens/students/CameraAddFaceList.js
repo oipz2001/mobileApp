@@ -6,6 +6,7 @@ import { RNCamera } from 'react-native-camera';
 import { Buffer } from 'buffer'
 import AsyncStorage from '@react-native-community/async-storage'
 import { myEndpointStudent } from '../../config/endpointConfig';
+import storage from '@react-native-firebase/storage';
 const key = '8b4bdfc570514b1d9e71628238368e3e'
 
 
@@ -78,6 +79,8 @@ class CameraAddFaceList extends PureComponent {
     if (this.camera) {
       const options = { quality: 0.5, base64: true };
       const data = await this.camera.takePictureAsync(options);
+      const reference = await storage().ref().child(this.state.studentIDState);
+      await reference.putFile(data.uri)
       var base64String = data.base64; 
       var bufferValue = Buffer.from(base64String,"base64");
       var faceListId = this.state.studentIDState

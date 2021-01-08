@@ -5,6 +5,7 @@ import Calendar from '../../components/CalendarPicker'
 import {useFocusEffect} from '@react-navigation/native';
 import wifi from 'react-native-android-wifi';
 import AsyncStorage from '@react-native-community/async-storage'
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const URL = require('../../config/endpointConfig')
 
@@ -139,40 +140,40 @@ const StudentHome = ({navigation}) => {
 
     
 
-      // useFocusEffect(
-      //   React.useCallback(() => {
-      //     // Do something when the screen is focused
-      //     console.log("Student Home is focused");
+      useFocusEffect(
+        React.useCallback(() => {
+          // Do something when the screen is focused
+          console.log("Student Home is focused");
          
-      //     var localTime = moment(new Date()).format('HH:mm').toString()
-      //     var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+          var localTime = moment(new Date()).format('HH:mm').toString()
+          var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
 
-      //     if(studentIDState !=  null)
-      //     _fetchSessionsAPI(selectedDate,localTime,localDate)
+          if(studentIDState !=  null)
+          _fetchSessionsAPI(selectedDate,localTime,localDate)
 
-      //     console.log(studentIDState);
+          console.log(studentIDState);
          
   
     
-      //     return () => {
-      //       // Do something when the screen is unfocused
-      //       // Useful for cleanup functions
-      //       console.log("Student Home is unfocused");
-      //     };
-      //   }, [studentIDState,selectedDate])
-      // );
+          return () => {
+            // Do something when the screen is unfocused
+            // Useful for cleanup functions
+            console.log("Student Home is unfocused");
+          };
+        }, [studentIDState,selectedDate])
+      );
 
 
-      useEffect(() =>{
+      // useEffect(() =>{
 
-        var localTime = moment(new Date()).format('HH:mm').toString()
-        var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+      //   var localTime = moment(new Date()).format('HH:mm').toString()
+      //   var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
 
-        if(studentIDState !=  null)
-        _fetchSessionsAPI(selectedDate,localTime,localDate)
+      //   if(studentIDState !=  null)
+      //   _fetchSessionsAPI(selectedDate,localTime,localDate)
 
-        console.log(studentIDState);
-      }, [studentIDState,selectedDate])
+      //   console.log(studentIDState);
+      // }, [studentIDState,selectedDate])
 
 
       const getWifiList = async () => {
@@ -260,7 +261,7 @@ const StudentHome = ({navigation}) => {
 
 
       const checkInOnLocAPI = async () => {
-        await fetch(myEndpointURL+'/checkInOnLoc', {
+        await fetch(myEndpointURL+'/checkIn', {
           method: 'POST',
           headers: {
               Accept: "application/json",
@@ -268,6 +269,35 @@ const StudentHome = ({navigation}) => {
           },
           body: JSON.stringify({
             checkInFetchData:checkInFetchData
+          })
+          })
+          .then((response) => response.json())
+          .then((data) => {
+              
+              console.log(data);
+          })
+          .catch((error) => {
+          console.error(error);
+          });
+      }
+
+
+      const checkInOnlineAPI = async (studentID,teacherID,uqID,checkDate,timestamp) => {
+        const myCheckInFetchData = {
+          studentID:studentID,
+          teacherID:teacherID,
+          uqID:uqID,
+          checkDate:checkDate,
+          timestamp:timestamp
+        }
+        await fetch(myEndpointURL+'/checkIn', {
+          method: 'POST',
+          headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            checkInFetchData:myCheckInFetchData
           })
           })
           .then((response) => response.json())
@@ -329,24 +359,35 @@ const StudentHome = ({navigation}) => {
                         <Text style={{fontSize:12}}>Teacher: {item.teacherID} </Text>
                         <Text style={{fontSize:12}}>Description: {item.desc} </Text>
                     </View>
-                    <View style={{justifyContent:'space-between'}}>
-                        
-                          {
-                        item.sessionStatus == -1 ? 
-                        <Text style={{color:'orange'}} >Waiting</Text>
-                        :
-                        (item.sessionStatus == 0 ? 
-                        <Text style={{color:'green'}}>Opening</Text> 
-                        : 
-                        (item.sessionStatus == 1 ? 
-                        <Text style={{color:'red'}}>Closed</Text> 
-                        :
-                        <Text style={{color:'red'}}>In progress</Text> 
-                        )
-                        ) 
+                    <View style={{flexDirection:'column'}}>
+                        <View >
+                            
+                              {
+                            item.sessionStatus == -1 ? 
+                            <Text style={{color:'orange'}} >Waiting</Text>
+                            :
+                            (item.sessionStatus == 0 ? 
+                            <Text style={{color:'green'}}>Opening</Text> 
+                            : 
+                            (item.sessionStatus == 1 ? 
+                            <Text style={{color:'red'}}>Closed</Text> 
+                            :
+                            <Text style={{color:'red'}}>In progress</Text> 
+                            )
+                            ) 
 
-                      }
-                          
+                          }
+                              
+                        </View>
+                        <View style={{marginTop:30}}>
+                          {
+                            item.isStudentChecked ? 
+                            <Icon name="check-circle" size={60} color='green'/>
+                            :
+                            <Icon name="times-circle" size={60} color='red'/>
+                          }
+                            
+                        </View>     
                     </View>
             </View>
 
@@ -355,6 +396,9 @@ const StudentHome = ({navigation}) => {
 
               {item.sessionStatus == 0 ? 
               <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-evenly',marginTop:15}}>
+                {
+                  item.isStudentChecked == false ?
+                
                   <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
                   <TouchableOpacity onPress={async () => {
                     
@@ -371,42 +415,63 @@ const StudentHome = ({navigation}) => {
                       checkDate:checkDate,
                       timestamp:timestamp
                     })
+
                     
-                    await getWifiList()
+
+                    if(item.isLocationSet){
+                      await getWifiList()
+                    
+                    }
+                    else{
+                      await checkInOnlineAPI(studentID,teacherID,uqID,checkDate,timestamp)
+                    }
+
+                    var localTime = moment(new Date()).format('HH:mm').toString()
+                    var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+                    await _fetchSessionsAPI(selectedDate,localTime,localDate)
+                    
+                    
+                    
 
                     // navigation.navigate('StudentFaceCheckIn',{sessionTitle:item.title,sessionID:item.id})
                     }} >
                       <Text style={{color:'white'}}>Check-in</Text>
                   </TouchableOpacity>
                   </View>
+                  :
+                  <></>
+                  }
+                  {
+                    (item.isStudentChecked && item.isSeatmapSet) ? 
                   <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                  <TouchableOpacity onPress={() => navigation.navigate('Seatmap',{sessionTitle:item.title,sessionID:item.id})} >
-                      <Text style={{color:'white'}}>Seat map</Text>
-                  </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('Seatmap',{sessionTitle:item.title,sessionID:item.id})} >
+                        <Text style={{color:'white'}}>Create Seat Map</Text>
+                    </TouchableOpacity>
                   </View>
+                  :
+                  <></>
+                  }
+                  
               </View>
               :
-              <View></View>
+              <></>
               }
 
              
               
               
               {
-                (item.sessionStatus == -1 || item.sessionStatus == 0 ) ?
-                <View></View>
+                (item.sessionStatus == -1 || (item.sessionStatus == 0 && item.isStudentChecked == false)  ) ?
+                <></>
                 :
                 <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20,alignSelf:'center',marginTop:15}}>
-                <TouchableOpacity onPress={async () => {
-                  navigation.navigate('SessionReport',{className:item.name,classID:item.id,uqID:item.uqID,teacherID:item.teacherID,studentID:studentIDState})
-                  // await classReportAPI(item.uqID,item.teacherID,studentIDState)
-                  }} >
-                  <Text style={{color:'white'}}>Report</Text>
-                </TouchableOpacity>
+                  <TouchableOpacity onPress={async () => {
+                    navigation.navigate('SessionReport',{className:item.name,classID:item.id,uqID:item.uqID,teacherID:item.teacherID,studentID:studentIDState})
+                    }} >
+                      <Text style={{color:'white'}}>Report</Text>
+                  </TouchableOpacity>
                 </View>
               }
-             
-              
             </View>
             
           

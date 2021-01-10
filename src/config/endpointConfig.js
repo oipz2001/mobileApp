@@ -1,5 +1,5 @@
 
-const hostIP = '192.168.0.104'
+const hostIP = '10.80.127.161'
 
 const localEndpointTeacher = 'http://'+hostIP+':5000/studentchecking/us-central1/checkapp/mobileApp/teachers'
 const remoteEndpointTeacher = 'https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/teachers'

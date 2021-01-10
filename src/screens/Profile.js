@@ -3,7 +3,7 @@ import { Button, View,Text,StyleSheet,StatusBar,FlatList,TouchableOpacity } from
 import { SafeAreaView } from 'react-native-safe-area-context';
 import AsyncStorage from '@react-native-community/async-storage'
 import {useFocusEffect} from '@react-navigation/native';
-
+import { WebView } from 'react-native-webview';
 const MyProfile = () => {
     const [user, setuser] = useState('')
     const [mail, setmail] = useState([])
@@ -53,13 +53,14 @@ const MyProfile = () => {
         }, [])
       );
     return(
-        <SafeAreaView>
-            <Text>My profile</Text>
-            <Text > Name: {user} </Text> 
-            <Text> Mail: {mail} </Text> 
-            <Text> ID: {userId} </Text> 
-            <Text> JobTitle: {jobtitle} </Text>
-        </SafeAreaView>
+        // <SafeAreaView>
+        //     <Text>My profile</Text>
+        //     <Text > Name: {user} </Text> 
+        //     <Text> Mail: {mail} </Text> 
+        //     <Text> ID: {userId} </Text> 
+        //     <Text> JobTitle: {jobtitle} </Text>
+        // </SafeAreaView>
+        <WebView source={{ uri: 'https://reactnative.dev/' }} />
     )
 
 }

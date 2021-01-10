@@ -16,7 +16,8 @@ import TeacherHome from './teachers/Home';
 
 const URL = require('../config/endpointConfig')
 
-const myEndpointURL =  URL.myEndpointStudent
+const myEndpointURLStudent =  URL.myEndpointStudent
+const myEndpointURLTeacher =  URL.myEndpointTeacher
 
 const azureAuth = new AzureAuth({
   clientId: '234c43b9-e653-4646-97c6-1903cfac1c03'
@@ -38,20 +39,31 @@ const Login = ({navigation}) => {
   const [jobtitle, setjobtitle] = useState('')
   const [isInfoShow,setInfoShow] = useState(false)
   const [studentUserID,setStudentUserID] = useState(null)
+
   const [teacherUserID,setTeacherUserID] = useState(null)
+  const [teacherUserName,setTeacherUserName] = useState(null)
+  const [teacherUserMail,setTeacherUserMail] = useState(null)
 
 
   useEffect(() => {
 
     const retrieveUserID = async () => {
       const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+
       const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
+      const  teacherName = await AsyncStorage.getItem('NameTeacher');
+      const  teacherMail = await AsyncStorage.getItem('MailTeacher');
+
       setStudentUserID(studentID)
+
       setTeacherUserID(teacherID)
+      setTeacherUserName(teacherName)
+      setTeacherUserMail(teacherMail)
     }
 
     AsyncStorage.setItem('uniqueIDTeacher','600610749')
-    AsyncStorage.setItem('NameTeacher','Parinya')
+    AsyncStorage.setItem('NameTeacher','Parinya Seetawan')
+    AsyncStorage.setItem('MailTeacher','parinya_seetawan@cmu.ac.th')
 
     AsyncStorage.setItem('uniqueIDStudent','600610748')
     AsyncStorage.setItem('NameStudent','Parinyakorn')
@@ -59,6 +71,63 @@ const Login = ({navigation}) => {
     retrieveUserID()
 
   },[])
+
+
+  const checkIfTeacherExist = async (teacherID) => {
+    await fetch(myEndpointURLTeacher+'/checkIfTeacherExist', {
+      method: 'POST',
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        teacherID:teacherID
+
+      })
+      })
+      .then((response) => response.json())
+      .then(async (data) => {
+          
+          if(data.response == true){
+              navigation.navigate('TeacherHome')
+          }else{
+            await addNewTeacher(teacherUserID,teacherUserName,teacherUserMail)
+          }
+      })
+      .catch((error) => {
+      console.error(error);
+      });
+  }
+
+
+
+  const addNewTeacher = async (teacherID,teacherName,teacherMail) => {
+    await fetch(myEndpointURLTeacher+'/addNewTeacher', {
+      method: 'POST',
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        teacherID:teacherID,
+        teacherName:teacherName,
+        teacherMail:teacherMail
+
+      })
+      })
+      .then((response) => response.json())
+      .then((data) => {
+          
+          console.log(data);
+          navigation.navigate('TeacherHome')
+      })
+      .catch((error) => {
+      console.error(error);
+      });
+  }
+
+  
+  
 
  
 
@@ -68,7 +137,7 @@ const Login = ({navigation}) => {
   
   const _isStudentFaceAdded = async (studentID) => {
 
-    await fetch(myEndpointURL+'/isFaceListAdded?studentID='+studentID)
+    await fetch(myEndpointURLStudent+'/isFaceListAdded?studentID='+studentID)
           .then((response) => response.json())
           .then((data) => {
               
@@ -186,7 +255,9 @@ const Login = ({navigation}) => {
     </TouchableOpacity> 
     <View >
       <View style = {{marginTop: 30}} >
-        <Button title = "Go to Teacher Home" onPress = {() => navigation.navigate('TeacherHome')}/> 
+        <Button title = "Go to Teacher Home" onPress = {async () => {
+          await checkIfTeacherExist(teacherUserID)
+      }}/> 
       </View> 
       <Text>{teacherUserID}</Text>
       <View style = {{marginTop: 30 }} >

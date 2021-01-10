@@ -82,15 +82,15 @@ const SettingLoc = ({navigation,route}) => {
         var wifiArray_modified = wifiArray
           for( var i=0;i<wifiArray.length;i++){
             if(wifiArray[i].level > -45){
-              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Great)' + wifiArray[i].level + ' dBm')
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Great)' + wifiArray[i].level + ' dBm ' + wifiArray[i].BSSID)
             }
             else if(wifiArray[i].level > -60){
-              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Strong)'+ wifiArray[i].level+ ' dBm')
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Strong)'+ wifiArray[i].level+ ' dBm '  + wifiArray[i].BSSID)
             }
             else if(wifiArray[i].level > -70){
-              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Good)'+ wifiArray[i].level+ ' dBm')
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Good)'+ wifiArray[i].level+ ' dBm '+ wifiArray[i].BSSID)
             }else{
-              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Weak)'+ wifiArray[i].level+ ' dBm')
+              wifiArray[i].SSID = wifiArray[i].SSID.concat(' (Weak)'+ wifiArray[i].level+ ' dBm '+ wifiArray[i].BSSID)
             }
             
             wifiArray_modified[i] = { BSSID_dotConcat: wifiArray[i].BSSID.concat('.'+ i.toString())  ,  SSID:wifiArray[i].SSID  , level:wifiArray[i].level}

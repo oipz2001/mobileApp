@@ -21,6 +21,8 @@ import CameraAddFaceList from './src/screens/students/CameraAddFaceList'
 
 import ActivityIndic from './testActivityIndicator'
 
+import Test from './graphTest'
+
 const App = () => {
   
     
@@ -44,6 +46,7 @@ const App = () => {
     // <TestCamera/>
     // <TestAPI/>
     // <ActivityIndic/>
+    // <Test/>
     
     );
     

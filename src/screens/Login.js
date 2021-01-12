@@ -257,6 +257,7 @@ const Login = ({navigation}) => {
       <View style = {{marginTop: 30}} >
         <Button title = "Go to Teacher Home" onPress = {async () => {
           await checkIfTeacherExist(teacherUserID)
+          // navigation.navigate('TeacherHome')
       }}/> 
       </View> 
       <Text>{teacherUserID}</Text>

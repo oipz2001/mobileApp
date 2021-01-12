@@ -192,6 +192,10 @@ class ExampleApp extends PureComponent {
     if (this.camera) {
       const options = { quality: 0.5, base64: true };
       const data = await this.camera.takePictureAsync(options);
+       // const reference = await storage().ref().child(this.state.matchFaceName+'|match');
+      // await reference.putFile(data.uri)
+
+      
       var base64String = await data.base64; 
       var bufferValue = await Buffer.from(base64String,"base64");
       // console.log(bufferValue);

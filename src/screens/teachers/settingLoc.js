@@ -169,13 +169,12 @@ const SettingLoc = ({navigation,route}) => {
     const _addSessionAPI = async () => {
       var myClassDataJSON = classData
       myClassDataJSON.isAutoSelectMACSet = isAutoSelected
-      var topSixWifiList = []
+      var myWifiList = []
       if(isAutoSelected == true){
         for(var i=0;i<wifiList.length;i++){
-          if(i==6) break
-          topSixWifiList.push(wifiList[i].BSSID_dotConcat.split('.')[0])
+          myWifiList.push(wifiList[i].BSSID_dotConcat.split('.')[0])
         }
-        myClassDataJSON.macAddrList = topSixWifiList
+        myClassDataJSON.macAddrList = myWifiList
       }
       else{
         myClassDataJSON.macAddrList = selectedItems
@@ -185,9 +184,7 @@ const SettingLoc = ({navigation,route}) => {
 
       
       console.log(JSON.stringify( myClassDataJSON));
-      
-// https://us-central1-studentchecking.cloudfunctions.net/checkapp/mobileApp/addSession
-// https://us-central1-studentchecking.cloudfunctions.net/checkapp
+
       await fetch(myEndpointURL+'/addSession', {
       method: 'POST',
       headers: {

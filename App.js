@@ -22,6 +22,7 @@ import CameraAddFaceList from './src/screens/students/CameraAddFaceList'
 import ActivityIndic from './testActivityIndicator'
 
 import Test from './graphTest'
+import WifiSurvey from './wifiSurvey'
 
 const App = () => {
   
@@ -47,6 +48,7 @@ const App = () => {
     // <TestAPI/>
     // <ActivityIndic/>
     // <Test/>
+    // <WifiSurvey/>
     
     );
     

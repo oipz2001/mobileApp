@@ -234,7 +234,7 @@ const TeacherHome = ({ navigation }) => {
         async wifis =>{
           var tempWifis = JSON.parse(wifis)
           var wifisArr = []
-          for(var i=0;i<6;i++){
+          for(var i=0;i<tempWifis.length;i++){
             wifisArr.push(tempWifis[i].BSSID)
           }
           
@@ -269,7 +269,7 @@ const TeacherHome = ({ navigation }) => {
             async wifis =>{
               var tempWifis = JSON.parse(wifis)
               var wifisArr = []
-              for(var i=0;i<6;i++){
+              for(var i=0;i<tempWifis.length;i++){
                 wifisArr.push(tempWifis[i].BSSID)
               }
               // setWifiList(wifisArr);

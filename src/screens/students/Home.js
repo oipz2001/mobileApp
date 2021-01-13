@@ -30,7 +30,7 @@ const moment = require('moment')
 
 
 
-const StudentHome = ({navigation}) => {
+const StudentHome = ({navigation,route}) => {
 
   const [selectedDate,setSelectedDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
   // const [currentDate,setcurrentDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
@@ -74,6 +74,9 @@ const StudentHome = ({navigation}) => {
             
       }, 1000);
 
+
+    
+
       
 
       const funcFetchSession = async () => {
@@ -90,53 +93,86 @@ const StudentHome = ({navigation}) => {
     },[localTime])
 
     
-    
+    const matchWifiAPI = async (wifis,uqID,teacherID,studentID,checkDate,timestamp) => {
+      await fetch(myEndpointURL+'/matchMAC', {
+        method: 'POST',
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            studentWifiList:wifis,
+            classData:{uqID:uqID,teacherID:teacherID}
+        })
+        })
+        .then((response) => response.json())
+        .then(async (data) => {
+            
+            console.log(data);
+           
+
+            if(data.matchResult == true){
+              setLocMatchResult(true)
+              console.log("Location match");
+              await checkInOnLocAPI(studentID,teacherID,uqID,checkDate,timestamp)
+              
+            }
+            else if(data.matchResult == false){
+              setLocMatchResult(false)
+              console.log("Location not match");
+
+            }
+        })
+        .catch((error) => {
+        console.error(error);
+        });
+    }
    
 
    
 
-    useEffect(() => {
+    // useEffect(() => {
 
-        const matchWifiAPI = async () => {
-          await fetch(myEndpointURL+'/matchMAC', {
-            method: 'POST',
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                studentWifiList:wifiList,
-                classData:selectedClassData
-            })
-            })
-            .then((response) => response.json())
-            .then(async (data) => {
+    //     const matchWifiAPI = async () => {
+    //       await fetch(myEndpointURL+'/matchMAC', {
+    //         method: 'POST',
+    //         headers: {
+    //             Accept: "application/json",
+    //             "Content-Type": "application/json"
+    //         },
+    //         body: JSON.stringify({
+    //             studentWifiList:wifiList,
+    //             classData:selectedClassData
+    //         })
+    //         })
+    //         .then((response) => response.json())
+    //         .then(async (data) => {
                 
-                console.log(data);
+    //             console.log(data);
                
 
-                if(data.matchResult == true){
-                  setLocMatchResult(true)
-                  console.log("Location match");
-                  console.log(checkInFetchData);
-                  await checkInOnLocAPI()
-                }
-                else if(data.matchResult == false){
-                  setLocMatchResult(false)
-                  console.log("Location not match");
+    //             if(data.matchResult == true){
+    //               setLocMatchResult(true)
+    //               console.log("Location match");
+    //               console.log(checkInFetchData);
+    //               await checkInOnLocAPI()
+    //             }
+    //             else if(data.matchResult == false){
+    //               setLocMatchResult(false)
+    //               console.log("Location not match");
 
-                }
-            })
-            .catch((error) => {
-            console.error(error);
-            });
-        }
+    //             }
+    //         })
+    //         .catch((error) => {
+    //         console.error(error);
+    //         });
+    //     }
 
-      if(wifiList.length!=0){
-        matchWifiAPI()
-      }
+    //   if(wifiList.length!=0){
+    //     matchWifiAPI()
+    //   }
 
-    },[wifiList])
+    // },[wifiList])
 
     
 
@@ -144,7 +180,7 @@ const StudentHome = ({navigation}) => {
         React.useCallback(() => {
           // Do something when the screen is focused
           console.log("Student Home is focused");
-         
+         console.log(selectedClassData);
           var localTime = moment(new Date()).format('HH:mm').toString()
           var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
 
@@ -176,29 +212,31 @@ const StudentHome = ({navigation}) => {
       // }, [studentIDState,selectedDate])
 
 
-      const getWifiList = async () => {
+      const getWifiList = async (studentID,teacherID,uqID,checkDate,timestamp) => {
 
         await wifi.reScanAndLoadWifiList(
-          wifis =>{
+          async wifis =>{
             var tempWifis = JSON.parse(wifis)
             var wifisArr = []
             tempWifis.forEach(wifisData => {
               wifisArr.push(wifisData.BSSID)
             })
             // console.log(wifisArr);
-            setWifiList(wifisArr);
+            // setWifiList(wifisArr);
+            await matchWifiAPI(wifisArr,uqID,teacherID,studentID,checkDate,timestamp)
           },
           error =>
             console.error(error) ||
             wifi.loadWifiList(
-              wifis =>{
+              async wifis =>{
                 var tempWifis = JSON.parse(wifis)
                 var wifisArr = []
                 tempWifis.forEach(wifisData => {
                   wifisArr.push(wifisData.BSSID)
                 })
                 // console.log(wifisArr);
-                setWifiList(wifisArr);
+                // setWifiList(wifisArr);
+                await matchWifiAPI(wifisArr,uqID,teacherID,studentID,checkDate,timestamp)
               },
               error => console.error(error)
             )
@@ -208,18 +246,18 @@ const StudentHome = ({navigation}) => {
        
     }
 
-    const showWifiList = async () => {
-      await askForUserPermissions();
-      await getWifiList()
+//     const showWifiList = async () => {
+//       await askForUserPermissions();
+//       await getWifiList()
 
-      wifiList.forEach(wifiData => {
-        console.log(wifiData.BSSID_dotConcat.split('.')[0]+ '  level: '+wifiData.level);
+//       wifiList.forEach(wifiData => {
+//         console.log(wifiData.BSSID_dotConcat.split('.')[0]+ '  level: '+wifiData.level);
        
-      })
-      console.log("-------------------------------------------------------------------------");
-      console.log("-------------------------------------------------------------------------");
+//       })
+//       console.log("-------------------------------------------------------------------------");
+//       console.log("-------------------------------------------------------------------------");
       
-}
+// }
   async function askForUserPermissions() {
     try {
       const granted = await PermissionsAndroid.request(
@@ -248,7 +286,7 @@ const StudentHome = ({navigation}) => {
         await fetch(myEndpointURL+'/getClassroom?date='+date+'&studentID='+studentID+'&clientCurrentTime='+currentTime+'&clientCurrentDate='+currentDate)
           .then((response) => response.json())
           .then((data) => {
-              console.log(data);
+              // console.log(data);
               setSessionsData(data)
           })
           .catch((error) => {
@@ -260,7 +298,14 @@ const StudentHome = ({navigation}) => {
       }
 
 
-      const checkInOnLocAPI = async () => {
+      const checkInOnLocAPI = async (studentID,teacherID,uqID,checkDate,timestamp) => {
+        const myCheckInFetchData = {
+          studentID:studentID,
+          teacherID:teacherID,
+          uqID:uqID,
+          checkDate:checkDate,
+          timestamp:timestamp
+        }
         await fetch(myEndpointURL+'/checkIn', {
           method: 'POST',
           headers: {
@@ -268,13 +313,16 @@ const StudentHome = ({navigation}) => {
               "Content-Type": "application/json"
           },
           body: JSON.stringify({
-            checkInFetchData:checkInFetchData
+            checkInFetchData:myCheckInFetchData
           })
           })
           .then((response) => response.json())
-          .then((data) => {
+          .then(async (data) => {
               
               console.log(data);
+              var localTime = moment(new Date()).format('HH:mm').toString()
+              var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+              await _fetchSessionsAPI(selectedDate,localTime,localDate)
           })
           .catch((error) => {
           console.error(error);
@@ -301,9 +349,12 @@ const StudentHome = ({navigation}) => {
           })
           })
           .then((response) => response.json())
-          .then((data) => {
+          .then(async (data) => {
               
               console.log(data);
+              var localTime = moment(new Date()).format('HH:mm').toString()
+              var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+              await _fetchSessionsAPI(selectedDate,localTime,localDate)
           })
           .catch((error) => {
           console.error(error);
@@ -408,27 +459,34 @@ const StudentHome = ({navigation}) => {
                     const checkDate = moment(new Date()).format('YYYY-MM-DD').toString()
                     const timestamp = moment(new Date()).format('HH:mm').toString()
                     setSelectedClassData({uqID:uqID,teacherID:teacherID})
-                    setCheckInFetchData({
-                      studentID:studentID,
-                      teacherID:teacherID,
-                      uqID:uqID,
-                      checkDate:checkDate,
-                      timestamp:timestamp
-                    })
+                    // setCheckInFetchData({
+                    //   studentID:studentID,
+                    //   teacherID:teacherID,
+                    //   uqID:uqID,
+                    //   checkDate:checkDate,
+                    //   timestamp:timestamp
+                    // })
 
                     
 
                     if(item.isLocationSet){
-                      await getWifiList()
+                      // await getWifiList(uqID,teacherID)
+                      await getWifiList(studentID,teacherID,uqID,checkDate,timestamp)
                     
                     }
                     else{
-                      await checkInOnlineAPI(studentID,teacherID,uqID,checkDate,timestamp)
+                      // await checkInOnlineAPI(studentID,teacherID,uqID,checkDate,timestamp)
+                      navigation.navigate('StudentFaceCheckIn',
+                      {
+                          studentID:studentID,
+                          teacherID:teacherID,
+                          uqID:uqID
+                      }
+                      
+                      )
                     }
 
-                    var localTime = moment(new Date()).format('HH:mm').toString()
-                    var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
-                    await _fetchSessionsAPI(selectedDate,localTime,localDate)
+                    
                     
                     
                     
@@ -438,9 +496,9 @@ const StudentHome = ({navigation}) => {
                       <Text style={{color:'white'}}>Check-in</Text>
                   </TouchableOpacity>
                   </View>
-                  :
-                  <></>
-                  }
+                   : 
+                   <></> 
+                   } 
                   {
                     (item.isStudentChecked && item.isSeatmapSet) ? 
                   <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>

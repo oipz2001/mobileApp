@@ -65,7 +65,7 @@ const Login = ({navigation}) => {
     AsyncStorage.setItem('NameTeacher','Parinya Seetawan')
     AsyncStorage.setItem('MailTeacher','parinya_seetawan@cmu.ac.th')
 
-    AsyncStorage.setItem('uniqueIDStudent','600610748')
+    AsyncStorage.setItem('uniqueIDStudent','600610750')
     AsyncStorage.setItem('NameStudent','Parinyakorn')
 
     retrieveUserID()

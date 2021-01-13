@@ -28,15 +28,16 @@ class CameraAddFaceList extends PureComponent {
     _retrieveUserData = async () => {
         const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
         const studentName = await AsyncStorage.getItem('NameStudent');
-        // const  studentID = '600610888'
         this.setState({studentIDState:studentID,studentNameState:studentName})
   
     }
 
     componentDidMount(){
-      console.log(this.props.route.params.response);
+      // console.log(this.props.route.params.response);
         this._retrieveUserData()
     }
+
+    
 
    
 

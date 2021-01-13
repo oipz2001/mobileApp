@@ -62,9 +62,14 @@ const SessionReport = ({route}) => {
            <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                 <Text style={styles.title}>{item.date}</Text>
                 {
+                  (item.classStatus == -1) ?
+                  <View>
+                    <Text style={{color:'orange'}}>Waiting</Text>
+                  </View>
+                  :
                   item.isChecked ?
                   <View style={{flexDirection:'row'}}>
-                  <Image source={require('../../assets/vectors/check.png')} style={{width:25,height:25}} />
+                    <Image source={require('../../assets/vectors/check.png')} style={{width:25,height:25}} />
                   <Text>{item.timestamp}</Text>
                   </View>
                   :

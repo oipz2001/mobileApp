@@ -56,7 +56,7 @@ const _hearderProfile = ({...props}) => {
 
         <Stack.Screen name="StudentAddFaceList" component={CameraAddFaceList}/>
         <Stack.Screen name="StudentHome" component={StudentHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'My Sessions'})}/>
-        <Stack.Screen name="StudentFaceCheckIn" component={StudentFaceCheckIn} options={({route}) => ({headerTitle:'Check-in ('+route.params.sessionTitle+')'})}/>
+        <Stack.Screen name="StudentFaceCheckIn" component={StudentFaceCheckIn} />
         <Stack.Screen name="Seatmap" component={Seatmap} options={({navigation,route}) => ({headerTitle:route.params.sessionTitle,headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>})}/>
         <Stack.Screen name="ScanQR" component={ScanQR} />
         <Stack.Screen name="MyQR" component={MyQR}/>

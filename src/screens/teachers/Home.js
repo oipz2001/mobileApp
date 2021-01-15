@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import { Button, View,Text,StyleSheet,FlatList,StatusBar,TouchableOpacity,Image } from 'react-native'
+import { Button, View,Text,StyleSheet,FlatList,StatusBar,TouchableOpacity,Image,Modal,ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Calendar from '../../components/CalendarPicker'
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -31,6 +31,8 @@ const TeacherHome = ({ navigation }) => {
     const [teacherIDState,setTeacherIDState] = useState(null)
 
     const [wifiList,setWifiList] = useState([])
+
+    const [isInprogressModalShow,setIsInprogressModalShow] = useState(false)
 
     const _retrieveUserData = async () => {
       const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
@@ -229,7 +231,7 @@ const TeacherHome = ({ navigation }) => {
 
 
     const updateWifiLocAPI = async (uqID,teacherID) => {
-
+      setIsInprogressModalShow(true)
       await wifi.reScanAndLoadWifiList(
         async wifis =>{
           var tempWifis = JSON.parse(wifis)
@@ -257,6 +259,7 @@ const TeacherHome = ({ navigation }) => {
                   .then((data) => {
                       
                       console.log(data);
+                      setIsInprogressModalShow(false)
                   })
                   .catch((error) => {
                   console.error(error);
@@ -291,6 +294,7 @@ const TeacherHome = ({ navigation }) => {
                     .then((data) => {
                         
                         console.log(data);
+                        setIsInprogressModalShow(false)
                     })
                     .catch((error) => {
                     console.error(error);
@@ -498,6 +502,21 @@ const TeacherHome = ({ navigation }) => {
                     style={{marginTop:10}}
                     ListHeaderComponent={<HeaderFlatlistComponent/>}
                 />
+                <Modal
+                animationType="fade"
+                transparent={true}
+                visible={isInprogressModalShow}
+                onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                }}
+            >
+                <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:8,marginBottom:190}}>
+                    
+                    <View style={{flex:3,justifyContent:'center'}}>
+                      <ActivityIndicator size={200} color="#9E76B4" />
+                    </View>
+                </View>
+              </Modal>
             </SafeAreaView>
         </>
      );

@@ -1,5 +1,5 @@
 import React,{useState,useEffect,useRef} from 'react'
-import { Button, View,Text,StyleSheet,StatusBar,FlatList,TouchableOpacity,PermissionsAndroid } from 'react-native'
+import { Button, View,Text,StyleSheet,StatusBar,FlatList,TouchableOpacity,PermissionsAndroid,Modal,ActivityIndicator  } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Calendar from '../../components/CalendarPicker'
 import {useFocusEffect} from '@react-navigation/native';
@@ -13,22 +13,6 @@ const myEndpointURL =  URL.myEndpointStudent
 
 const moment = require('moment')
 
-       // Hook
-  function usePrevious(value) {
-        // The ref object is a generic container whose current property is mutable ...
-        // ... and can hold any value, similar to an instance property on a class
-        const ref = useRef();
-        
-        // Store current value in ref
-        useEffect(() => {
-          ref.current = value;
-        }, [value]); // Only re-run if value changes
-        
-        // Return previous value (happens before update in useEffect above)
-        return ref.current;
-    }
-
-
 
 const StudentHome = ({navigation,route}) => {
 
@@ -37,18 +21,20 @@ const StudentHome = ({navigation,route}) => {
   //   const [currentTime,setcurrentTime] = useState(moment(new Date()).format('HH:mm').toString())
     const [wifiList,setWifiList] = useState([])
     const [sessionsData,setSessionsData] = useState(null)
-    const [selectedClassData,setSelectedClassData] = useState({uqID:null,teacherID:null})
-    const [checkInFetchData,setCheckInFetchData] = useState({uqID:null,teacherID:null})
 
-    const [locMatchResult,setLocMatchResult] = useState(false)
 
     const [localTime,setLocalTime] = useState(moment(new Date()).format('HH:mm').toString())
 
     const [studentIDState,setStudentIDState] = useState(null)
 
+    const [isWifiMatchModalShow,setIsWifiMatchModalShow] = useState(false)
+
+    const [isMatchFalseModalShow,setIsMatchFalseModalShow] = useState(false)
+
+
+
     const _retrieveUserData = async () => {
       const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
-      // const  studentID = '600610748'
       setStudentIDState(studentID)
 
     }
@@ -93,7 +79,7 @@ const StudentHome = ({navigation,route}) => {
     },[localTime])
 
     
-    const matchWifiAPI = async (wifis,uqID,teacherID,studentID,checkDate,timestamp) => {
+    const matchWifiAPI = async (wifis,uqID,teacherID,studentID) => {
       await fetch(myEndpointURL+'/matchMAC', {
         method: 'POST',
         headers: {
@@ -112,13 +98,14 @@ const StudentHome = ({navigation,route}) => {
            
 
             if(data.matchResult == true){
-              setLocMatchResult(true)
+              setIsWifiMatchModalShow(false)
+              navigation.navigate('StudentFaceCheckIn',{studentID:studentID,teacherID:teacherID,uqID:uqID})
               console.log("Location match");
-              await checkInOnLocAPI(studentID,teacherID,uqID,checkDate,timestamp)
               
             }
             else if(data.matchResult == false){
-              setLocMatchResult(false)
+              setIsWifiMatchModalShow(false)
+              setIsMatchFalseModalShow(true)
               console.log("Location not match");
 
             }
@@ -128,59 +115,10 @@ const StudentHome = ({navigation,route}) => {
         });
     }
    
-
-   
-
-    // useEffect(() => {
-
-    //     const matchWifiAPI = async () => {
-    //       await fetch(myEndpointURL+'/matchMAC', {
-    //         method: 'POST',
-    //         headers: {
-    //             Accept: "application/json",
-    //             "Content-Type": "application/json"
-    //         },
-    //         body: JSON.stringify({
-    //             studentWifiList:wifiList,
-    //             classData:selectedClassData
-    //         })
-    //         })
-    //         .then((response) => response.json())
-    //         .then(async (data) => {
-                
-    //             console.log(data);
-               
-
-    //             if(data.matchResult == true){
-    //               setLocMatchResult(true)
-    //               console.log("Location match");
-    //               console.log(checkInFetchData);
-    //               await checkInOnLocAPI()
-    //             }
-    //             else if(data.matchResult == false){
-    //               setLocMatchResult(false)
-    //               console.log("Location not match");
-
-    //             }
-    //         })
-    //         .catch((error) => {
-    //         console.error(error);
-    //         });
-    //     }
-
-    //   if(wifiList.length!=0){
-    //     matchWifiAPI()
-    //   }
-
-    // },[wifiList])
-
-    
-
       useFocusEffect(
         React.useCallback(() => {
           // Do something when the screen is focused
           console.log("Student Home is focused");
-         console.log(selectedClassData);
           var localTime = moment(new Date()).format('HH:mm').toString()
           var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
 
@@ -200,20 +138,8 @@ const StudentHome = ({navigation,route}) => {
       );
 
 
-      // useEffect(() =>{
-
-      //   var localTime = moment(new Date()).format('HH:mm').toString()
-      //   var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
-
-      //   if(studentIDState !=  null)
-      //   _fetchSessionsAPI(selectedDate,localTime,localDate)
-
-      //   console.log(studentIDState);
-      // }, [studentIDState,selectedDate])
-
-
-      const getWifiList = async (studentID,teacherID,uqID,checkDate,timestamp) => {
-
+      const getWifiList = async (studentID,teacherID,uqID) => {
+        setIsWifiMatchModalShow(true)
         await wifi.reScanAndLoadWifiList(
           async wifis =>{
             var tempWifis = JSON.parse(wifis)
@@ -223,7 +149,7 @@ const StudentHome = ({navigation,route}) => {
             })
             // console.log(wifisArr);
             // setWifiList(wifisArr);
-            await matchWifiAPI(wifisArr,uqID,teacherID,studentID,checkDate,timestamp)
+            await matchWifiAPI(wifisArr,uqID,teacherID,studentID)
           },
           error =>
             console.error(error) ||
@@ -236,7 +162,7 @@ const StudentHome = ({navigation,route}) => {
                 })
                 // console.log(wifisArr);
                 // setWifiList(wifisArr);
-                await matchWifiAPI(wifisArr,uqID,teacherID,studentID,checkDate,timestamp)
+                await matchWifiAPI(wifisArr,uqID,teacherID,studentID)
               },
               error => console.error(error)
             )
@@ -246,18 +172,6 @@ const StudentHome = ({navigation,route}) => {
        
     }
 
-//     const showWifiList = async () => {
-//       await askForUserPermissions();
-//       await getWifiList()
-
-//       wifiList.forEach(wifiData => {
-//         console.log(wifiData.BSSID_dotConcat.split('.')[0]+ '  level: '+wifiData.level);
-       
-//       })
-//       console.log("-------------------------------------------------------------------------");
-//       console.log("-------------------------------------------------------------------------");
-      
-// }
   async function askForUserPermissions() {
     try {
       const granted = await PermissionsAndroid.request(
@@ -298,76 +212,6 @@ const StudentHome = ({navigation,route}) => {
       }
 
 
-      const checkInOnLocAPI = async (studentID,teacherID,uqID,checkDate,timestamp) => {
-        const myCheckInFetchData = {
-          studentID:studentID,
-          teacherID:teacherID,
-          uqID:uqID,
-          checkDate:checkDate,
-          timestamp:timestamp
-        }
-        await fetch(myEndpointURL+'/checkIn', {
-          method: 'POST',
-          headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            checkInFetchData:myCheckInFetchData
-          })
-          })
-          .then((response) => response.json())
-          .then(async (data) => {
-              
-              console.log(data);
-              var localTime = moment(new Date()).format('HH:mm').toString()
-              var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
-              await _fetchSessionsAPI(selectedDate,localTime,localDate)
-          })
-          .catch((error) => {
-          console.error(error);
-          });
-      }
-
-
-      const checkInOnlineAPI = async (studentID,teacherID,uqID,checkDate,timestamp) => {
-        const myCheckInFetchData = {
-          studentID:studentID,
-          teacherID:teacherID,
-          uqID:uqID,
-          checkDate:checkDate,
-          timestamp:timestamp
-        }
-        await fetch(myEndpointURL+'/checkIn', {
-          method: 'POST',
-          headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            checkInFetchData:myCheckInFetchData
-          })
-          })
-          .then((response) => response.json())
-          .then(async (data) => {
-              
-              console.log(data);
-              var localTime = moment(new Date()).format('HH:mm').toString()
-              var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
-              await _fetchSessionsAPI(selectedDate,localTime,localDate)
-          })
-          .catch((error) => {
-          console.error(error);
-          });
-      }
-
-      
-
-     
-      
-      
-
-
       const CalendarHeader = () => {
         return(
           <View>
@@ -383,17 +227,7 @@ const StudentHome = ({navigation,route}) => {
                     }}
           />
           <Text style={{alignSelf:'center'}}>Select: {selectedDate}</Text>
-          
-            {
-              locMatchResult ? 
-              <View style={{alignSelf:'center',backgroundColor:'green',padding:15,borderRadius:15}}>
-              <Text style={{color:'white'}}>{locMatchResult.toString()}</Text>
-              </View>
-              :
-              <View style={{alignSelf:'center',backgroundColor:'red',padding:15,borderRadius:15}}>
-              <Text style={{color:'white'}}>{locMatchResult.toString()}</Text>
-              </View>
-            }
+    
           
           </View>
         )
@@ -456,9 +290,7 @@ const StudentHome = ({navigation,route}) => {
                     const studentID = studentIDState
                     const teacherID = item.teacherID
                     const uqID = item.uqID
-                    const checkDate = moment(new Date()).format('YYYY-MM-DD').toString()
-                    const timestamp = moment(new Date()).format('HH:mm').toString()
-                    setSelectedClassData({uqID:uqID,teacherID:teacherID})
+                    // setSelectedClassData({uqID:uqID,teacherID:teacherID})
                     // setCheckInFetchData({
                     //   studentID:studentID,
                     //   teacherID:teacherID,
@@ -471,7 +303,7 @@ const StudentHome = ({navigation,route}) => {
 
                     if(item.isLocationSet){
                       // await getWifiList(uqID,teacherID)
-                      await getWifiList(studentID,teacherID,uqID,checkDate,timestamp)
+                      await getWifiList(studentID,teacherID,uqID)
                     
                     }
                     else{
@@ -502,7 +334,9 @@ const StudentHome = ({navigation,route}) => {
                   {
                     (item.isStudentChecked && item.isSeatmapSet) ? 
                   <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Seatmap',{sessionTitle:item.title,sessionID:item.id})} >
+                    <TouchableOpacity onPress={() => navigation.navigate('Seatmap',{
+                      uqID:item.uqID,teacherID:item.teacherID
+                      })} >
                         <Text style={{color:'white'}}>Create Seat Map</Text>
                     </TouchableOpacity>
                   </View>
@@ -545,12 +379,56 @@ const StudentHome = ({navigation,route}) => {
         
                 
                 <SafeAreaView style={{flex:1}}>
+                  
                 <FlatList
                     data={sessionsData}
                     renderItem={renderItem}
                     keyExtractor={item => item.uqID}
                     ListHeaderComponent={<CalendarHeader/>}
                 />
+                <Modal
+                      animationType="fade"
+                      transparent={true}
+                      visible={isWifiMatchModalShow}
+                      onRequestClose={() => {
+                      Alert.alert("Modal has been closed.");
+                      }}
+                  >
+                      <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:8,marginBottom:190}}>
+                          <View style={{flex:1,justifyContent:'center'}}>
+                            <Text>Verify Location...</Text>
+                          </View>
+                          <View style={{flex:3,justifyContent:'center'}}>
+                            <ActivityIndicator size={200} color="#9E76B4" />
+                          </View>
+                      </View>
+                </Modal>
+                
+                <Modal
+                      animationType="fade"
+                      transparent={true}
+                      visible={isMatchFalseModalShow}
+                      onRequestClose={() => {
+                      Alert.alert("Modal has been closed.");
+                      }}
+                  >
+                    
+                      <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:8,marginBottom:190}}>
+                          <View style={{flex:1,justifyContent:'center'}}>
+                             <Icon name="times" size={100} color='red'/>
+                          </View>
+                          <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                            <Text  >สถานที่ไม่ถูกต้อง !!</Text>
+                            <Text >โปรดอยู่ในบริเวณที่ให้ทำการเช็คชื่อ</Text>
+                            <Text >(หากเกิดข้อผิดพลาดให้พบอาจารย์ผู้สอน)</Text>
+                          </View>
+                          
+                          <TouchableOpacity style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:8,borderRadius:20,width:80,alignItems:'center'}} onPress={() => setIsMatchFalseModalShow(false)}>
+                            <Text style={{color:'white'}}>Close</Text>
+                          </TouchableOpacity>
+                      </View>
+                    
+                </Modal>
                 </SafeAreaView>
 
         </>

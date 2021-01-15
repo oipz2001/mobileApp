@@ -7,6 +7,8 @@ import {
   Button,
   TouchableHighlight,
   SafeAreaView,
+  Modal,
+  ActivityIndicator
 } from 'react-native';
 import TextInput from '../components/TextInput'
 import AzureAuth from 'react-native-azure-auth';
@@ -44,6 +46,7 @@ const Login = ({navigation}) => {
   const [teacherUserName,setTeacherUserName] = useState(null)
   const [teacherUserMail,setTeacherUserMail] = useState(null)
 
+ 
 
   useEffect(() => {
 
@@ -91,6 +94,7 @@ const Login = ({navigation}) => {
           if(data.response == true){
               navigation.navigate('TeacherHome')
           }else{
+            
             await addNewTeacher(teacherUserID,teacherUserName,teacherUserMail)
           }
       })
@@ -136,11 +140,9 @@ const Login = ({navigation}) => {
 
   
   const _isStudentFaceAdded = async (studentID) => {
-
     await fetch(myEndpointURLStudent+'/isFaceListAdded?studentID='+studentID)
           .then((response) => response.json())
           .then((data) => {
-              
               if(data.response == true){
                 navigation.navigate('StudentHome')
               }
@@ -211,24 +213,6 @@ const Login = ({navigation}) => {
     }
   };
 
-  // const _retrieveData = async () => {
-  //   try {
-  //     const value = await AsyncStorage.getItem('name');
-  //     if (value !== null) 
-  //       console.log(value);
-  //     else
-  //     console.log('No data is stored');
-  //   } catch (error) {
-  //     // Error retrieving data
-  //   }
-  // };
-
-  // useEffect(() => {
-  //   _retrieveData()
-  // },[])
-
-  
-
 
 
 
@@ -261,21 +245,23 @@ const Login = ({navigation}) => {
       }}/> 
       </View> 
       <Text>{teacherUserID}</Text>
-      <View style = {{marginTop: 30 }} >
+      {/* <View style = {{marginTop: 30 }} >
         <Button title = "Go to Student Home" onPress = {async () => {
           navigation.navigate('StudentHome')
           } }/> 
-      </View> 
-      <Text>{studentUserID}</Text>
+      </View>  */}
+      
       <View style = {{marginTop: 30 }} >
-        <Button title = "Go to Add Face List" onPress = {async () => {
+        <Button title = "Go to Student Home" onPress = {async () => {
           const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
           await _isStudentFaceAdded(studentID);
           
           }}/> 
-      </View> 
+      </View>
+      <Text>{studentUserID}</Text> 
       
     </View>
+    
     </SafeAreaView>
   );
 

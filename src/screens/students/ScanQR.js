@@ -1,29 +1,71 @@
 
 'use strict';
 import React, { PureComponent } from 'react';
-import { AppRegistry, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { AppRegistry, StyleSheet, Text, TouchableOpacity, View,Modal } from 'react-native';
 import { RNCamera } from 'react-native-camera';
-
+const URL = require('../../config/endpointConfig')
+const myEndpointURL =  URL.myEndpointStudent
+import AsyncStorage from '@react-native-community/async-storage'
 class QR_Scan extends PureComponent {
+
     constructor(props) {
         super(props);
         this.state = {
-            shouldBarcodeDetect : true,
-            receivedBarcodeData : ''
+            shouldBarcodeDetect : false,
+            receivedBarcodeData : '',
+            scanDirection:null,
+            isSelectModalShow:true,
+            studentIDState:null
             
         }
     }
 
+    _retrieveUserData = async () => {
+      const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+      this.setState({studentIDState:studentID})
+
+  }
+
     componentDidMount(){
-      console.log(this.props.route.params.sessionID + ' ' +this.props.route.params.sessionTitle + '(Scan QR)');
+      this._retrieveUserData()
+      console.log(this.props.route.params.teacherID + ' ' +this.props.route.params.uqID + '(Scan QR)');
     }
+
+
+    CollectMapSeatAPI = async (studentID,receivedStudentID,direction) => {
+      await fetch(myEndpointURL+'/mapSeat', {
+        method: 'POST',
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          studentID:studentID,
+          receivedStudentID:receivedStudentID,
+          direction:direction,
+          teacherID:this.props.route.params.teacherID,
+          uqID:this.props.route.params.uqID
+        })
+        })
+        .then((response) => response.json())
+        .then(async (data) => {
+            
+            console.log(data);
+            this.props.navigation.goBack()
+        })
+        .catch((error) => {
+        console.error(error);
+        });
+    }
+
+
   render() {
 
     return (
       <View style={styles.container}>
         <View>
         <TouchableOpacity style={styles.capture}>
-            <Text style={{ fontSize: 14 }}>กรุณาสแกน QR Code {this.state.receivedBarcodeData} </Text>
+            <Text style={{ fontSize: 14 }}>กรุณาสแกน QR Code { this.state.scanDirection == null ? '' : (this.state.scanDirection == 0) ? '(Right)' : '(Front)'} </Text>
         </TouchableOpacity>
          
         </View>
@@ -40,9 +82,6 @@ class QR_Scan extends PureComponent {
             buttonNegative: 'Cancel',
           }}
           
-        //   onGoogleVisionBarcodesDetected={({ barcodes }) => {
-        //     console.log(barcodes[0].data);
-        //   }}
         onGoogleVisionBarcodesDetected={this.state.shouldBarcodeDetect ? this.handleBarcodeDetected : null}
         barCodeTypes={[RNCamera.Constants.BarCodeType.qr]}
         />
@@ -54,22 +93,48 @@ class QR_Scan extends PureComponent {
           </TouchableOpacity> */}
           {/* <TouchableOpacity onPress={this.setDetectBarcode.bind(this)} style={styles.capture}>
             <Text style={{ fontSize: 14 }}>Barcode Detect Enable</Text>
-          </TouchableOpacity>
-          <TouchableOpacity onPress={this.showBarcodeData.bind(this)} style={styles.capture}>
-            <Text style={{ fontSize: 14 }}> Show Data </Text>
+          </TouchableOpacity> */}
+          {/* <TouchableOpacity onPress={this.showBarcodeData.bind(this)} style={styles.capture}>
+            <Text style={{ fontSize: 14 }}> Show Data ({this.state.scanDirection == null ? "" : this.state.scanDirection.toString() }) </Text>
             
           </TouchableOpacity> */}
         </View>
+        <Modal
+                      animationType="fade"
+                      transparent={true}
+                      visible={this.state.isSelectModalShow}
+                      onRequestClose={() => {
+                      Alert.alert("Modal has been closed.");
+                      }}
+                  >
+                      <View style={{backgroundColor:'white',alignItems:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:8,marginBottom:200}}>
+                          <View style={{flex:1,justifyContent:'center'}}>
+                            <Text>Please select direction to scan</Text>
+                          </View>
+                          <View style={{flex:2,justifyContent:'center'}}>
+                            <TouchableOpacity style={styles.button} onPress={() => this.setState({scanDirection:1,isSelectModalShow:false,shouldBarcodeDetect:true})}>
+                              <Text style={{color:'white'}}>Front Scan</Text>
+                            </TouchableOpacity>
+                          </View>
+                          <View style={{flex:2,justifyContent:'center',marginBottom:25}}>
+                            <TouchableOpacity style={styles.button} onPress={() => this.setState({scanDirection:0,isSelectModalShow:false,shouldBarcodeDetect:true})}>
+                              <Text style={{color:'white'}}>Right Scan</Text>
+                            </TouchableOpacity>
+                          </View>
+                      </View>
+          </Modal>
       </View>
     );
   }
 
 
-  handleBarcodeDetected = ({barcodes}) => {
-      console.log(barcodes[0].type + ' ' + barcodes[0].data);
+  handleBarcodeDetected = async ({barcodes}) => {
       if( barcodes[0].type  == 'QR_CODE'){
+        const receivedStudentID =  barcodes[0].data
+      console.log(receivedStudentID);
       this.setState({receivedBarcodeData:barcodes[0].data})
       this.setState({shouldBarcodeDetect:false})
+      await this.CollectMapSeatAPI(this.state.studentIDState,receivedStudentID,this.state.direction)
     }
 
   }
@@ -90,7 +155,7 @@ class QR_Scan extends PureComponent {
   showBarcodeData = () => {
     console.log(this.state.receivedBarcodeData);
     
-    // this.props.navigation.navigate('StudentHome')
+   
 
   }
 }
@@ -115,6 +180,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     margin: 20,
   },
+  button:{
+    backgroundColor:'#9E76B4',
+    padding:20,
+    borderRadius:30,
+    elevation:10
+  }
 });
 
 export default QR_Scan

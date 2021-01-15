@@ -1,7 +1,7 @@
 
 'use strict';
 import React, { PureComponent } from 'react';
-import {  StyleSheet, Text, TouchableOpacity, View,Image } from 'react-native';
+import {  StyleSheet, Text, TouchableOpacity, View,Image,Modal,ActivityIndicator } from 'react-native';
 import { RNCamera } from 'react-native-camera';
 import { Buffer } from 'buffer'
 import AsyncStorage from '@react-native-community/async-storage'
@@ -12,14 +12,12 @@ const key = '8b4bdfc570514b1d9e71628238368e3e'
 
 class CameraAddFaceList extends PureComponent {
 
-  
-
     constructor(props) {
         super(props);
         this.state = {
             studentIDState:'',
-            studentNameState : ''
-            
+            studentNameState : '',
+            isInprogressModalShow:false
         }
     }
 
@@ -70,6 +68,20 @@ class CameraAddFaceList extends PureComponent {
             <Text style={{ fontSize: 14 }}> SNAP </Text>
           </TouchableOpacity>
         </View>
+        <Modal
+                animationType="fade"
+                transparent={true}
+                visible={this.state.isInprogressModalShow}
+                onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                }}
+            >
+                <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:8,marginBottom:190}}>
+                    <View style={{flex:3,justifyContent:'center'}}>
+                      <ActivityIndicator size={200} color="#9E76B4" />
+                    </View>
+                </View>
+        </Modal>
       </View>
     );
   }
@@ -78,6 +90,7 @@ class CameraAddFaceList extends PureComponent {
 
   takePicture = async () => {
     if (this.camera) {
+      this.setState({isInprogressModalShow:true})
       const options = { quality: 0.5, base64: true };
       const data = await this.camera.takePictureAsync(options);
       const reference = await storage().ref().child(this.state.studentIDState);
@@ -97,7 +110,6 @@ class CameraAddFaceList extends PureComponent {
 
 
    CreateFaceList = async (faceListId,faceName) => { //Create empty face list id
-        
         await fetch('https://southeastasia.api.cognitive.microsoft.com/face/v1.0/facelists/'+faceListId, {
             method: 'PUT',
             headers: {
@@ -137,7 +149,7 @@ class CameraAddFaceList extends PureComponent {
         .then(async data => {
           
             if(this.props.route.params.response == false){
-              await this._AddStudentFaceList(this.state.studentIDState)
+              await this._AddStudentFaceListDB(this.state.studentIDState)
             }
             else if(this.props.route.params.response == null){
               await this._AddNewStudent(this.state.studentIDState,this.state.studentNameState)
@@ -170,7 +182,7 @@ class CameraAddFaceList extends PureComponent {
     }
 
 
-    _AddStudentFaceList = async (studentID) => {
+    _AddStudentFaceListDB = async (studentID) => {
       console.log(studentID);
       await fetch(myEndpointStudent+'/addFaceListToStudent', {
         method: 'POST',
@@ -185,7 +197,7 @@ class CameraAddFaceList extends PureComponent {
         })
         .then((response) => response.json())
         .then((data) => {
-            
+            this.setState({isInprogressModalShow:false})
             this.props.navigation.goBack()
             this.props.navigation.navigate('StudentHome')
         })

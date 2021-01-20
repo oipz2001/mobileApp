@@ -53,14 +53,14 @@ const MyProfile = () => {
         }, [])
       );
     return(
-        // <SafeAreaView>
-        //     <Text>My profile</Text>
-        //     <Text > Name: {user} </Text> 
-        //     <Text> Mail: {mail} </Text> 
-        //     <Text> ID: {userId} </Text> 
-        //     <Text> JobTitle: {jobtitle} </Text>
-        // </SafeAreaView>
-        <WebView source={{ uri: 'https://reactnative.dev/' }} />
+        <SafeAreaView>
+            <Text>My profile</Text>
+            <Text > Name: {user} </Text> 
+            <Text> Mail: {mail} </Text> 
+            <Text> ID: {userId} </Text> 
+            <Text> JobTitle: {jobtitle} </Text>
+        </SafeAreaView>
+        // <WebView source={{ uri: 'https://reactnative.dev/' }} />
     )
 
 }

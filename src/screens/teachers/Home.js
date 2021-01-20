@@ -168,12 +168,10 @@ const TeacherHome = ({ navigation }) => {
         {id:'600610750',name:'Parinyakorn'},
         {id:'600610751',name:'Pawaris'},
         {id:'600610777',name:'Paradee'},
-        {id:'600610888',name:'Paradee'}
+        {id:'600610888',name:'Paradee1'},
+        {id:'600610749',name:'PARINYA SEETAWAN'}
       ]
-      // var studentList = [
-      //   {id:'6006107488',name:'Pathomporn'},
-      //   {id:'600610750',name:'Parinyakorn'}
-      // ]
+      
       console.log(uqID);
       await fetch(defaultEndpoint+'/webApp/addNewStudents', {
         method: 'POST',
@@ -315,6 +313,12 @@ const TeacherHome = ({ navigation }) => {
     const renderItem = ({ item }) => {
         const Item = ({ item, onPress, style }) => (
             
+           
+           
+              
+              
+            
+          
             <TouchableOpacity   style={[styles.item, style]}>
               <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                     <View >
@@ -436,6 +440,9 @@ const TeacherHome = ({ navigation }) => {
             
             
             </TouchableOpacity>
+
+
+            
             
             
                 
@@ -459,9 +466,9 @@ const TeacherHome = ({ navigation }) => {
        const HeaderFlatlistComponent = () => {
           return(
             <>
-                <Text style={{alignSelf:'center'}}>Select {selectedDate}</Text>
-                <Text style={{alignSelf:'center'}}>TeacherID: {teacherIDState}</Text>
-                <Text style={{alignSelf:'center'}}>Local time:  {localTime}</Text>
+                <Text style={{alignSelf:'center'}}>Date: {selectedDate}</Text>
+                {/* <Text style={{alignSelf:'center'}}>TeacherID: {teacherIDState}</Text> */}
+                <Text style={{alignSelf:'center'}}>Time: {localTime}</Text>
                 <Calendar 
                 style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}}
                 onDayPress={async day => {
@@ -482,8 +489,7 @@ const TeacherHome = ({ navigation }) => {
                     <Icon name="plus-circle" size={60}/>
                     <Text >Add Sessions</Text>
                  </TouchableOpacity>
-                 </View>  
-                 <Text style={{alignSelf:'center'}}>Select {selectedDate}</Text>        
+                 </View>       
                       
                
             </>
@@ -494,6 +500,8 @@ const TeacherHome = ({ navigation }) => {
     return(
         <>
             <SafeAreaView style={{flex:1}}>
+              
+              
                 <FlatList
                     data={sessionsData}
                     renderItem={renderItem}
@@ -502,6 +510,7 @@ const TeacherHome = ({ navigation }) => {
                     style={{marginTop:10}}
                     ListHeaderComponent={<HeaderFlatlistComponent/>}
                 />
+                
                 <Modal
                 animationType="fade"
                 transparent={true}
@@ -517,6 +526,7 @@ const TeacherHome = ({ navigation }) => {
                     </View>
                 </View>
               </Modal>
+             
             </SafeAreaView>
         </>
      );

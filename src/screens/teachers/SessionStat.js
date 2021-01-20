@@ -118,7 +118,7 @@ const TeacherSessionStat = ({route}) => {
         <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
               <View>
-              <Text style={styles.id}>{item.studentID}</Text>
+              <Text style={styles.id}>{item.studentUqID}</Text>
               <Text style={styles.name}>{item.studentName}</Text>
                 </View>
                 <View style={{flexDirection:'column',justifyContent:'flex-end'}}>
@@ -144,7 +144,7 @@ const TeacherSessionStat = ({route}) => {
             <>
             <View style={{marginTop:25,alignItems:'center'}}>
             {/* <Text>{JSON.stringify( statData[0]['population'])}</Text> */}
-                <Text style={{fontSize:20,marginBottom:10}}>{classStatData.name} ({classStatData.id})</Text>
+                <Text style={{fontSize:20,marginBottom:10}}>{classStatData.className} ({classStatData.classId})</Text>
                <PieChart
                     data={chartData}
                     width={375}

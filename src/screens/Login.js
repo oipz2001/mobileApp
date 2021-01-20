@@ -40,11 +40,11 @@ const Login = ({navigation}) => {
   const [userId, setuserId] = useState('')
   const [jobtitle, setjobtitle] = useState('')
   const [isInfoShow,setInfoShow] = useState(false)
-  const [studentUserID,setStudentUserID] = useState(null)
+  const [studentUserID,setStudentUserID] = useState('')
 
-  const [teacherUserID,setTeacherUserID] = useState(null)
-  const [teacherUserName,setTeacherUserName] = useState(null)
-  const [teacherUserMail,setTeacherUserMail] = useState(null)
+  const [teacherUserID,setTeacherUserID] = useState('')
+  const [teacherUserName,setTeacherUserName] = useState('')
+  const [teacherUserMail,setTeacherUserMail] = useState('')
 
  
 
@@ -56,7 +56,7 @@ const Login = ({navigation}) => {
       const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
       const  teacherName = await AsyncStorage.getItem('NameTeacher');
       const  teacherMail = await AsyncStorage.getItem('MailTeacher');
-
+      console.log(studentUserID);
       setStudentUserID(studentID)
 
       setTeacherUserID(teacherID)
@@ -64,16 +64,16 @@ const Login = ({navigation}) => {
       setTeacherUserMail(teacherMail)
     }
 
-    AsyncStorage.setItem('uniqueIDTeacher','600610749')
+    AsyncStorage.setItem('uniqueIDTeacher','6006107499')
     AsyncStorage.setItem('NameTeacher','Parinya Seetawan')
     AsyncStorage.setItem('MailTeacher','parinya_seetawan@cmu.ac.th')
 
-    AsyncStorage.setItem('uniqueIDStudent','600610750')
+    AsyncStorage.setItem('uniqueIDStudent','JETDILOK NGAMKHAM')
     AsyncStorage.setItem('NameStudent','Parinyakorn')
 
     retrieveUserID()
 
-  },[])
+  },[user])
 
 
   const checkIfTeacherExist = async (teacherID) => {
@@ -170,6 +170,7 @@ const Login = ({navigation}) => {
         path: '/me'
       })
       // console.log(tokens.expireOn);
+      // AsyncStorage.setItem('uniqueIDStudent',info.displayName)
       AsyncStorage.setItem('name',info.displayName);
       AsyncStorage.setItem('mail',info.mail);
       AsyncStorage.setItem('id',info.id);
@@ -194,6 +195,8 @@ const Login = ({navigation}) => {
         setuserId(null)
         setjobtitle(null)
         setInfoShow(false)
+        AsyncStorage.removeItem('uniqueIDStudent')
+        setStudentUserID('')
         AsyncStorage.removeItem('name')
         AsyncStorage.removeItem('mail')
         AsyncStorage.removeItem('id')

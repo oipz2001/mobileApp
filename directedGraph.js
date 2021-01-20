@@ -1,146 +1,133 @@
 
 const Graph = require('digraphe')
-
 var graph = new Graph();
 
 
-const twoBitOpposite = (number) => {
-    if(number==0) return 2
-    else if(number==1)  return 3
-    else if(number==2)  return 0
-    else return 1
+var seatmap ={
+    "2021-01-15" : {
+        nodes: ["A","B","C","D","E","F","G","Z","ZZX","L","X"],
+        mapSeat : [
+            {studentID:"A",receivedStudentID:"B",direction:0},
+            {studentID:"B",receivedStudentID:"C",direction:0},
+            {studentID:"C",receivedStudentID:"D",direction:0},
+            {studentID:"E",receivedStudentID:"F",direction:0},
+            {studentID:"G",receivedStudentID:"B",direction:1},
+            {studentID:"ZZX",receivedStudentID:"A",direction:1},
+            {studentID:"L",receivedStudentID:"D",direction:1},
+            {studentID:"D",receivedStudentID:"X",direction:1},
+            {studentID:"F",receivedStudentID:"D",direction:1},
+            {studentID:"Z",receivedStudentID:"G",direction:1},
+        
+        ],
+        graphs:[]
+    }
 }
 
+var myNodeList = seatmap['2021-01-15'].nodes
+var mapSeatArr = seatmap['2021-01-15'].mapSeat
+
+
+
+
+
 const addMapSeat = (studentRef,studentPointed,direction,graph) =>{
+    const twoBitOpposite = (number) => {
+        if(number==0) return 2
+        else if(number==1)  return 3
+        else if(number==2)  return 0
+        else return 1
+    }
     graph.addEdge(studentRef, studentPointed,{ weight: direction} );
     graph.addEdge(studentPointed,studentRef,{ weight: twoBitOpposite(direction)} );
 }
 
-addMapSeat('A', 'D',0,graph)
-addMapSeat('B', 'D',1,graph)
-addMapSeat('B', 'C',0,graph)
-addMapSeat('F', 'B',0,graph)
-addMapSeat('G', 'F',1,graph)
-addMapSeat('L', 'M',0,graph)
-addMapSeat('M', 'N',0,graph)
-addMapSeat('O', 'J',1,graph)
-addMapSeat('P', 'O',1,graph)
-addMapSeat('AF', 'I',0,graph)
-addMapSeat('Q', 'R',0,graph)
-
-addMapSeat('Z', 'Y',1,graph)
-addMapSeat('AC', 'AB',1,graph)
-addMapSeat('V', 'T',1,graph)
-addMapSeat('T', 'X',0,graph)
-
-addMapSeat('C', 'AF',1,graph)
-addMapSeat('H', 'C',1,graph)
-addMapSeat('N', 'H',1,graph)
-addMapSeat('Q', 'R',0,graph)
-
-addMapSeat('K', 'I',1,graph)
-addMapSeat('J', 'K',1,graph)
-addMapSeat('R', 'S',0,graph)
-addMapSeat('W', 'T',0,graph)
-
-addMapSeat('X', 'AA',0,graph)
-addMapSeat('Y', 'AB',1,graph)
-addMapSeat('AB', 'AA',0,graph)
-
-// Graph.Visitor.DFS(graph, 'A', function (node) {
-    
-//     console.log(node.edges);
-    
-
-// });
-// var myNodeList = ['A','F','D','B','G','L','N','M','P','O','S']
-var seatMapGroup = []
-var myNodeList = ['A','D','B','F','G','C','H','L','M','N','AF','I','K','J','O','P','AE','Q','R','S','W','T','V','X','AA','AB','Y','Z','AC','AD',]
-var countGroup = 0
-// myNodeList.forEach(studentNode => {
-while(myNodeList.length != 0){
-    studentNode = myNodeList[0]
-    // console.log(studentNode);
-    // console.log(myNodeList);
-    
-
-
-
-
-var myVisitedNodeList = []
-var seatMap = new Map()
-if(graph.hasNode(studentNode)){
-Graph.Visitor.BFS(graph, studentNode, function (array_of_nodes, depth) {
-    
-    array_of_nodes.forEach(myNode => {
-        // console.log(myNode.id);
-        var index = myNodeList.indexOf(myNode.id)
-        myNodeList.splice(index,1)
-        
-        var adjList = [] 
-        seatMap.set(myNode.id,adjList)
-        
-        myNode.edges.forEach(myEdge => {
-            
-            if(myEdge.source.id == myNode.id && !myVisitedNodeList.includes(myEdge.target.id)){
-                var adjPair = []
-                var direction = 'none'
-                if(myEdge.weight == 0){
-                    direction = "Right"
-                }else if(myEdge.weight == 1){
-                    direction = "Front"
-                }else if(myEdge.weight == 2){
-                    direction = "Left"
-                }else{
-                    direction = "Back"
-                }
-                adjPair = [myEdge.target.id,direction]
-
-                adjList.push(adjPair)
-
-                // console.log(myNode.id+ ' >> '+ myEdge.target.id+ '( '+ direction +')');
-                
-                // console.log(adjList);
-            }
-            
-            
-            
-            
-        });
-        // console.log('--------------------------------------------------------');
-        
-        myVisitedNodeList.push(myNode.id)
-        // console.log(myNode);
-    });
-
-    
+mapSeatArr.forEach(mapseat=> {
+    addMapSeat(mapseat.studentID,mapseat.receivedStudentID,mapseat.direction,graph)
 });
-    seatMapGroup.push(seatMap)
 
-}else{
-    seatMap.set(studentNode,null)
-    seatMapGroup.push(seatMap)
-    myNodeList.splice(0,1)
-    
+var seatMapGroup = []
+var countGroup = 0
+while(myNodeList.length != 0){
+    var studentNode = myNodeList[0]
+    var myVisitedNodeList = []
+    var seatMap = new Map()
+    if(graph.hasNode(studentNode)){
+        Graph.Visitor.BFS(graph, studentNode, function (array_of_nodes, depth) {
+            array_of_nodes.forEach(myNode => {
+                var index = myNodeList.indexOf(myNode.id)
+                var adjList = [] 
+                myNodeList.splice(index,1)
+                seatMap.set(myNode.id,adjList)
+                myNode.edges.forEach(myEdge => {
+                    if(myEdge.source.id == myNode.id && !myVisitedNodeList.includes(myEdge.target.id)){
+                        var adjPair = []
+                        var direction = 'none'
+                        if(myEdge.weight == 0)
+                        {
+                            direction = "Right"
+                        }else if(myEdge.weight == 1)
+                        {
+                            direction = "Front"
+                        }else if(myEdge.weight == 2)
+                        {
+                            direction = "Left"
+                        }else
+                        {
+                            direction = "Back"
+                        }
+                        adjPair = [myEdge.target.id,direction]
+                        adjList.push(adjPair)
+                    }
+                });
+                myVisitedNodeList.push(myNode.id)
+            });
+        });
+            seatMapGroup.push(seatMap)
+        }else
+        {
+            seatMap.set(studentNode,[])
+            seatMapGroup.push(seatMap)
+            myNodeList.splice(0,1) 
+        }       
+    countGroup+=1
 }
 
-// console.log(myNodeList);
-// console.log(seatMap);
-
-
-countGroup+=1
-
+var mySeatmapCoordinatesList = []
+for(var i=0;i<countGroup;i++){
+    mySeatmapCoordinatesList.push(new Map())
 }
 
-
-// console.log(seatMapGroup);
-// console.log(countGroup);
-
+var c=0
 seatMapGroup.forEach(seatmap => {
-    // seatmap.forEach((val,key)=>{
-    //     console.log(key,val);
-    // })
-    console.log(seatmap);
+    seatmap.forEach((adjNodeArr,node) => {
+        if(mySeatmapCoordinatesList[c].get(node) == undefined){
+            var X_parent = 0
+            var Y_parent = 0
+            mySeatmapCoordinatesList[c].set(node,[X_parent,Y_parent])
+        }
+        adjNodeArr.forEach(adjNode => {
+            var X_parent = mySeatmapCoordinatesList[c].get(node)[0]
+            var Y_parent = mySeatmapCoordinatesList[c].get(node)[1]
+            if(adjNode[1] == 'Right')
+            {
+                X_parent+=1;
+            }
+            else if(adjNode[1] == 'Left')
+            {
+                X_parent-=1;
+            }
+            else if(adjNode[1] == 'Front')
+            {
+                Y_parent+=1;
+            }
+            else if(adjNode[1] == 'Back')
+            {
+                Y_parent-=1
+            }
+            mySeatmapCoordinatesList[c].set(adjNode[0],[X_parent,Y_parent])
+        });
+    });
+    c+=1 
 })
 
-
+console.log(mySeatmapCoordinatesList);

@@ -119,32 +119,40 @@ class ExampleApp extends PureComponent {
           checkDate:checkDate,
           timestamp:timestamp
         }
-        await fetch(myEndpointURL+'/checkIn', {
-          method: 'POST',
-          headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            checkInFetchData:myCheckInFetchData
-          })
-          })
-          .then((response) => response.json())
-          .then(async (data) => {
+     try {
+      const response =  await fetch(myEndpointURL+'/checkIn', {
+        method: 'POST',
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          checkInFetchData:myCheckInFetchData
+        })
+        })
+      const data = response.json()
+      console.log(data);
+      this.props.navigation.navigate('StudentHome')
+     } catch (error) {
+       console.log(error);
+     }
+
+          // .then((response) => response.json())
+          // .then(async (data) => {
               
-              console.log(data);
-              this.props.navigation.navigate('StudentHome')
-          })
-          .catch((error) => {
-          console.error(error);
-          });
+          //     console.log(data);
+          //     this.props.navigation.navigate('StudentHome')
+          // })
+          // .catch((error) => {
+          // console.error(error);
+          // });
       }
     
   render() {
     return (
       <View style={styles.container}>
         <TouchableOpacity  style={styles.capture}>
-            <Text style={{ fontSize: 14 }}> กรุณายิ้ม {this.state.mustSmile} ครั้ง และ กระพริบตา {this.state.mustEyeBlink} ครั้ง   </Text>
+            <Text style={{ fontSize: 14 }}> กรุณายิ้ม {(this.state.mustSmile-smile)>=0 ? this.state.mustSmile-smile : 0} ครั้ง และ กระพริบตา {(this.state.mustEyeBlink-eyeblink)>=0 ? this.state.mustEyeBlink-eyeblink : 0} ครั้ง   </Text>
             {this.state.matchResult == null ? <></> : (this.state.matchResult == true) ? 
             <Text style={{alignSelf:'center',backgroundColor:'green'}}>Your face is matched</Text>
             : 
@@ -275,19 +283,22 @@ takePictureMatch = async () => {
         this.setState({matchResult:null})
       }
       else{
-          await this._FindSimilarity(faceID,this.state.studentIDState)
+          await this._FindSimilarity(faceID,this.state.studentIDState.replace(' ', '').toLowerCase())
           .then(async matchResult => {
+            console.log(matchResult );
             if(matchResult.length != 0){
               this.setState({matchResult:true,
                 isInprogressModalShow:false,
                 shouldFaceDetect:false,
                 })
             //   this.props.navigation.navigate('StudentHome')
-            await this.checkInAPI(
-                this.props.route.params.studentID,
-                this.props.route.params.teacherID,
-                this.props.route.params.uqID
-                )
+            if(matchResult[0].confidence >= 0.7){
+                await this.checkInAPI(
+                    this.props.route.params.studentID,
+                    this.props.route.params.teacherID,
+                    this.props.route.params.uqID
+                    )
+            }
             }
             else{
               

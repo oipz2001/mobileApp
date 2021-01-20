@@ -97,7 +97,7 @@ class CameraAddFaceList extends PureComponent {
       await reference.putFile(data.uri)
       var base64String = data.base64; 
       var bufferValue = Buffer.from(base64String,"base64");
-      var faceListId = this.state.studentIDState
+      var faceListId = this.state.studentIDState.replace(' ', '').toLowerCase()
       await this.CreateFaceList(faceListId,faceListId+'_Face')
       await this.AddToFaceList(faceListId,bufferValue)
       

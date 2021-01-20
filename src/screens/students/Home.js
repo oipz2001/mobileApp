@@ -200,7 +200,7 @@ const StudentHome = ({navigation,route}) => {
         await fetch(myEndpointURL+'/getClassroom?date='+date+'&studentID='+studentID+'&clientCurrentTime='+currentTime+'&clientCurrentDate='+currentDate)
           .then((response) => response.json())
           .then((data) => {
-              // console.log(data);
+              console.log(data);
               setSessionsData(data)
           })
           .catch((error) => {
@@ -264,15 +264,7 @@ const StudentHome = ({navigation,route}) => {
                           }
                               
                         </View>
-                        <View style={{marginTop:30}}>
-                          {
-                            item.isStudentChecked ? 
-                            <Icon name="check-circle" size={60} color='green'/>
-                            :
-                            <Icon name="times-circle" size={60} color='red'/>
-                          }
-                            
-                        </View>     
+                          
                     </View>
             </View>
 
@@ -281,8 +273,8 @@ const StudentHome = ({navigation,route}) => {
 
               {item.sessionStatus == 0 ? 
               <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-evenly',marginTop:15}}>
-                {
-                  item.isStudentChecked == false ?
+                 {
+                  item.isStudentChecked == false ? 
                 
                   <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
                   <TouchableOpacity onPress={async () => {
@@ -328,14 +320,17 @@ const StudentHome = ({navigation,route}) => {
                       <Text style={{color:'white'}}>Check-in</Text>
                   </TouchableOpacity>
                   </View>
-                   : 
-                   <></> 
+                    : 
+                    <></> 
                    } 
+
                   {
                     (item.isStudentChecked && item.isSeatmapSet) ? 
                   <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
                     <TouchableOpacity onPress={() => navigation.navigate('Seatmap',{
-                      uqID:item.uqID,teacherID:item.teacherID
+                      uqID:item.uqID,
+                      teacherID:item.teacherID,
+                      date: item.currentDate
                       })} >
                         <Text style={{color:'white'}}>Create Seat Map</Text>
                     </TouchableOpacity>
@@ -365,6 +360,15 @@ const StudentHome = ({navigation,route}) => {
                 </View>
               }
             </View>
+            <View style={{marginTop:0,alignSelf:'flex-end'}}>
+                          {
+                            item.isStudentChecked ? 
+                            <Icon name="check-circle" size={50} color='green'/>
+                            :
+                            <Icon name="times-circle" size={50} color='red'/>
+                          }
+                            
+                        </View>   
             
           
         </View>

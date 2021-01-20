@@ -10,8 +10,9 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const InClassRoom = ({route,navigation}) => {
     const classUqID = route.params.uqID
     const teacherID = route.params.teacherID 
+    const date = route.params.date
     useEffect(() => {
-        console.log(classUqID + ' ' +teacherID+ '(Seat map)');
+        console.log(classUqID + ' ' +teacherID+ ' '+ date);
 
     })
 
@@ -24,7 +25,7 @@ const InClassRoom = ({route,navigation}) => {
                 
                     <View style={{flexDirection:'row',justifyContent:'space-around',padding:10}}>
                         
-                        <TouchableOpacity style={styles.QR} onPress={() => navigation.navigate('ScanQR',{uqID:classUqID,teacherID:teacherID})}>
+                        <TouchableOpacity style={styles.QR} onPress={() => navigation.navigate('ScanQR',{uqID:classUqID,teacherID:teacherID,date:date})}>
                             <Image source={require('../../assets/vectors/qr-code_scan.png')} style={{width:50,height:50}} />
                             <Text style={{marginTop:10}}>Scan QR</Text>
                         </TouchableOpacity>

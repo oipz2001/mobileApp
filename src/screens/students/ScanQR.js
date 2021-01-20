@@ -33,7 +33,7 @@ class QR_Scan extends PureComponent {
 
 
     CollectMapSeatAPI = async (studentID,receivedStudentID,direction) => {
-      await fetch(myEndpointURL+'/mapSeat', {
+      await fetch(myEndpointURL+'/addMapSeat', {
         method: 'POST',
         headers: {
             Accept: "application/json",
@@ -44,7 +44,8 @@ class QR_Scan extends PureComponent {
           receivedStudentID:receivedStudentID,
           direction:direction,
           teacherID:this.props.route.params.teacherID,
-          uqID:this.props.route.params.uqID
+          uqID:this.props.route.params.uqID,
+          date:this.props.route.params.date
         })
         })
         .then((response) => response.json())
@@ -131,10 +132,9 @@ class QR_Scan extends PureComponent {
   handleBarcodeDetected = async ({barcodes}) => {
       if( barcodes[0].type  == 'QR_CODE'){
         const receivedStudentID =  barcodes[0].data
-      console.log(receivedStudentID);
       this.setState({receivedBarcodeData:barcodes[0].data})
       this.setState({shouldBarcodeDetect:false})
-      await this.CollectMapSeatAPI(this.state.studentIDState,receivedStudentID,this.state.direction)
+      await this.CollectMapSeatAPI(this.state.studentIDState,receivedStudentID,this.state.scanDirection)
     }
 
   }

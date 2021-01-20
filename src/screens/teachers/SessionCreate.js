@@ -241,10 +241,10 @@ const TeacherSessionCreate = ({navigation}) => {
                         style={{ height: 39, width: 130,color:'white'}}
                         onValueChange={(itemValue, itemIndex) => {setSelectedTermValue(itemValue)}}
                     >
-                        <Picker.Item label="1/2020" value="1/2020"  />
-                        <Picker.Item label="2/2020" value="2/2020" />
-                        <Picker.Item label="1/2019" value="1/2019"  />
-                        <Picker.Item label="2/2019" value="2/2019" />
+                        <Picker.Item label="1/2563" value="1/2563"  />
+                        <Picker.Item label="2/2563" value="2/2563" />
+                        <Picker.Item label="1/2562" value="1/2562"  />
+                        <Picker.Item label="2/2562" value="2/2562" />
                     </Picker>
                 </View>
                 </View>

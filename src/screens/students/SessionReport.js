@@ -103,7 +103,7 @@ const SessionReport = ({route}) => {
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
                     ListHeaderComponent={<Text style={{fontSize:18,alignSelf:'center'}}>
-                      สรุปการเช็คชื่อห้อง {route.params.className} 
+                      สรุปผลการเช็คชื่อห้อง {route.params.className} 
                       {route.params.classID == "" ? "" : `(${route.params.classID})`}</Text>}
                 />
                 

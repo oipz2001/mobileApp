@@ -64,16 +64,17 @@ const Login = ({navigation}) => {
       setTeacherUserMail(teacherMail)
     }
 
-    AsyncStorage.setItem('uniqueIDTeacher','6006107499')
+    AsyncStorage.setItem('uniqueIDTeacher','PARINYA SEETAWAN')
     AsyncStorage.setItem('NameTeacher','Parinya Seetawan')
     AsyncStorage.setItem('MailTeacher','parinya_seetawan@cmu.ac.th')
 
     AsyncStorage.setItem('uniqueIDStudent','JETDILOK NGAMKHAM')
+    // AsyncStorage.setItem('uniqueIDStudent','Paradee1')
     AsyncStorage.setItem('NameStudent','Parinyakorn')
 
     retrieveUserID()
 
-  },[user])
+  },[user,studentUserID])
 
 
   const checkIfTeacherExist = async (teacherID) => {
@@ -224,9 +225,9 @@ const Login = ({navigation}) => {
 
     <SafeAreaView style = {{flex: 1, justifyContent: 'center',alignItems: 'center'}} >
       
-    <TouchableOpacity onPress={_Login} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20}}>
+    {/* <TouchableOpacity onPress={_Login} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20}}>
       <Text style={{color:'white'}}>Login with CMU</Text>
-    </TouchableOpacity>
+    </TouchableOpacity> */}
     {isInfoShow &&
     <View style={{backgroundColor:'#9E76B4',marginTop:30,padding:10,elevation:5,borderRadius:20}}>
       <Text style={{color:"white"}} > Name: {user} </Text> 
@@ -237,9 +238,9 @@ const Login = ({navigation}) => {
     </View>
     }
     
-    <TouchableOpacity onPress={_onLogout} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20,marginTop:30}}>
+    {/* <TouchableOpacity onPress={_onLogout} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20,marginTop:30}}>
       <Text style={{color:'white'}}>Logout</Text>
-    </TouchableOpacity> 
+    </TouchableOpacity>  */}
     <View >
       <View style = {{marginTop: 30}} >
         <Button title = "Go to Teacher Home" onPress = {async () => {

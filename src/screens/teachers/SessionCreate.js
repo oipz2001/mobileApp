@@ -173,6 +173,17 @@ const TeacherSessionCreate = ({navigation}) => {
     }
 
 
+    useEffect(() =>{
+
+        if(!isLocationSelected){
+            setSeatmapCreate(false)
+        }else{
+            setSeatmapCreate(true)
+        }
+
+    },[isLocationSelected])
+
+
 
 
 
@@ -296,7 +307,7 @@ const TeacherSessionCreate = ({navigation}) => {
                     </View>
                     
                     <View style={{alignItems:'center'}}>
-                        <Text style={styles.title}>Duplicate days </Text>
+                        <Text style={styles.title}>Duplicate</Text>
                         <DupDayComponent/>
                     </View>
                     <View style={{flexDirection:'row',alignSelf:'center'}}>
@@ -304,10 +315,15 @@ const TeacherSessionCreate = ({navigation}) => {
                             <CheckBox value={isLocationSelected} onValueChange={setLocationSelection}/>
                             <Text>Set location</Text>
                         </View> 
+                        {
+                            isLocationSelected ? 
                         <View style={{flexDirection:'row',alignSelf:'center',marginTop:10,marginLeft:15}}>
                             <CheckBox value={isSeatmapCreate} onValueChange={setSeatmapCreate}/>
                             <Text>Create seat map</Text>
                         </View> 
+                        :
+                        <></>
+                        }   
                     </View>
 
                     <View style={{alignItems:'center'}}>

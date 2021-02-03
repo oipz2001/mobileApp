@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import { Button, View,Text,Dimensions,FlatList,TouchableOpacity,StyleSheet,StatusBar,Image } from 'react-native'
+import { Button, View,Text,Dimensions,FlatList,TouchableOpacity,StyleSheet,StatusBar,Image,ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
     LineChart,
@@ -34,14 +34,14 @@ const TeacherSessionStat = ({route}) => {
       [
         {
           name: "Present",
-          population: 26,
+          population: 0,
           color: "green",
           legendFontColor: "#7F7F7F",
           legendFontSize: 15
         },
         {
           name: "Absent",
-          population: 5,
+          population: 0,
           color: "#F00",
           legendFontColor: "#7F7F7F",
           legendFontSize: 15
@@ -142,23 +142,26 @@ const TeacherSessionStat = ({route}) => {
     const ListHeaderComponent = () => {
         return(
             <>
-            <View style={{marginTop:25,alignItems:'center'}}>
-            {/* <Text>{JSON.stringify( statData[0]['population'])}</Text> */}
-                <Text style={{fontSize:20,marginBottom:10}}>{classStatData.className} ({classStatData.classId})</Text>
+            <View style={{marginTop:15,alignItems:'center'}}>
+            
+                {/* <Text style={{fontSize:20,marginBottom:10}}>{classStatData.className} {classStatData.classId == "" ? "" : `(${classStatData.classId})`}</Text> */}
+                <View style={{backgroundColor:'white',alignSelf:'center',padding:10,justifyContent:'center',elevation:2,borderRadius:10,marginTop:10}}>
+                  <Text style={{fontSize:20}}>สถิติการเข้าห้อง {classStatData.className}</Text>
+                </View>
                <PieChart
                     data={chartData}
-                    width={375}
+                    width={361}
                     height={250}
                     chartConfig={chartConfig}
                     accessor="population"
                     paddingLeft="15"
-                    style={{ borderRadius:20,elevation:5,backgroundColor:"white"}}
+                    style={{ borderRadius:20,elevation:2,backgroundColor:"white",padding:5,marginTop:10}}
                     absolute={true}
                 />
             </View>
 
-            <View>
-                <Text style={{fontSize:20,alignSelf:'center',marginTop:10}}>Student list</Text>
+            <View style={{backgroundColor:'white',alignSelf:'center',padding:10,justifyContent:'center',elevation:2,borderRadius:10,marginTop:10}}>
+                <Text style={{fontSize:20}}>รายชื่อนักศึกษา</Text>
             </View>
             
             </>
@@ -172,15 +175,17 @@ const TeacherSessionStat = ({route}) => {
         <>
         
                 
-                <SafeAreaView style={{flex:1,alignItems:'center'}}>
+                <SafeAreaView style={{flex:1,alignItems:'center',justifyContent:'center'}}>
                 
-                <FlatList
+                  <FlatList
                     data={studentStatList}
                     renderItem={renderItem}
                     keyExtractor={(item) => item.studentID}
                     extraData={selectedId}
                     ListHeaderComponent={ListHeaderComponent}
                 />
+                
+                
                 
 
                 
@@ -207,7 +212,7 @@ const styles = StyleSheet.create({
       marginVertical: 8,
       marginHorizontal: 16,
       borderRadius:20,
-      elevation:5,
+      elevation:2,
       backgroundColor:'white'
     },
     name: {

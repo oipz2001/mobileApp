@@ -6,6 +6,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import wifi from 'react-native-android-wifi';
 import AsyncStorage from '@react-native-community/async-storage'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import CalendarPicker from 'react-native-calendar-picker';
 
 const URL = require('../../config/endpointConfig')
 
@@ -213,20 +214,32 @@ const StudentHome = ({navigation,route}) => {
 
 
       const CalendarHeader = () => {
+        var myDateSplit = selectedDate.split('-')
+        const myDate = myDateSplit[2]+'/'+myDateSplit[1]+'/'+myDateSplit[0]
         return(
           <View>
-          <Text style={{alignSelf:'center'}}>StudentID: {studentIDState}</Text>
-          <Text style={{alignSelf:'center'}}>Local time: {localTime}</Text>
-          <Calendar style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}} 
-                    onDayPress={async day => {
-                      var localTime = moment(new Date()).format('HH:mm').toString()
-                      var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
-                      var selectDate = day.dateString
-                      setSelectedDate(selectDate)
-                      await _fetchSessionsAPI(selectDate,localTime,localDate)
-                    }}
-          />
-          <Text style={{alignSelf:'center'}}>Select: {selectedDate}</Text>
+          
+          
+          <View style={{backgroundColor:'white',elevation:2,margin:15,borderRadius:20,padding:15}}>
+          <CalendarPicker
+                width={360}
+                height={360}
+                selectedDayColor="#9E76B4"
+                onDateChange={async date => {
+                  var localTime = moment(new Date()).format('HH:mm').toString()
+                  var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+                  var selectDate = moment(date).format('YYYY-MM-DD').toString()
+                  console.log(selectDate);
+                  setSelectedDate(selectDate)
+                  await _fetchSessionsAPI(selectDate,localTime,localDate)
+                }}
+                
+                
+                
+              />
+              </View>
+              <Text style={{alignSelf:'center'}}>การเช็คชื่อในวันที่ {myDate} ({localTime})</Text>
+          
     
           
           </View>
@@ -238,11 +251,15 @@ const StudentHome = ({navigation,route}) => {
         <View style={styles.item}>
           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                     <View >
-                        <Text style={styles.title}>{item.name}</Text>
-                        <Text style={{fontSize:17}}>({item.id})</Text>
-                        <Text style={{fontSize:12}}>Time: {item.startTime} - {item.endTime} </Text>
-                        <Text style={{fontSize:12}}>Teacher: {item.teacherID} </Text>
-                        <Text style={{fontSize:12}}>Description: {item.desc} </Text>
+                        <View style={{flexDirection:'row'}}>
+                          <Text style={styles.title}>{item.name}</Text>
+                          <Text style={{fontSize:17,alignSelf:'center'}}>  { item.id == "" ? "" :  `(${item.id})`}</Text>
+                        </View>
+                        <Text style={{fontSize:12}}>เวลาเช็คชื่อ: {item.startTime} - {item.endTime} ({item.currentDate.split('-')[2] +'/'+ item.currentDate.split('-')[1] +'/'+ item.currentDate.split('-')[0] }) </Text>
+                        <Text style={{fontSize:12}}>ภาคการศึกษา: {item.semester} </Text>
+                        <Text style={{fontSize:12}}>อาจารย์: {item.teacherID} </Text>
+                        <Text style={{fontSize:12}}>คำอธิบาย: {item.desc == '' ? "(ไม่ได้ระบุไว้)" : item.desc } </Text>
+                        <Text style={{fontSize:12}}>รูปแบบการเช็คชื่อ: {item.isLocationSet ? "ระบุสถานที่" : "ออนไลน์"} </Text>
                     </View>
                     <View style={{flexDirection:'column'}}>
                         <View >
@@ -276,22 +293,13 @@ const StudentHome = ({navigation,route}) => {
                  {
                   item.isStudentChecked == false ? 
                 
-                  <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
+                  <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20}}>
                   <TouchableOpacity onPress={async () => {
                     
                     const studentID = studentIDState
                     const teacherID = item.teacherID
                     const uqID = item.uqID
-                    // setSelectedClassData({uqID:uqID,teacherID:teacherID})
-                    // setCheckInFetchData({
-                    //   studentID:studentID,
-                    //   teacherID:teacherID,
-                    //   uqID:uqID,
-                    //   checkDate:checkDate,
-                    //   timestamp:timestamp
-                    // })
-
-                    
+                
 
                     if(item.isLocationSet){
                       // await getWifiList(uqID,teacherID)
@@ -317,7 +325,7 @@ const StudentHome = ({navigation,route}) => {
 
                     // navigation.navigate('StudentFaceCheckIn',{sessionTitle:item.title,sessionID:item.id})
                     }} >
-                      <Text style={{color:'white'}}>Check-in</Text>
+                      <Text style={{color:'white'}}>เช็คชื่อเข้าห้องเรียน</Text>
                   </TouchableOpacity>
                   </View>
                     : 
@@ -325,14 +333,14 @@ const StudentHome = ({navigation,route}) => {
                    } 
 
                   {
-                    (item.isStudentChecked && item.isSeatmapSet) ? 
-                  <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
+                    (item.isStudentChecked && item.isSeatmapSet && item.isLocationSet ) ? 
+                  <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20}}>
                     <TouchableOpacity onPress={() => navigation.navigate('Seatmap',{
                       uqID:item.uqID,
                       teacherID:item.teacherID,
                       date: item.currentDate
                       })} >
-                        <Text style={{color:'white'}}>Create Seat Map</Text>
+                        <Text style={{color:'white'}}>สร้างแผนผังที่นั่ง</Text>
                     </TouchableOpacity>
                   </View>
                   :
@@ -351,27 +359,40 @@ const StudentHome = ({navigation,route}) => {
                 (item.sessionStatus == -1 || (item.sessionStatus == 0 && item.isStudentChecked == false)  ) ?
                 <></>
                 :
-                <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20,alignSelf:'center',marginTop:15}}>
+                <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20,alignSelf:'center',marginTop:15}}>
                   <TouchableOpacity onPress={async () => {
                     navigation.navigate('SessionReport',{className:item.name,classID:item.id,uqID:item.uqID,teacherID:item.teacherID,studentID:studentIDState})
                     }} >
-                      <Text style={{color:'white'}}>Report</Text>
+                      <Text style={{color:'white'}}>สรุปการเช็คชื่อ</Text>
                   </TouchableOpacity>
                 </View>
               }
             </View>
-            <View style={{marginTop:0,alignSelf:'flex-end'}}>
+            
                           {
-                            item.isStudentChecked ? 
-                            <Icon name="check-circle" size={50} color='green'/>
+                            item.sessionStatus == -1 ? 
+                            <></>
                             :
-                            <Icon name="times-circle" size={50} color='red'/>
+                            item.isStudentChecked ? 
+                            <View style={{marginTop:20,alignSelf:'center',elevation:2,backgroundColor:'white',padding:6,paddingHorizontal:13,borderRadius:15,borderColor:'green',borderWidth:3}}>
+                              <View style={{flexDirection:'row'}}>
+                                <Text style={{alignSelf:'center',marginRight:10,color:'green'}}>เช็คชื่อแล้ว</Text>
+                                <Icon name="check-circle" size={50} color='green'/>
+                              </View>
+                            </View>
+                            :
+                            <View style={{marginTop:20,alignSelf:'center',elevation:2,backgroundColor:'white',padding:6,paddingHorizontal:13,borderRadius:15,borderColor:'red',borderWidth:3}}>
+                              <View style={{flexDirection:'row'}}>
+                                <Text style={{alignSelf:'center',marginRight:10,color:'red'}}>ยังไม่ได้เช็คชื่อ</Text>
+                                <Icon name="times-circle" size={50} color='red'/>
+                              </View>
+                            </View>
                           }
                             
                         </View>   
             
           
-        </View>
+        
       );
 
       const renderItem = ({ item }) => (
@@ -388,7 +409,7 @@ const StudentHome = ({navigation,route}) => {
                     data={sessionsData}
                     renderItem={renderItem}
                     keyExtractor={item => item.uqID}
-                    ListHeaderComponent={<CalendarHeader/>}
+                    ListHeaderComponent={CalendarHeader()}
                 />
                 <Modal
                       animationType="fade"
@@ -398,7 +419,7 @@ const StudentHome = ({navigation,route}) => {
                       Alert.alert("Modal has been closed.");
                       }}
                   >
-                      <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:8,marginBottom:190}}>
+                      <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:2,marginBottom:190}}>
                           <View style={{flex:1,justifyContent:'center'}}>
                             <Text>Verify Location...</Text>
                           </View>
@@ -417,7 +438,7 @@ const StudentHome = ({navigation,route}) => {
                       }}
                   >
                     
-                      <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:8,marginBottom:190}}>
+                      <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:2,marginBottom:190}}>
                           <View style={{flex:1,justifyContent:'center'}}>
                              <Icon name="times" size={100} color='red'/>
                           </View>
@@ -427,7 +448,7 @@ const StudentHome = ({navigation,route}) => {
                             <Text >(หากเกิดข้อผิดพลาดให้พบอาจารย์ผู้สอน)</Text>
                           </View>
                           
-                          <TouchableOpacity style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:8,borderRadius:20,width:80,alignItems:'center'}} onPress={() => setIsMatchFalseModalShow(false)}>
+                          <TouchableOpacity style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} onPress={() => setIsMatchFalseModalShow(false)}>
                             <Text style={{color:'white'}}>Close</Text>
                           </TouchableOpacity>
                       </View>
@@ -459,7 +480,7 @@ const styles = StyleSheet.create({
       marginVertical: 8,
       marginHorizontal: 16,
       borderRadius:20,
-      elevation : 5,
+      elevation : 2,
     },
     title: {
       fontSize: 25,

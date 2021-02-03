@@ -55,12 +55,16 @@ const SessionReport = ({route}) => {
 
     
       const Item = ({ item }) => {
+        const myDateSplit = item.date.split('-')
+        const day = myDateSplit[2]
+        const month = myDateSplit[1]
+        const year = myDateSplit[0]
         
         return(
         
         <View style={styles.item}>
            <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                <Text style={styles.title}>{item.date}</Text>
+                <Text style={styles.title}>{day+'/'+month+'/'+year}</Text>
                 {
                   (item.classStatus == -1) ?
                   <View>
@@ -91,15 +95,18 @@ const SessionReport = ({route}) => {
 
     return(
         <>
-                <SafeAreaView style={{flex:1}}>
-                <View style={{marginTop:30,padding:15}}>
-            <Text style={{fontSize:25,alignSelf:'center'}}>{route.params.className} ({route.params.classID})</Text>
+                <SafeAreaView style={{flex:1,padding:10}}>
+                
+            
                 <FlatList
                     data={reportData}
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
+                    ListHeaderComponent={<Text style={{fontSize:18,alignSelf:'center'}}>
+                      สรุปการเช็คชื่อห้อง {route.params.className} 
+                      {route.params.classID == "" ? "" : `(${route.params.classID})`}</Text>}
                 />
-                </View>
+                
                 
                 </SafeAreaView>
 
@@ -124,7 +131,7 @@ const styles = StyleSheet.create({
       padding: 20,
       marginVertical: 10,
       marginHorizontal: 16,
-      elevation:7,
+      elevation:2,
       borderRadius:20,
       backgroundColor:'white'
     },

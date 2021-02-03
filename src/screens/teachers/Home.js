@@ -6,7 +6,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage'
 import wifi from 'react-native-android-wifi';
-
+import CalendarPicker from 'react-native-calendar-picker';
 const URL = require('../../config/endpointConfig')
 
 const myEndpointURL =  URL.myEndpointTeacher
@@ -22,8 +22,6 @@ const TeacherHome = ({ navigation }) => {
     // YYYY-MM-DD
     const [selectedDate,setSelectedDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
 
-    // const [currentDate,setcurrentDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
-    // const [currentTime,setcurrentTime] = useState(moment(new Date()).format('HH:mm').toString())
 
     const [localTime,setLocalTime] = useState(moment(new Date()).format('HH:mm').toString())
 
@@ -67,60 +65,21 @@ const TeacherHome = ({ navigation }) => {
 
 
 
-    // useEffect(() => {
-
-    //   const updateWifiLocAPI = async (uqID,teacherID,wifis) => {
-
-    //     if(wifis.length != 0){
-    //       await fetch(defaultEndpoint+'/webApp/addNewStudents', {
-    //         method: 'POST',
-    //         headers: {
-    //             Accept: "application/json",
-    //             "Content-Type": "application/json"
-    //         },
-    //         body: JSON.stringify({
-    //           uqID: uqID,
-    //           teacherID:teacherID,
-    //           wifiList: wifis
-    
-    //         })
-    //         })
-    //         .then((response) => response.json())
-    //         .then((data) => {
-                
-    //             console.log(data);
-    //         })
-    //         .catch((error) => {
-    //         console.error(error);
-    //         });
-    //     }
-
-    //   }
-
-
-
-    //   updateWifiLocAPI()
-
-    // },[wifiList])
-
-
-
     useFocusEffect(
       React.useCallback(() => {
         // Do something when the screen is focused
-        console.log("Home is focused");
+        
        var localTime = moment(new Date()).format('HH:mm').toString()
        var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+       console.log("Home is focused");
 
         if(teacherIDState !=  null)
-        _fetchSessionsAPI(selectedDate,localTime,localDate)
+          _fetchSessionsAPI(selectedDate,localTime,localDate)
 
-        console.log(teacherIDState);
+        
 
   
         return () => {
-          // Do something when the screen is unfocused
-          // Useful for cleanup functions
           console.log("Home is unfocused");
         };
       }, [teacherIDState,selectedDate])
@@ -134,9 +93,9 @@ const TeacherHome = ({ navigation }) => {
     //     if(teacherIDState !=  null)
     //     _fetchSessionsAPI(selectedDate,localTime,localDate)
 
-    //     console.log(teacherIDState);
+    //     // console.log(teacherIDState);
 
-    // }, [teacherIDState,selectedDate])
+    // }, [selectedDate])
 
 
     const _fetchSessionsAPI = async (selectDate,currentTime,currentDate) => {
@@ -169,7 +128,8 @@ const TeacherHome = ({ navigation }) => {
         {id:'600610751',name:'Pawaris'},
         {id:'600610777',name:'Paradee'},
         {id:'600610888',name:'Paradee1'},
-        {id:'600610749',name:'PARINYA SEETAWAN'}
+        {id:'600610749',name:'PARINYA SEETAWAN'},
+        {id:'600610758',name:'JETDILOK NGAMKHAM'}
       ]
       
       console.log(uqID);
@@ -317,20 +277,19 @@ const TeacherHome = ({ navigation }) => {
            
               
               
-            
-          
-            <TouchableOpacity   style={[styles.item, style]}>
+        
+            <View   style={[styles.item, style]}>
               <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                     <View >
                         <View style={{flexDirection:'row'}}>
-                        <Text style={styles.title}>{item.name}</Text>
-                        <Text style={{fontSize:16,alignSelf:'center'}}>  ({item.id})</Text>
+                          <Text style={styles.title}>{item.name}</Text>
+                          <Text style={{fontSize:17,alignSelf:'center'}}>  {item.id == "" ? "" : `(${item.id})` }</Text>
                         </View>
-                        <Text style={styles.descrption}>Semester: {item.semester} </Text>
-                        <Text style={styles.descrption}>Date: {item.currentDate} </Text>
-                        <Text style={styles.descrption} >Time: {item.startTime} - {item.endTime} </Text>
-                        <Text style={styles.descrption}>Description: {item.desc} </Text>
-                        <Text style={styles.descrption}>Checking format: {item.isLocationSet ? 'On Location' : 'Online'} </Text>
+                        <Text style={styles.descrption}>ภาคการศึกษา: {item.semester} </Text>
+                        <Text style={styles.descrption}>เวลาเช็คชื่อ: {item.startTime} - {item.endTime} ({item.currentDate.split('-')[2] +'/'+ item.currentDate.split('-')[1] +'/'+ item.currentDate.split('-')[0] }) </Text>
+                        
+                        <Text style={styles.descrption}>คำอธิบาย: {item.desc == "" ? "(ไม่ได้ระบุไว้)" : item.desc} </Text>
+                        <Text style={styles.descrption}>รูปแบบการเช็คชื่อ: {item.isLocationSet ? 'ระบุสถานที่' : 'ออนไลน์'} </Text>
                     </View>
                     <View style={{justifyContent:'space-between'}}>
                       {
@@ -370,23 +329,27 @@ const TeacherHome = ({ navigation }) => {
                           </View>
                       </View>
                       <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-around',marginTop:15}}>
-                        <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
+                        <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20}}>
                         <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',{uqID:item.uqID,selectedDate:selectedDate})}} >
-                            <Text style={{color:'white'}}>Statistics</Text>
+                            <Text style={{color:'white'}}>สถิติการเข้าห้อง</Text>
                         </TouchableOpacity>
                         </View>
-                        <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20}}>
+                        { item.isSeatmapSet ?
+                        <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20}}>
                         <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{uqID:item.uqID,selectedDate:selectedDate})} >
-                            <Text style={{color:'white'}}>Seat map</Text>
+                            <Text style={{color:'white'}}>แผนผังที่นั่ง</Text>
                         </TouchableOpacity>
                       </View>
+                      :
+                      <></>
+                      }
                     </View>
                     
                   
                   </View> 
                 :
                 <View style={{flexDirection:'row',alignSelf:'center',margin:15}}>
-                  <TouchableOpacity style={{backgroundColor:'yellow',padding:10,borderRadius:10}}>
+                  <TouchableOpacity style={styles.addStudentWarningButton}>
                     <Text style={{color:'red'}}>Please add your students</Text>
                   </TouchableOpacity>
                 </View> 
@@ -395,33 +358,40 @@ const TeacherHome = ({ navigation }) => {
 
               }
 
-            
-            <View style={{backgroundColor:'#9E76B4',padding:12,elevation:7,borderRadius:20,alignSelf:'center'}}>
+            {
+              item.isLocationSet ?
+              <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20,alignSelf:'center'}}>
                 <TouchableOpacity onPress={async () => {
                     await updateWifiLocAPI(item.uqID,teacherIDState)
                 }}  >
                   <View style={{flexDirection:'row'}}>
                     <Icon name="map-marker" size={25} color="white" /> 
-                    <Text style={{color:'white',marginLeft:7}}>Update location</Text>      
+                    <Text style={{color:'white',marginLeft:7}}>อัปเดตสถานที่เช็คชื่อ</Text>      
                   </View>
                 </TouchableOpacity>
-                
-            
-                
-                
+               
             </View>
-
-            <View>
-                <TouchableOpacity style={{backgroundColor:'red',padding:15,elevation:5,borderRadius:25,alignSelf:'center',marginTop:15}}
+            :
+            <></>
+            }
+            
+            {
+              item.isStudentAdded ?
+              <View >
+                <TouchableOpacity style={{backgroundColor:'red',padding:15,elevation:2,borderRadius:25,alignSelf:'center',marginTop:15}}
                 onPress={async () => {
                   var localTime = moment(new Date()).format('HH:mm').toString()
                   var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
                   await _cancelSession(item.currentDate,item.uqID)
                   await _fetchSessionsAPI(item.currentDate,localTime,localDate)
                   }} >
-                  <Text style={{color:'white'}}>Cancel</Text>
+                  <Text style={{color:'white'}}>ยกเลิกการเช็คชื่อ</Text>
                 </TouchableOpacity>
-            </View>
+              </View>
+              :
+              <></>
+            }
+            
             {!item.isStudentAdded ? 
             <View>
                 <TouchableOpacity style={{backgroundColor:'green',padding:15,elevation:5,borderRadius:25,alignSelf:'center',marginTop:15}}
@@ -439,7 +409,7 @@ const TeacherHome = ({ navigation }) => {
             }
             
             
-            </TouchableOpacity>
+            </View>
 
 
             
@@ -463,13 +433,15 @@ const TeacherHome = ({ navigation }) => {
       };
 
 
-       const HeaderFlatlistComponent = () => {
+        const HeaderFlatlistComponent = ()=>{
+          var myDateSplit = selectedDate.split("-")
+          const myDate = myDateSplit[2]+'/'+myDateSplit[1]+'/'+myDateSplit[0]
           return(
-            <>
-                <Text style={{alignSelf:'center'}}>Date: {selectedDate}</Text>
-                {/* <Text style={{alignSelf:'center'}}>TeacherID: {teacherIDState}</Text> */}
-                <Text style={{alignSelf:'center'}}>Time: {localTime}</Text>
-                <Calendar 
+            < >
+                {/* <Text style={{alignSelf:'center'}}>Date: {selectedDate}</Text>
+                <Text style={{alignSelf:'center'}}>TeacherID: {teacherIDState}</Text>
+                <Text style={{alignSelf:'center'}}>Time: {localTime}</Text> */}
+                {/* <Calendar 
                 style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}}
                 onDayPress={async day => {
                   var localTime = moment(new Date()).format('HH:mm').toString()
@@ -480,16 +452,37 @@ const TeacherHome = ({ navigation }) => {
                   await _fetchSessionsAPI(selectDate,localTime,localDate)
                   }}
                   
-                />
+                /> */}
+                <View style={{backgroundColor:'white',elevation:2,margin:15,borderRadius:20,padding:15}}>
+                    <CalendarPicker
+                    width={360}
+                    height={360}
+                    selectedDayColor="#9E76B4"
+                    // todayBackgroundColor="#7fff00"
+                    onDateChange={async date => {
+                      var localTime = moment(new Date()).format('HH:mm').toString()
+                      var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+                      var selectDate = moment(date).format('YYYY-MM-DD').toString()
+                      console.log(selectDate);
+                      setSelectedDate(selectDate)
+                      await _fetchSessionsAPI(selectDate,localTime,localDate)
+                      }}
+                    
+                    
+                  />
+              </View>
+
+               
                 
 
-                <View style={{alignItems:'center',margin:15,marginBottom:20}}>     
-                 <TouchableOpacity  style={{alignItems:'center',backgroundColor:'white',padding:17,borderRadius:20,elevation:8}} onPress={() => navigation.navigate('TeacherCreateRoom')}>
+                <View style={{alignItems:'center',marginBottom:8}}>     
+                 <TouchableOpacity  style={{alignItems:'center',backgroundColor:'white',padding:15,borderRadius:20,elevation:2}} onPress={() => navigation.navigate('TeacherCreateRoom')}>
                 
-                    <Icon name="plus-circle" size={60}/>
-                    <Text >Add Sessions</Text>
+                    <Icon name="plus-circle" size={50}/>
+                    <Text >Add Session</Text>
                  </TouchableOpacity>
-                 </View>       
+                 </View>  
+                 <Text style={{alignSelf:'center'}}>การเช็คชื่อในวันที่ {myDate} ({localTime})</Text>     
                       
                
             </>
@@ -508,7 +501,7 @@ const TeacherHome = ({ navigation }) => {
                     keyExtractor={(item) => item.uqID}
                     extraData={selectedId}
                     style={{marginTop:10}}
-                    ListHeaderComponent={<HeaderFlatlistComponent/>}
+                    ListHeaderComponent={HeaderFlatlistComponent()}
                 />
                 
                 <Modal
@@ -519,7 +512,7 @@ const TeacherHome = ({ navigation }) => {
                 Alert.alert("Modal has been closed.");
                 }}
             >
-                <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:8,marginBottom:190}}>
+                <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:2,marginBottom:190}}>
                     
                     <View style={{flex:3,justifyContent:'center'}}>
                       <ActivityIndicator size={200} color="#9E76B4" />
@@ -543,13 +536,20 @@ const styles = StyleSheet.create({
       marginVertical: 8,
       marginHorizontal: 16,
       borderRadius:20,
-      elevation:5,
+      elevation:2,
     },
     title: {
       fontSize: 22,
     },
     descrption:{
         fontSize:10
+    },
+    addStudentWarningButton : {
+      backgroundColor:'yellow',
+      padding:10,
+      borderRadius:10,
+      borderColor:'red',
+      borderWidth:3
     }
   });
 

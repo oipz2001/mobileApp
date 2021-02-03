@@ -108,18 +108,24 @@ class QR_Scan extends PureComponent {
                       Alert.alert("Modal has been closed.");
                       }}
                   >
+                    
                       <View style={{backgroundColor:'white',alignItems:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:8,marginBottom:200}}>
+                        <View style={{flex:1,alignItems:'center',justifyContent:'center',marginTop:30}}>
+                        <Text>*กฎในการสแกน*</Text>
+                        <Text>สแกนด้านหน้า (หากมีคนด้านหน้า)</Text>
+                        <Text>สแกนด้านขวา (หากไม่มีคนด้านหน้า)</Text>
+                        </View>
                           <View style={{flex:1,justifyContent:'center'}}>
-                            <Text>Please select direction to scan</Text>
+                            <Text>โปรดเลือกทิศทางในการสแกน</Text>
                           </View>
-                          <View style={{flex:2,justifyContent:'center'}}>
+                          <View style={{flex:1,justifyContent:'center'}}>
                             <TouchableOpacity style={styles.button} onPress={() => this.setState({scanDirection:1,isSelectModalShow:false,shouldBarcodeDetect:true})}>
-                              <Text style={{color:'white'}}>Front Scan</Text>
+                              <Text style={{color:'white'}}>สแกนด้านหน้า</Text>
                             </TouchableOpacity>
                           </View>
-                          <View style={{flex:2,justifyContent:'center',marginBottom:25}}>
+                          <View style={{flex:1,justifyContent:'center',marginBottom:25}}>
                             <TouchableOpacity style={styles.button} onPress={() => this.setState({scanDirection:0,isSelectModalShow:false,shouldBarcodeDetect:true})}>
-                              <Text style={{color:'white'}}>Right Scan</Text>
+                              <Text style={{color:'white'}}>สแกนด้านขวา</Text>
                             </TouchableOpacity>
                           </View>
                       </View>

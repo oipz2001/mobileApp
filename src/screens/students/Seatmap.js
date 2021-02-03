@@ -21,18 +21,18 @@ const InClassRoom = ({route,navigation}) => {
         
                 <SafeAreaView style={{flex:1}}>
                 <View style={{marginTop:25}} >
-                    <Text style={{alignSelf:'center',fontSize:25}} >Seat Map Creation</Text>
+                    <Text style={{alignSelf:'center',fontSize:20}} >การสร้างแผนผังที่นั่งห้องเรียน</Text>
                 
                     <View style={{flexDirection:'row',justifyContent:'space-around',padding:10}}>
                         
                         <TouchableOpacity style={styles.QR} onPress={() => navigation.navigate('ScanQR',{uqID:classUqID,teacherID:teacherID,date:date})}>
                             <Image source={require('../../assets/vectors/qr-code_scan.png')} style={{width:50,height:50}} />
-                            <Text style={{marginTop:10}}>Scan QR</Text>
+                            <Text style={{marginTop:10}}>สแกน QR</Text>
                         </TouchableOpacity>
                         
                         <TouchableOpacity style={styles.QR} onPress={() => navigation.navigate('MyQR',{sessionID:route.params.sessionID,sessionTitle:route.params.sessionTitle})}>
                             <Image source={require('../../assets/vectors/qr-code.png')} style={{width:50,height:50}} />
-                            <Text style={{marginTop:10}}>My QR</Text>
+                            <Text style={{marginTop:10}}>QR ของฉัน</Text>
                         </TouchableOpacity>
                         
                     </View>
@@ -64,7 +64,7 @@ const InClassRoom = ({route,navigation}) => {
 const styles = StyleSheet.create({
     QR:{
         backgroundColor:'white',
-        padding:50,elevation:5,
+        padding:40,elevation:2,
         borderRadius:20,
         alignItems:'center',
         width:170,
@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     },
     report:{
         backgroundColor:'white',
-        padding:50,elevation:5,
+        padding:50,elevation:2,
         borderRadius:20,
         alignItems:'center'
     }

@@ -197,37 +197,37 @@ const TeacherSessionCreate = ({navigation}) => {
 
     const DupDayComponent = () => {
         return(
-        <View style={{padding:10,borderRadius:20,backgroundColor:'#e6e6fa',elevation:7}} >
+        <View style={{padding:10,borderRadius:20,backgroundColor:'#e6e6fa',elevation:2}} >
             <View style={{flexDirection:'row'}} >
                 <View style={{flexDirection:'row',alignItems:'center'}}>
                     <CheckBox value={isMon} onValueChange={setIsMon} />
-                    <Text>Mon</Text>
+                    <Text>จันทร์</Text>
                 </View>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
                     <CheckBox value={isTue} onValueChange={setIsTue} />
-                    <Text>Tue</Text>
+                    <Text>อังคาร</Text>
                 </View>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
                     <CheckBox value={isWed} onValueChange={setIsWed}/>
-                    <Text>Wed</Text>
+                    <Text>พุธ</Text>
                 </View>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
                     <CheckBox value={isThu} onValueChange={setIsThu} />
-                    <Text>Thu</Text>
+                    <Text>พฤหัสบดี</Text>
                 </View>
             </View>
           <View style={{flexDirection:'row',justifyContent:'center'}} >
                 <View style={{flexDirection:'row',alignItems:'center'}}>
                     <CheckBox value={isFri} onValueChange={setIsFri} />
-                    <Text>Fri</Text>
+                    <Text>ศุกร์</Text>
                 </View>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
                     <CheckBox value={isSat} onValueChange={setIsSat} />
-                    <Text>Sat</Text>
+                    <Text>เสาร์</Text>
                 </View>
                 <View style={{flexDirection:'row',alignItems:'center'}}>
                     <CheckBox value={isSun} onValueChange={setIsSun}/>
-                    <Text>Sun</Text>
+                    <Text>อาทิตย์</Text>
                 </View>
             </View>
         </View>
@@ -242,11 +242,11 @@ const TeacherSessionCreate = ({navigation}) => {
                 
                 <SafeAreaView style={{flex:1}}>
                 
-                <View style={{backgroundColor:'white',margin:14,padding:30,borderRadius:20,elevation:7,paddingBottom:20}}>
+                <View style={{backgroundColor:'white',margin:14,padding:30,borderRadius:20,elevation:2,paddingBottom:20}}>
                 <View style={{alignItems:'center'}}>
                 <View style={{flexDirection:'column',justifyContent:'space-between'}} >
-                <View style={{flexDirection:'row',justifyContent:'space-between',backgroundColor:'#9E76B4',paddingLeft:15,borderRadius:20,elevation:7}}>
-                    <Text style={{fontSize:20,color:'white'}}>Semester</Text>
+                <View style={{flexDirection:'row',justifyContent:'space-between',backgroundColor:'#9E76B4',paddingLeft:15,borderRadius:20,elevation:2}}>
+                    <Text style={{fontSize:20,color:'white'}}>ภาคการศึกษา</Text>
                      <Picker
                         selectedValue={selectedTermValue}
                         style={{ height: 39, width: 130,color:'white'}}
@@ -264,32 +264,36 @@ const TeacherSessionCreate = ({navigation}) => {
 
                 </View>
                 <View style={{flexDirection:'row',justifyContent:'space-around'}}>
-                        <View>
-                            <Text style={styles.title}>Start date</Text>
+                        <View style={styles.date}>
+                            <Text style={styles.title}>วันที่เริ่ม</Text>
                             
                             <TouchableOpacity onPress={_showDatePicker_start}  style={styles.picker}>
-                                <Text style={{color:'white'}}>{selectedDateStart}</Text>
+                                <Text style={{color:'white'}}>
+                                    {selectedDateStart.split('-')[2]+'/'+selectedDateStart.split('-')[1]+'/'+selectedDateStart.split('-')[0]}
+                                </Text>
                             </TouchableOpacity>
                             
                         </View>
-                        <View>
-                            <Text style={styles.title}>End date</Text>
+                        <View style={styles.date}>
+                            <Text style={styles.title}>วันที่จบ</Text>
                             <TouchableOpacity onPress={_showDatePicker_end}  style={styles.picker}>
-                                <Text style={{color:'white'}}>{selectedDateEnd}</Text>
+                                <Text style={{color:'white'}}>
+                                    {selectedDateEnd.split('-')[2]+'/'+selectedDateEnd.split('-')[1]+'/'+selectedDateEnd.split('-')[0]}
+                                    </Text>
                             </TouchableOpacity>
                         </View>
 
                         
                 </View>
-                    <Text style={styles.title}>Session ID</Text>
-                    <TextInput placeholder='Your session ID' onChangeText={text => setSessionID(text)} />
-                    <Text style={styles.title}>Session Name</Text>
-                    <TextInput placeholder='Your session name' onChangeText={text => setSessionName(text)}/>
-                    <Text style={styles.title}>Description</Text>
-                    <TextInput placeholder='Your session description' onChangeText={text => setSessionDesc(text)}/>
+                    <Text style={styles.title}>รหัสวิชา</Text>
+                    <TextInput placeholder='รหัสวิชาของคุณ' onChangeText={text => setSessionID(text)} />
+                    <Text style={styles.title}>ชื่อวิชา</Text>
+                    <TextInput placeholder='ชื่อวิชาของคุณ' onChangeText={text => setSessionName(text)}/>
+                    <Text style={styles.title}>คำอธิบาย</Text>
+                    <TextInput placeholder='คำอธิบายห้องเรียนหรือสถานที่' onChangeText={text => setSessionDesc(text)}/>
                     <View style={{flexDirection:'row',justifyContent:'space-around'}}>
                         <View>
-                            <Text style={styles.title}>Start time</Text>
+                            <Text style={styles.title}>เวลาเริ่ม</Text>
                             
                             <TouchableOpacity onPress={_showTimepicker_start}  style={styles.picker}>
                                 <Text style={{color:'white'}}>{selectedTime_start}</Text>
@@ -297,7 +301,7 @@ const TeacherSessionCreate = ({navigation}) => {
                             
                         </View>
                         <View>
-                            <Text style={styles.title}>End time</Text>
+                            <Text style={styles.title}>เวลาจบ</Text>
                             <TouchableOpacity onPress={_showTimepicker_end}  style={styles.picker}>
                                 <Text style={{color:'white'}}>{selectedTime_end}</Text>
                             </TouchableOpacity>
@@ -307,19 +311,19 @@ const TeacherSessionCreate = ({navigation}) => {
                     </View>
                     
                     <View style={{alignItems:'center'}}>
-                        <Text style={styles.title}>Duplicate</Text>
+                        <Text style={styles.title}>ทำซํ้าวัน</Text>
                         <DupDayComponent/>
                     </View>
                     <View style={{flexDirection:'row',alignSelf:'center'}}>
                         <View style={{flexDirection:'row',alignSelf:'center',marginTop:10}}>
                             <CheckBox value={isLocationSelected} onValueChange={setLocationSelection}/>
-                            <Text>Set location</Text>
+                            <Text>ระบุสถานที่</Text>
                         </View> 
                         {
                             isLocationSelected ? 
                         <View style={{flexDirection:'row',alignSelf:'center',marginTop:10,marginLeft:15}}>
                             <CheckBox value={isSeatmapCreate} onValueChange={setSeatmapCreate}/>
-                            <Text>Create seat map</Text>
+                            <Text>สร้างแผนผังที่นั่ง</Text>
                         </View> 
                         :
                         <></>
@@ -345,16 +349,16 @@ const TeacherSessionCreate = ({navigation}) => {
                                     dupDay : [isSun,isMon,isTue,isWed,isThu,isFri,isSat]
                                 }
                             
-                        )} style={{backgroundColor:'#9E76B4',padding:10,marginTop:20,elevation:7,borderRadius:30}}>
-                            <Text style={{fontSize:20,color:'white'}}>Continue </Text>
+                        )} style={{backgroundColor:'#9E76B4',padding:10,marginTop:20,elevation:2,borderRadius:30}}>
+                            <Text style={{fontSize:20,color:'white'}}>ดำเนินการต่อ</Text>
                         </TouchableOpacity>
                         :
                         <TouchableOpacity onPress={async () => {
                             await _addSessionAPI()
                             navigation.navigate('TeacherHome')
                         }} 
-                        style={{backgroundColor:'#9E76B4',padding:10,marginTop:20,elevation:7,borderRadius:30}}>
-                            <Text style={{fontSize:20,color:'white'}}>Create </Text>
+                        style={{backgroundColor:'#9E76B4',padding:10,marginTop:20,elevation:2,borderRadius:30}}>
+                            <Text style={{fontSize:20,color:'white'}}>สร้างห้อง</Text>
                         </TouchableOpacity>
                         }
                     </View>
@@ -428,13 +432,16 @@ const TeacherSessionCreate = ({navigation}) => {
 
 const styles = StyleSheet.create({
     title:{
-        fontSize:20
+        fontSize:18
     },
     picker:{
         backgroundColor:'#9E76B4',
         borderRadius:20,
         padding:7,
-        elevation:10,
+        elevation:2,
+        alignItems:'center'
+    },
+    date: {
         alignItems:'center'
     }
   });

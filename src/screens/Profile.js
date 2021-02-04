@@ -20,7 +20,6 @@ const MyProfile = () => {
           const mail = await AsyncStorage.getItem('mail');
           const jobtitle = await AsyncStorage.getItem('jobtitle');
           if (name !== null) {
-
             console.log(name);
             console.log(id);
             console.log(mail);
@@ -39,7 +38,7 @@ const MyProfile = () => {
       };
 
       const _retrieveUserData = async () => {
-        const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
+        const  teacherID = await AsyncStorage.getItem('uniqueIDStudent');
         const url = await storage().ref(teacherID).getDownloadURL().then(
           function onResolve(foundURL) {
             setprofilePhoto(foundURL)

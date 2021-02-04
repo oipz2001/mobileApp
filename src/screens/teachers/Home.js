@@ -479,7 +479,7 @@ const TeacherHome = ({ navigation }) => {
                  <TouchableOpacity  style={{alignItems:'center',backgroundColor:'white',padding:15,borderRadius:20,elevation:2}} onPress={() => navigation.navigate('TeacherCreateRoom')}>
                 
                     <Icon name="plus-circle" size={50}/>
-                    <Text >Add Session</Text>
+                    <Text >เพิ่มห้องเช็คชื่อ</Text>
                  </TouchableOpacity>
                  </View>  
                  <Text style={{alignSelf:'center'}}>การเช็คชื่อในวันที่ {myDate} ({localTime})</Text>     

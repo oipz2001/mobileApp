@@ -18,13 +18,13 @@ const TeacherSeatmap = ({route}) => {
     const [seatmapGraphArray,setSeatmapGraphArray] = useState([])
 
     const [studentPhotoURL,setStudentPhotoURL] = useState('')
-
+    const [isSeatmapFound,setIsSeatmapFound] = useState(null)
 
 
     
         useEffect(() => {
         if(uqID != null && teacherIDState != null){
-            console.log(uqID,teacherIDState);
+            console.log(uqID,teacherIDState,selectedDate);
           const subscriber = firestore()
             .collection('Classroom')
             .doc(teacherIDState)
@@ -36,7 +36,14 @@ const TeacherSeatmap = ({route}) => {
                     let myGraphsList = documentSnapshot.data().seatmap[selectedDate].graphs
                     var seatmapGraphsList = get2DArrayGraphs(myGraphsList)
                     console.log(seatmapGraphsList);
-                    setSeatmapGraphArray(seatmapGraphsList)
+                    if(seatmapGraphsList.length != 0){
+                        setSeatmapGraphArray(seatmapGraphsList)
+                        setIsSeatmapFound(true)
+                    }
+                    else{
+                        setIsSeatmapFound(false)
+                    }
+                    
                 }
                 else
                 {
@@ -70,10 +77,7 @@ const TeacherSeatmap = ({route}) => {
         _retrieveUserData()
     },[])
 
-    useEffect(() => {
-        if(teacherIDState != null)
-        console.log(route.params.uqID, route.params.selectedDate,teacherIDState);
-    },[teacherIDState])
+    
 
     const _retrieveUserData = async () => {
         const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
@@ -134,11 +138,19 @@ const TeacherSeatmap = ({route}) => {
 
         return myGraphs
     }
+
+    
     
     return(
         <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
         
-            <ScrollView showsVerticalScrollIndicator={false}>
+        {
+            isSeatmapFound == null ?
+            <ActivityIndicator size={200} color="#9E76B4" />
+        :
+            isSeatmapFound == true ?
+            (<ScrollView showsVerticalScrollIndicator={false}>
+            
              
             <Modal
                 animationType="fade"
@@ -201,7 +213,12 @@ const TeacherSeatmap = ({route}) => {
             </View>
                 ))
         }
-        </ScrollView>
+        </ScrollView>)
+        :
+            <View style={{backgroundColor:'white',padding:80,borderRadius:20,elevation:2}}>
+                <Text style={{fontSize:20}}>ไม่พบแผนผังที่นั่ง</Text>
+            </View>
+        }
         
 
         </View>

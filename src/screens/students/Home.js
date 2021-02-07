@@ -194,8 +194,10 @@ const StudentHome = ({navigation,route}) => {
 
 
       const _fetchSessionsAPI = async (selectDate,currentTime,currentDate) => {
+
         var studentID = studentIDState
         var date  = selectDate
+
 
         
         await fetch(myEndpointURL+'/getClassroom?date='+date+'&studentID='+studentID+'&clientCurrentTime='+currentTime+'&clientCurrentDate='+currentDate)
@@ -249,11 +251,27 @@ const StudentHome = ({navigation,route}) => {
       
       const Item = ({ item }) => (
         <View style={styles.item}>
+          <View  style={statusButtStyle(item.sessionStatus)}>
+                                
+            {
+              item.sessionStatus == -1 ? 
+                <Text style={styles.statusText} >รอเปิดทำการเช็คชื่อ</Text>
+              :
+              (item.sessionStatus == 0 ? 
+                <Text style={styles.statusText}>เปิดให้ทำการเช็คชื่อ</Text> 
+              : 
+              < Text style={styles.statusText}>ปิดทำการเช็คชื่อแล้ว</Text> 
+              ) 
+
+            }
+                                
+          </View>
           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+            
                     <View >
-                        <View style={{flexDirection:'row'}}>
-                          <Text style={styles.title}>{item.name}</Text>
-                          <Text style={{fontSize:17,alignSelf:'center'}}>  { item.id == "" ? "" :  `(${item.id})`}</Text>
+                       <View>
+                          <Text style={styles.title}>ชื่อวิชา: {item.name}</Text>
+                          <Text style={styles.title}>รหัสวิชา: { item.id == "" ? "" :  item.id}</Text>
                         </View>
                         <Text style={{fontSize:12}}>เวลาเช็คชื่อ: {item.startTime} - {item.endTime} ({item.currentDate.split('-')[2] +'/'+ item.currentDate.split('-')[1] +'/'+ item.currentDate.split('-')[0] }) </Text>
                         <Text style={{fontSize:12}}>ภาคการศึกษา: {item.semester} </Text>
@@ -261,28 +279,7 @@ const StudentHome = ({navigation,route}) => {
                         <Text style={{fontSize:12}}>คำอธิบาย: {item.desc == '' ? "(ไม่ได้ระบุไว้)" : item.desc } </Text>
                         <Text style={{fontSize:12}}>รูปแบบการเช็คชื่อ: {item.isLocationSet ? "ระบุสถานที่" : "ออนไลน์"} </Text>
                     </View>
-                    <View style={{flexDirection:'column'}}>
-                        <View >
-                            
-                              {
-                            item.sessionStatus == -1 ? 
-                            <Text style={{color:'orange'}} >Waiting</Text>
-                            :
-                            (item.sessionStatus == 0 ? 
-                            <Text style={{color:'green'}}>Opening</Text> 
-                            : 
-                            (item.sessionStatus == 1 ? 
-                            <Text style={{color:'red'}}>Closed</Text> 
-                            :
-                            <Text style={{color:'red'}}>In progress</Text> 
-                            )
-                            ) 
-
-                          }
-                              
-                        </View>
-                          
-                    </View>
+                    
             </View>
 
             <View >
@@ -361,9 +358,15 @@ const StudentHome = ({navigation,route}) => {
                 :
                 <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20,alignSelf:'center',marginTop:15}}>
                   <TouchableOpacity onPress={async () => {
-                    navigation.navigate('SessionReport',{className:item.name,classID:item.id,uqID:item.uqID,teacherID:item.teacherID,studentID:studentIDState})
+                    navigation.navigate('SessionReport',{
+                      className:item.name,
+                      classID:item.id,
+                      uqID:item.uqID,
+                      teacherID:item.teacherID,
+                      studentID:studentIDState
+                    })
                     }} >
-                      <Text style={{color:'white'}}>สรุปการเช็คชื่อ</Text>
+                      <Text style={{color:'white'}}>สรุปผลการเช็คชื่อ</Text>
                   </TouchableOpacity>
                 </View>
               }
@@ -467,6 +470,33 @@ const StudentHome = ({navigation,route}) => {
 
 }
 
+const statusButtStyle = (classStatus) => {
+  let background = ''
+  if(classStatus == -1){
+    background = 'orange'
+  }
+  else if(classStatus == 0)
+  {
+    background = 'green'
+  }
+  else if(classStatus == 1)
+  {
+    background = 'red'
+  }
+  
+  
+  return(
+    {
+      backgroundColor:background,
+      alignSelf:'baseline',
+      borderRadius:10,
+      padding:10,
+      alignSelf:'center',
+      marginBottom:10
+    }
+  )
+}
+
     
 
 const styles = StyleSheet.create({
@@ -483,8 +513,11 @@ const styles = StyleSheet.create({
       elevation : 2,
     },
     title: {
-      fontSize: 25,
+      fontSize: 19,
     },
+    statusText: {
+      color:'white'
+    }
   });
 
 export default StudentHome

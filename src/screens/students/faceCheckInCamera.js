@@ -153,10 +153,15 @@ class ExampleApp extends PureComponent {
       <View style={styles.container}>
         <TouchableOpacity  style={styles.capture}>
             <Text style={{ fontSize: 14 }}> กรุณายิ้ม {(this.state.mustSmile-smile)>=0 ? this.state.mustSmile-smile : 0} ครั้ง และ กระพริบตา {(this.state.mustEyeBlink-eyeblink)>=0 ? this.state.mustEyeBlink-eyeblink : 0} ครั้ง   </Text>
-            {this.state.matchResult == null ? <></> : (this.state.matchResult == true) ? 
-            <Text style={{alignSelf:'center',backgroundColor:'green'}}>Your face is matched</Text>
+            
+            {this.state.matchResult == null ? <></> : (this.state.matchResult == true) ?
+            <View style={{alignSelf:'center',backgroundColor:'green'}}>
+            <Text style={{color:'white'}}>ใบหน้าตรงกัน</Text>
+            </View> 
             : 
-            <Text style={{alignSelf:'center',backgroundColor:'red'}}>Please try again</Text>
+            <View style={{alignSelf:'center',backgroundColor:'red'}}> 
+            <Text style={{color:'white'}}>ใบหน้าไม่ตรงกัน กรุณาลองอีกครั้ง</Text>
+            </View>
             }
         </TouchableOpacity>
         <RNCamera
@@ -181,14 +186,14 @@ class ExampleApp extends PureComponent {
           onFacesDetected={this.state.shouldFaceDetect ? this.handleFaceDetected : null}
         />
          
-        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
+        {/* <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
           <TouchableOpacity  style={styles.capture}>
             <Text style={{ fontSize: 14 }}> Smile : {smile} </Text>
           </TouchableOpacity>
           <TouchableOpacity  style={styles.capture}>
             <Text style={{ fontSize: 14 }}> EyeBlink : {eyeblink} </Text>
           </TouchableOpacity>
-        </View>
+        </View> */}
         <Modal
                 animationType="fade"
                 transparent={true}

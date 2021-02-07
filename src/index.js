@@ -48,21 +48,21 @@ const _hearderProfile = ({...props}) => {
         <Stack.Screen name="Login" component={Login}  /> 
         {/* <Stack.Screen name="TeacherHome" component={TeacherHome} options={{headerTitle:'My Sessions',headerRight:_hearderProfile}} /> */}
         {/* <Stack.Screen name="TeacherHome" component={TeacherHome} options={({ navigation, route }) => ({headerRight: () => <Button title="ss" onPress={() => navigation.navigate('MyProfile')} />,})} /> */}
-        <Stack.Screen name="TeacherHome" component={TeacherHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'My Sessions'})} />
-        <Stack.Screen name="TeacherCreateRoom" component={TeacherSessionCreate} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'Create Session'})} />
+        <Stack.Screen name="TeacherHome" component={TeacherHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'ห้องเช็คชื่อ'})} />
+        <Stack.Screen name="TeacherCreateRoom" component={TeacherSessionCreate} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'การสร้างห้องเช็คชื่อ'})} />
         <Stack.Screen name="TeacherSettingLocation" component={SettingLocation} options={{headerTitle:'Setting Location'}} />
-        <Stack.Screen name="RoomStat" component={TeacherSessionStat} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'Statistics'})}/>
-        <Stack.Screen name="TeacherSeatmap" component={TeacherSeatmap} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'Seat map'})}/>
+        <Stack.Screen name="RoomStat" component={TeacherSessionStat} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'สถิติการเข้าห้อง'})}/>
+        <Stack.Screen name="TeacherSeatmap" component={TeacherSeatmap} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'แผนผังที่นั่ง'})}/>
 
         <Stack.Screen name="StudentAddFaceList" component={CameraAddFaceList}/>
-        <Stack.Screen name="StudentHome" component={StudentHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'My Sessions'})}/>
+        <Stack.Screen name="StudentHome" component={StudentHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'ห้องเช็คชื่อ'})}/>
         <Stack.Screen name="StudentFaceCheckIn" component={StudentFaceCheckIn} />
-        <Stack.Screen name="Seatmap" component={Seatmap} options={({navigation,route}) => ({headerTitle:route.params.sessionTitle,headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>})}/>
+        <Stack.Screen name="Seatmap" component={Seatmap} options={({navigation,route}) => ({headerTitle:route.params.sessionTitle,headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'การสร้างแผนผังที่นั่ง'})}/>
         <Stack.Screen name="ScanQR" component={ScanQR} />
         <Stack.Screen name="MyQR" component={MyQR}/>
-        <Stack.Screen name="SessionReport" component={StudentReport} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('MyProfile')}/>,headerTitle:'Report'})}/>
+        <Stack.Screen name="SessionReport" component={StudentReport} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'การสรุปผล'})}/>
 
-        <Stack.Screen name="MyProfile" component={MyProfile}/>
+        <Stack.Screen name="Profile" component={MyProfile} />
         
       </Stack.Navigator>
     </NavigationContainer>

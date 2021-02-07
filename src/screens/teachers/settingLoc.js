@@ -230,7 +230,7 @@ const SettingLoc = ({navigation,route}) => {
         
         
         <View style={{backgroundColor:'white', margin:10,padding:10,borderRadius:20,elevation:7,paddingBottom:25,flex:1,alignItems:'center',justifyContent:'space-between'}}>
-        <Text style={{fontSize:20,backgroundColor:'#9E76B4',alignSelf:'center',padding:10,elevation:7,borderRadius:20,color:'white'}}>Set Location</Text>
+        <Text style={{fontSize:20,backgroundColor:'#9E76B4',alignSelf:'center',padding:10,elevation:7,borderRadius:20,color:'white'}}>การระบุสถานที่</Text>
         <Text  >กรุณาอยู่ในบริเวณที่ต้องการทำการสร้างห้องเรียนเช็คชื่อ และเลือกสัญญาณ Wi-Fi โดยจะให้ระบบเลือกอัตโนมัติ หรือเลือกด้วยตนเอง ควรเลือกจากความแรงของสัญญาณที่มากที่สุด เพื่อจำกัดขอบเขตให้อยู่ในบริเวณมากที่สุด</Text>
         <View style={{flexDirection:'row'}}>
         </View>
@@ -240,7 +240,7 @@ const SettingLoc = ({navigation,route}) => {
           items={wifiList}
           IconRenderer={Icon}
           uniqueKey="BSSID_dotConcat"
-          selectText="Select Wi-Fi"
+          selectText="เลือก Wi-Fi"
           onSelectedItemsChange={onSelectedItemsChange}
           selectedItems={selectedItems}
           displayKey='SSID'
@@ -250,9 +250,9 @@ const SettingLoc = ({navigation,route}) => {
         </View>
         
         }
-        <View style={{flexDirection:'row'}}>
+        <View style={{flexDirection:'row',alignItems:'baseline'}}>
             <CheckBox value={isAutoSelected} onValueChange={setAutoSelection} />
-            <Text>Auto select</Text>
+            <Text>ให้ระบบเลือกสัญญาณอัตโนมัติ</Text>
         </View> 
         <View style={{marginBottom:50}}>
         {
@@ -263,7 +263,7 @@ const SettingLoc = ({navigation,route}) => {
                     navigation.navigate('TeacherHome')
                     }
           }} style={{backgroundColor:'#9E76B4',padding:10,elevation:7,borderRadius:20}}>
-          <Text style={{fontSize:20,color:'white'}}>Create Session</Text>
+          <Text style={{fontSize:20,color:'white'}}>สร้างห้อง</Text>
         </TouchableOpacity>
         :
         <ActivityIndicator size="large" color='red' animating={true} />

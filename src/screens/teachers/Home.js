@@ -102,8 +102,8 @@ const TeacherHome = ({ navigation }) => {
       var teacherID = teacherIDState
       var date  = selectDate
 
-      // console.log(date);
-      // console.log(currentDate);
+      console.log(date);
+      console.log(currentDate);
 
       await fetch(myEndpointURL+'/getSession?date='+date+'&teacherID='+teacherID+'&clientCurrentTime='+currentTime+'&clientCurrentDate='+currentDate)
         .then((response) => response.json())
@@ -279,35 +279,44 @@ const TeacherHome = ({ navigation }) => {
               
         
             <View   style={[styles.item, style]}>
-              <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                    <View >
-                        <View style={{flexDirection:'row'}}>
-                          <Text style={styles.title}>{item.name}</Text>
-                          <Text style={{fontSize:17,alignSelf:'center'}}>  {item.id == "" ? "" : `(${item.id})` }</Text>
-                        </View>
-                        <Text style={styles.descrption}>ภาคการศึกษา: {item.semester} </Text>
-                        <Text style={styles.descrption}>เวลาเช็คชื่อ: {item.startTime} - {item.endTime} ({item.currentDate.split('-')[2] +'/'+ item.currentDate.split('-')[1] +'/'+ item.currentDate.split('-')[0] }) </Text>
-                        
-                        <Text style={styles.descrption}>คำอธิบาย: {item.desc == "" ? "(ไม่ได้ระบุไว้)" : item.desc} </Text>
-                        <Text style={styles.descrption}>รูปแบบการเช็คชื่อ: {item.isLocationSet ? 'ระบุสถานที่' : 'ออนไลน์'} </Text>
-                    </View>
-                    <View style={{justifyContent:'space-between'}}>
-                      {
-                        item.sessionStatus == -1 ? 
-                        <Text style={{color:'orange'}} >Waiting</Text>
-                        :
-                        (item.sessionStatus == 0 ? 
-                        <Text style={{color:'green'}}>Opening</Text> 
-                        : 
-                        (item.sessionStatus == 1 ? 
-                        <Text style={{color:'red'}}>Closed</Text> 
-                        :
-                        <Text style={{color:'red'}}>In progress</Text> 
-                        )
-                        ) 
+              <View style={statusButtStyle(item.sessionStatus)} >
+                            
+                            {
+                              item.sessionStatus == -1 ? 
+                              <Text style={styles.statusText} >รอเปิดทำการเช็คชื่อ</Text>
+                              :
+                              (item.sessionStatus == 0 ? 
+                  
+                              <Text style={styles.statusText}>เปิดให้ทำการเช็คชื่อ</Text>
+                              : 
+                              (item.sessionStatus == 1 ? 
+                              <Text style={styles.statusText}>ปิดทำการเช็คชื่อแล้ว</Text> 
+                              :
+                              <Text style={styles.statusText}>รอการเพิ่มรายชื่อนักศึกษา</Text> 
+                              )
+                              ) 
 
-                      }
+                            }
+                            
+              </View>
+              <View>
+                    <View >
+                        <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+                          <View>
+                            <Text style={styles.title}>ชื่อวิชา: {item.name}</Text>
+                            <Text style={styles.title}>รหัสวิชา: {item.id == "" ? "" : item.id }</Text>
+                          </View>
+                          
+                        </View>
                     </View>
+                    <View>
+                      <Text style={styles.descrption}>ภาคการศึกษา: {item.semester} </Text>
+                      <Text style={styles.descrption}>เวลาเช็คชื่อ: {item.startTime} - {item.endTime} </Text>
+                      <Text style={styles.descrption}>วันที่: {item.currentDate.split('-')[2] +'/'+ item.currentDate.split('-')[1] +'/'+ item.currentDate.split('-')[0] } </Text>
+                      <Text style={styles.descrption}>คำอธิบาย: {item.desc == "" ? "(ไม่ได้ระบุไว้)" : item.desc} </Text>
+                      <Text style={styles.descrption}>รูปแบบการเช็คชื่อ: {item.isLocationSet ? 'ระบุสถานที่' : 'ออนไลน์'} </Text>
+                    </View>
+                    
               </View>
               
 
@@ -316,29 +325,35 @@ const TeacherHome = ({ navigation }) => {
                 <View style={{flexDirection:'column',margin:15}}>
                     <View style={{marginTop:20,flexDirection:'row',justifyContent:'space-around'}}>
                           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                              <Icon name="users" size={20} />
-                              <Text>  {item.totalStudent} </Text>
+                              <Icon name="users" size={23} />
+                              <Text style={styles.statText} >  {item.totalStudent}</Text>
                           </View>
                           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                              <Icon name="check" size={25} color='green'/>
-                              <Text>  {item.checkedStudent}</Text>
+                              <Icon name="check" size={30} color='green'/>
+                              <Text style={styles.statText}>  {item.checkedStudent}</Text>
                           </View>
                           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-                              <Icon name="times" size={25} color='red'/>
-                              <Text>  {item.uncheckedStudent}</Text>
+                              <Icon name="times" size={30} color='red'/>
+                              <Text style={styles.statText}>  {item.uncheckedStudent}</Text>
                           </View>
                       </View>
-                      <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-around',marginTop:15}}>
-                        <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20}}>
-                        <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',{uqID:item.uqID,selectedDate:selectedDate})}} >
-                            <Text style={{color:'white'}}>สถิติการเข้าห้อง</Text>
-                        </TouchableOpacity>
+                      <View style={{marginTop:15}}>
+                        <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20,alignSelf:'center'}}>
+                          <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',{uqID:item.uqID,selectedDate:selectedDate})}} >
+                            <View style={{flexDirection:'row'}}>
+                              <Icon name="pie-chart" size={25} color="white" /> 
+                              <Text style={{color:'white',marginLeft:7}}>สถิติการเข้าห้อง</Text>
+                            </View>
+                          </TouchableOpacity>
                         </View>
                         { item.isSeatmapSet ?
-                        <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20}}>
-                        <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{uqID:item.uqID,selectedDate:selectedDate})} >
-                            <Text style={{color:'white'}}>แผนผังที่นั่ง</Text>
-                        </TouchableOpacity>
+                        <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20,marginTop:15,alignSelf:'center'}}>
+                          <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{uqID:item.uqID,selectedDate:selectedDate})} >
+                            <View style={{flexDirection:'row'}}>
+                              <Icon name="users" size={23} color="white" />
+                              <Text style={{color:'white',marginLeft:7}}>แผนผังที่นั่ง</Text>
+                            </View>
+                          </TouchableOpacity>
                       </View>
                       :
                       <></>
@@ -348,11 +363,12 @@ const TeacherHome = ({ navigation }) => {
                   
                   </View> 
                 :
-                <View style={{flexDirection:'row',alignSelf:'center',margin:15}}>
-                  <TouchableOpacity style={styles.addStudentWarningButton}>
-                    <Text style={{color:'red'}}>Please add your students</Text>
-                  </TouchableOpacity>
-                </View> 
+                // <View style={{flexDirection:'row',alignSelf:'center',margin:15}}>
+                //   <TouchableOpacity style={styles.addStudentWarningButton}>
+                //     <Text style={{color:'red'}}>กรุณาเพิ่มรายชื่อนักศึกษา</Text>
+                //   </TouchableOpacity>
+                // </View> 
+                <></>
 
 
 
@@ -482,7 +498,7 @@ const TeacherHome = ({ navigation }) => {
                     <Text >เพิ่มห้องเช็คชื่อ</Text>
                  </TouchableOpacity>
                  </View>  
-                 <Text style={{alignSelf:'center'}}>การเช็คชื่อในวันที่ {myDate} ({localTime})</Text>     
+                 <Text style={{alignSelf:'center'}}>การเช็คชื่อของวันที่ {myDate} ({localTime})</Text>     
                       
                
             </>
@@ -513,8 +529,10 @@ const TeacherHome = ({ navigation }) => {
                 }}
             >
                 <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:2,marginBottom:190}}>
-                    
-                    <View style={{flex:3,justifyContent:'center'}}>
+                    <View style={{marginTop:50}}>
+                      <Text style={{fontSize:20}}>กำลังอัปเดตสถานที่</Text>
+                    </View>
+                    <View style={{flex:1,justifyContent:'center'}}>
                       <ActivityIndicator size={200} color="#9E76B4" />
                     </View>
                 </View>
@@ -524,6 +542,37 @@ const TeacherHome = ({ navigation }) => {
         </>
      );
 
+}
+
+
+const statusButtStyle = (classStatus) => {
+  let background = ''
+  if(classStatus == -1){
+    background = 'orange'
+  }
+  else if(classStatus == 0)
+  {
+    background = 'green'
+  }
+  else if(classStatus == 1)
+  {
+    background = '#9E76B4'
+  }
+  else
+  {
+    background = 'red'
+  }
+  
+  return(
+    {
+      backgroundColor:background,
+      alignSelf:'baseline',
+      borderRadius:10,
+      padding:10,
+      alignSelf:'center',
+      marginBottom:10
+    }
+  )
 }
 
 const styles = StyleSheet.create({
@@ -539,10 +588,10 @@ const styles = StyleSheet.create({
       elevation:2,
     },
     title: {
-      fontSize: 22,
+      fontSize: 19,
     },
     descrption:{
-        fontSize:10
+        fontSize:13
     },
     addStudentWarningButton : {
       backgroundColor:'yellow',
@@ -550,6 +599,12 @@ const styles = StyleSheet.create({
       borderRadius:10,
       borderColor:'red',
       borderWidth:3
+    },
+    statText: {
+      fontSize:15
+    },
+    statusText: {
+      color:'white'
     }
   });
 

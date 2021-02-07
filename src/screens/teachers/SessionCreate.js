@@ -275,7 +275,7 @@ const TeacherSessionCreate = ({navigation}) => {
                             
                         </View>
                         <View style={styles.date}>
-                            <Text style={styles.title}>วันที่จบ</Text>
+                            <Text style={styles.title}>วันที่สิ้นสุด</Text>
                             <TouchableOpacity onPress={_showDatePicker_end}  style={styles.picker}>
                                 <Text style={{color:'white'}}>
                                     {selectedDateEnd.split('-')[2]+'/'+selectedDateEnd.split('-')[1]+'/'+selectedDateEnd.split('-')[0]}
@@ -289,11 +289,11 @@ const TeacherSessionCreate = ({navigation}) => {
                     <TextInput placeholder='รหัสวิชาของคุณ' onChangeText={text => setSessionID(text)} />
                     <Text style={styles.title}>ชื่อวิชา</Text>
                     <TextInput placeholder='ชื่อวิชาของคุณ' onChangeText={text => setSessionName(text)}/>
-                    <Text style={styles.title}>คำอธิบาย</Text>
+                    <Text style={styles.title}>คำอธิบายห้องเช็คชื่อ</Text>
                     <TextInput placeholder='คำอธิบายห้องเรียนหรือสถานที่' onChangeText={text => setSessionDesc(text)}/>
                     <View style={{flexDirection:'row',justifyContent:'space-around'}}>
                         <View>
-                            <Text style={styles.title}>เวลาเริ่ม</Text>
+                            <Text style={styles.title}>เริ่มเวลา</Text>
                             
                             <TouchableOpacity onPress={_showTimepicker_start}  style={styles.picker}>
                                 <Text style={{color:'white'}}>{selectedTime_start}</Text>
@@ -301,7 +301,7 @@ const TeacherSessionCreate = ({navigation}) => {
                             
                         </View>
                         <View>
-                            <Text style={styles.title}>เวลาจบ</Text>
+                            <Text style={styles.title}>สิ้นสุดเวลา</Text>
                             <TouchableOpacity onPress={_showTimepicker_end}  style={styles.picker}>
                                 <Text style={{color:'white'}}>{selectedTime_end}</Text>
                             </TouchableOpacity>

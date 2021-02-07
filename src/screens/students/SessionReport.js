@@ -63,22 +63,28 @@ const SessionReport = ({route}) => {
         return(
         
         <View style={styles.item}>
-           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
+           <View style={{flexDirection:'row',justifyContent:'space-between',alignItems:'baseline'}}>
+              <View style={{flex:1}}>
                 <Text style={styles.title}>{day+'/'+month+'/'+year}</Text>
+              </View>
+              <View style={{flex:1,flexDirection:'row',justifyContent:'flex-end'}}>
                 {
                   (item.classStatus == -1) ?
-                  <View>
-                    <Text style={{color:'orange'}}>Waiting</Text>
+                  <View >
+                    <Text style={{color:'orange'}}>รอการเช็คชื่อ</Text>
                   </View>
                   :
                   item.isChecked ?
-                  <View style={{flexDirection:'row'}}>
-                    <Image source={require('../../assets/vectors/check.png')} style={{width:25,height:25}} />
-                  <Text>{item.timestamp}</Text>
+                  <View style={{flexDirection:'row',alignItems:'baseline'}}>
+                    <Image source={require('../../assets/vectors/check.png')} style={{width:33,height:33,marginRight:5}} />
+                    <Text>{item.timestamp}</Text>
                   </View>
                   :
-                  <Image source={require('../../assets/vectors/close.png')} style={{width:25,height:25}} />
+                  <View >
+                  <Image source={require('../../assets/vectors/close.png')} style={{width:26,height:26}} />
+                  </View>
                 }
+              </View>
                 
            </View>
           
@@ -102,9 +108,12 @@ const SessionReport = ({route}) => {
                     data={reportData}
                     renderItem={renderItem}
                     keyExtractor={item => item.id}
-                    ListHeaderComponent={<Text style={{fontSize:18,alignSelf:'center'}}>
-                      สรุปผลการเช็คชื่อห้อง {route.params.className} 
-                      {route.params.classID == "" ? "" : `(${route.params.classID})`}</Text>}
+                    ListHeaderComponent={
+                    <View style={styles.classDetail}>
+                      <Text style={{fontSize:20}}>สรุปผลการเช็คชื่อ</Text>
+                      <Text style={{fontSize:18}}>ชื่อวิชา: {route.params.className} </Text>
+                      <Text style={{fontSize:18}}>รหัสวิชา: {route.params.classID}</Text>
+                    </View>}
                 />
                 
                 
@@ -138,6 +147,15 @@ const styles = StyleSheet.create({
     title: {
       fontSize: 20,
     },
+    classDetail:{
+      alignItems:'center',
+      backgroundColor:'white',
+      marginHorizontal:15,
+      elevation:2,
+      padding:12,
+      borderRadius:20,
+      paddingHorizontal:50
+    }
   });
 
 export default SessionReport

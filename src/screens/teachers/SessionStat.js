@@ -10,6 +10,7 @@ import {
     StackedBarChart
   } from "react-native-chart-kit";
 import AsyncStorage from '@react-native-community/async-storage'
+import firestore from '@react-native-firebase/firestore';
   const URL = require('../../config/endpointConfig')
   const myEndpointURL =  URL.myEndpointTeacher
 
@@ -25,6 +26,8 @@ import AsyncStorage from '@react-native-community/async-storage'
     useShadowColorFromDataset: false // optional
   };
 const TeacherSessionStat = ({route}) => {
+    const classUqID = route.params.uqID
+    const classSelectedDate = route.params.selectedDate
     const [selectedId, setSelectedId] = useState(null);
     const [teacherIDState,setTeacherIDState] = useState(null)
     const [classStatData,setClassStatData] = useState({})
@@ -33,33 +36,79 @@ const TeacherSessionStat = ({route}) => {
     const [chartData,setChartData] = useState(
       [
         {
-          name: "Present",
+          name: "เช็คชื่อแล้ว",
           population: 0,
           color: "green",
           legendFontColor: "#7F7F7F",
-          legendFontSize: 15
+          legendFontSize: 12
         },
         {
-          name: "Absent",
+          name: "ยังไม่ได้เช็คชื่อ",
           population: 0,
           color: "#F00",
           legendFontColor: "#7F7F7F",
-          legendFontSize: 15
+          legendFontSize: 12
         }
       ]
     );
 
+    useEffect(() => {
+      if(teacherIDState != null && classUqID != undefined && classSelectedDate != undefined){
+        const subscriber = firestore()
+          .collection('Classroom')
+          .doc(teacherIDState)
+          .collection('sessions')
+          .doc(classUqID)
+          .onSnapshot(documentSnapshot => {
+            const classStudentList = documentSnapshot.data().statistics[classSelectedDate]
+            const className = documentSnapshot.data().name
+            const classID = documentSnapshot.data().id
+            let totalStudent = classStudentList.length
+            let absent = classStudentList.filter(x => x.isChecked == false).length
+            let present = totalStudent - absent
+
+            setClassStatData({
+              classId : classID ,
+              className : className
+            })
+
+            setStudentStatList(classStudentList)
+            setChartData([
+              {
+                name: "เช็คชื่อแล้ว",
+                population: present,
+                color: "green",
+                legendFontColor: "#7F7F7F",
+                legendFontSize: 12
+              },
+              {
+                name: "ยังไม่ได้เช็คชื่อ",
+                population: absent,
+                color: "#F00",
+                legendFontColor: "#7F7F7F",
+                legendFontSize: 12
+              }
+            ])
+              
+          });
+        // Stop listening for updates when no longer required
+        return () => subscriber();
+      }
+      
+      }, [teacherIDState,classUqID]);
+
+      
+
     
 
-    useEffect(() => {
-      if(teacherIDState != null){
-      console.log(route.params.uqID);
-      console.log(route.params.selectedDate);
-      console.log(teacherIDState);
-      classStatAPI(route.params.uqID,route.params.selectedDate,teacherIDState)
-    }
+  //   useEffect(() => {
+      
+  //     if(teacherIDState != null){
+  //     console.log(classUqID,classSelectedDate,teacherIDState);
+  //     classStatAPI(classUqID,classSelectedDate,teacherIDState)
+  //   }
 
-  },[teacherIDState])
+  // },[teacherIDState])
 
   useEffect(() => {
     _retrieveUserData()
@@ -116,19 +165,22 @@ const TeacherSessionStat = ({route}) => {
       
         
         <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
-          <View style={{flexDirection:'row',justifyContent:'space-between'}}>
-              <View>
-              <Text style={styles.id}>{item.studentUqID}</Text>
-              <Text style={styles.name}>{item.studentName}</Text>
-                </View>
-                <View style={{flexDirection:'column',justifyContent:'flex-end'}}>
+          <View >
+              <View style={{alignItems:'center'}}>
+                <Text style={styles.id}>{item.studentUqID}</Text>
+                <Text style={styles.name}>{item.studentName}</Text>
+              </View>
+              <View style={{flexDirection:'row',marginTop:7,justifyContent:'center'}}>
                 {item.isChecked ?
-                <View>
-                <Image source={require('../../assets/vectors/check.png')} style={{width:25,height:25}} />
-                <Text>{item.timestamp}</Text>
+                <View style={{flexDirection:'row'}}>
+                <Image source={require('../../assets/vectors/check.png')} style={{width:25,height:25,marginRight:7}} />
+                <Text>เช็คชื่อแล้วเมื่อ {item.timestamp}</Text>
                 </View>
-                :  
-                <Image source={require('../../assets/vectors/close.png')} style={{width:20,height:20}} />
+                :
+                <View style={{flexDirection:'row'}}>  
+                  <Image source={require('../../assets/vectors/close.png')} style={{width:20,height:20,marginRight:7}} />
+                  <Text>ยังไม่ได้เช็คชื่อ</Text>
+                </View>
                 }
 
                 
@@ -140,17 +192,19 @@ const TeacherSessionStat = ({route}) => {
         );
 
     const ListHeaderComponent = () => {
+      const myDate = classSelectedDate.split('-')[2]+'/'+classSelectedDate.split('-')[1]+'/'+classSelectedDate.split('-')[0]
         return(
-            <>
-            <View style={{marginTop:15,alignItems:'center'}}>
-            
-                {/* <Text style={{fontSize:20,marginBottom:10}}>{classStatData.className} {classStatData.classId == "" ? "" : `(${classStatData.classId})`}</Text> */}
-                <View style={{backgroundColor:'white',alignSelf:'center',padding:10,justifyContent:'center',elevation:2,borderRadius:10,marginTop:10}}>
-                  <Text style={{fontSize:20}}>สถิติการเข้าห้อง {classStatData.className}</Text>
+            <View style={{alignItems:'center',marginTop:15,}}>
+              
+                <View style={{backgroundColor:'white',alignItems:'center',padding:20,justifyContent:'center',elevation:2,borderRadius:10,width:370}}>
+                  <Text style={{fontSize:20}}>กราฟแสดงสถิติการเข้าห้อง</Text>
+                  <Text style={styles.classDetailText}>รหัสวิชา: {classStatData.classId}</Text>
+                  <Text style={styles.classDetailText}>ชื่อวิชา: {classStatData.className}</Text>
+                  <Text style={styles.classDetailText}>วันเวลา: {myDate}</Text>
                 </View>
                <PieChart
                     data={chartData}
-                    width={361}
+                    width={370}
                     height={250}
                     chartConfig={chartConfig}
                     accessor="population"
@@ -158,13 +212,13 @@ const TeacherSessionStat = ({route}) => {
                     style={{ borderRadius:20,elevation:2,backgroundColor:"white",padding:5,marginTop:10}}
                     absolute={true}
                 />
-            </View>
+            
 
             <View style={{backgroundColor:'white',alignSelf:'center',padding:10,justifyContent:'center',elevation:2,borderRadius:10,marginTop:10}}>
                 <Text style={{fontSize:20}}>รายชื่อนักศึกษา</Text>
             </View>
             
-            </>
+            </View>
         )
     }
 
@@ -176,14 +230,15 @@ const TeacherSessionStat = ({route}) => {
         
                 
                 <SafeAreaView style={{flex:1,alignItems:'center',justifyContent:'center'}}>
-                
-                  <FlatList
-                    data={studentStatList}
-                    renderItem={renderItem}
-                    keyExtractor={(item) => item.studentID}
-                    extraData={selectedId}
-                    ListHeaderComponent={ListHeaderComponent}
-                />
+                  <View style={{width:400}}>
+                    <FlatList
+                      data={studentStatList}
+                      renderItem={renderItem}
+                      keyExtractor={(item) => item.studentID}
+                      extraData={selectedId}
+                      ListHeaderComponent={ListHeaderComponent()}
+                    />
+                  </View>
                 
                 
                 
@@ -221,8 +276,8 @@ const styles = StyleSheet.create({
     id:{
       fontSize: 19 
     },
-    faculty:{
-      fontSize: 15 
+    classDetailText:{
+      fontSize: 18
     }
   });
 

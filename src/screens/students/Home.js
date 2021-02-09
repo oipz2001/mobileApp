@@ -199,6 +199,7 @@ const StudentHome = ({navigation,route}) => {
         var date  = selectDate
 
 
+
         
         await fetch(myEndpointURL+'/getClassroom?date='+date+'&studentID='+studentID+'&clientCurrentTime='+currentTime+'&clientCurrentDate='+currentDate)
           .then((response) => response.json())
@@ -258,7 +259,7 @@ const StudentHome = ({navigation,route}) => {
                 <Text style={styles.statusText} >รอเปิดทำการเช็คชื่อ</Text>
               :
               (item.sessionStatus == 0 ? 
-                <Text style={styles.statusText}>เปิดให้ทำการเช็คชื่อ</Text> 
+                <Text style={styles.statusText}>เปิดทำการเช็คชื่อแล้ว</Text> 
               : 
               < Text style={styles.statusText}>ปิดทำการเช็คชื่อแล้ว</Text> 
               ) 

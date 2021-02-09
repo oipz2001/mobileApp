@@ -7,6 +7,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import AsyncStorage from '@react-native-community/async-storage'
 import wifi from 'react-native-android-wifi';
 import CalendarPicker from 'react-native-calendar-picker';
+import firestore from '@react-native-firebase/firestore';
 const URL = require('../../config/endpointConfig')
 
 const myEndpointURL =  URL.myEndpointTeacher
@@ -40,7 +41,121 @@ const TeacherHome = ({ navigation }) => {
 
     useEffect(() => {
       _retrieveUserData()
+
+      
     },[])
+
+    useEffect(() => {
+      const subscriber = firestore()
+        .collection('Classroom')
+        .doc(teacherIDState)
+        .collection('sessions')
+        .onSnapshot(teacherClassroom => {
+          let myClassDataList = []
+          teacherClassroom.forEach(data => {
+            
+            const regisDateList = data.data().registeredDay
+            if(regisDateList.includes(selectedDate))
+            {
+              let myClassObject = {}
+              const classData =  data.data()
+              // get class detail
+
+              const classUqID = data.id
+              const className = classData.name
+              const classID = classData.id
+              const classDesc = classData.desc
+              const classStartTime = classData.startTime
+              const classEndTime = classData.endTime
+              const classSemester = classData.semester
+              const isClassLocSet = classData.isLocationSet
+              const isClassStudentAdded = classData.isStudentAdded
+              const isClassSeatmapSet = classData.isSeatmapSet
+              
+
+              
+             
+
+              // get class status
+              let classStatus = 0
+              if(!isClassStudentAdded)
+              {
+                classStatus = -99
+
+                myClassObject = {
+                  currentDate: selectedDate,
+                  desc: classDesc,
+                  endTime: classEndTime,
+                  id: classID,
+                  isLocationSet: isClassLocSet,
+                  isSeatmapSet: isClassSeatmapSet,
+                  isStudentAdded: isClassStudentAdded,
+                  name: className,
+                  semester: classSemester, 
+                  sessionStatus: classStatus,
+                  startTime: classStartTime, 
+                  uqID: classUqID
+                }
+
+              }else
+              {
+                classStatus = classData.classStatus[selectedDate]
+
+                // count student stat
+                const classStudentList = classData.statistics[selectedDate]
+                const totalClassStudent = classStudentList.length
+                var absent = classStudentList.filter(x => x.isChecked == false).length
+                var present = totalClassStudent - absent
+
+                myClassObject = {
+                  currentDate: selectedDate,
+                  desc: classDesc,
+                  endTime: classEndTime,
+                  id: classID,
+                  isLocationSet: isClassLocSet,
+                  isSeatmapSet: isClassSeatmapSet,
+                  isStudentAdded: isClassStudentAdded,
+                  name: className,
+                  semester: classSemester, 
+                  sessionStatus: classStatus,
+                  startTime: classStartTime, 
+                  uqID: classUqID,
+                  checkedStudent: present,
+                  uncheckedStudent : absent,
+                  totalStudent : totalClassStudent
+                  
+
+                }
+              }
+
+              if(classStatus == -99){
+                myClassObject.sessionStatusString = 'I'
+              }else if(classStatus == -1){
+                myClassObject.sessionStatusString = 'W'
+              }else if(classStatus == 0){
+                myClassObject.sessionStatusString = 'O'
+              }else if(classStatus == 1){
+                myClassObject.sessionStatusString = 'C'
+              }
+              
+              myClassDataList.push(myClassObject)
+            }
+          });
+          
+          var order = { "I": 1, "O": 2, "W": 3, "C": 4, default: Infinity };
+          myClassDataList.sort(function (a, b) {
+          return (order[a.sessionStatusString] || order.default) - (order[b.sessionStatusString] || order.default);
+        })
+        console.log(myClassDataList);
+          setSessionsData(myClassDataList)
+
+        });
+        
+      
+      return () => subscriber();
+    }, [teacherIDState,selectedDate]);
+
+
 
 
     useEffect(() =>{
@@ -51,13 +166,13 @@ const TeacherHome = ({ navigation }) => {
 
       
 
-      const funcFetchSession = async () => {
-      var localTime = moment(new Date()).format('HH:mm').toString()
-       var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
-        await _fetchSessionsAPI(selectedDate,localTime,localDate)
-      };
+      // const funcFetchSession = async () => {
+      // var localTime = moment(new Date()).format('HH:mm').toString()
+      //  var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+      //   await _fetchSessionsAPI(selectedDate,localTime,localDate)
+      // };
 
-      funcFetchSession()
+      // funcFetchSession()
         
   
       return () => clearInterval(interval);
@@ -65,37 +180,28 @@ const TeacherHome = ({ navigation }) => {
 
 
 
-    useFocusEffect(
-      React.useCallback(() => {
-        // Do something when the screen is focused
+    // useFocusEffect(
+    //   React.useCallback(() => {
+    //     // Do something when the screen is focused
         
-       var localTime = moment(new Date()).format('HH:mm').toString()
-       var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
-       console.log("Home is focused");
+    //    var localTime = moment(new Date()).format('HH:mm').toString()
+    //    var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
+    //    console.log("Home is focused");
 
-        if(teacherIDState !=  null)
-          _fetchSessionsAPI(selectedDate,localTime,localDate)
+    //     if(teacherIDState !=  null)
+    //       _fetchSessionsAPI(selectedDate,localTime,localDate)
 
         
 
   
-        return () => {
-          console.log("Home is unfocused");
-        };
-      }, [teacherIDState,selectedDate])
-    );
+    //     return () => {
+    //       console.log("Home is unfocused");
+    //     };
+    //   }, [teacherIDState,selectedDate])
+    // );
 
-    // useEffect(() => {
 
-    //   var localTime = moment(new Date()).format('HH:mm').toString()
-    //   var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
-
-    //     if(teacherIDState !=  null)
-    //     _fetchSessionsAPI(selectedDate,localTime,localDate)
-
-    //     // console.log(teacherIDState);
-
-    // }, [selectedDate])
+    
 
 
     const _fetchSessionsAPI = async (selectDate,currentTime,currentDate) => {
@@ -109,7 +215,7 @@ const TeacherHome = ({ navigation }) => {
         .then((response) => response.json())
         .then((data) => {
             console.log(data);
-            setSessionsData(data)
+            // setSessionsData(data)
         })
         .catch((error) => {
             console.error(error);
@@ -287,7 +393,7 @@ const TeacherHome = ({ navigation }) => {
                               :
                               (item.sessionStatus == 0 ? 
                   
-                              <Text style={styles.statusText}>เปิดให้ทำการเช็คชื่อ</Text>
+                              <Text style={styles.statusText}>เปิดทำการเช็คชื่อแล้ว</Text>
                               : 
                               (item.sessionStatus == 1 ? 
                               <Text style={styles.statusText}>ปิดทำการเช็คชื่อแล้ว</Text> 
@@ -339,7 +445,15 @@ const TeacherHome = ({ navigation }) => {
                       </View>
                       <View style={{marginTop:15}}>
                         <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20,alignSelf:'center'}}>
-                          <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',{uqID:item.uqID,selectedDate:selectedDate})}} >
+                          <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',
+                          {
+                            uqID:item.uqID,
+                            selectedDate:selectedDate,
+                            classID : item.id,
+                            className : item.name
+                            })
+                          }} 
+                          >
                             <View style={{flexDirection:'row'}}>
                               <Icon name="pie-chart" size={25} color="white" /> 
                               <Text style={{color:'white',marginLeft:7}}>สถิติการเข้าห้อง</Text>
@@ -399,7 +513,7 @@ const TeacherHome = ({ navigation }) => {
                   var localTime = moment(new Date()).format('HH:mm').toString()
                   var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
                   await _cancelSession(item.currentDate,item.uqID)
-                  await _fetchSessionsAPI(item.currentDate,localTime,localDate)
+                  // await _fetchSessionsAPI(item.currentDate,localTime,localDate)
                   }} >
                   <Text style={{color:'white'}}>ยกเลิกการเช็คชื่อ</Text>
                 </TouchableOpacity>
@@ -415,7 +529,7 @@ const TeacherHome = ({ navigation }) => {
                   var localTime = moment(new Date()).format('HH:mm').toString()
                   var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
                    await _addStudentTestAPI(item.uqID)
-                  await _fetchSessionsAPI(item.currentDate,localTime,localDate)
+                  // await _fetchSessionsAPI(item.currentDate,localTime,localDate)
                   }} >
                       <Text style={{color:'white'}}>Test Add Students</Text>
                 </TouchableOpacity>
@@ -454,21 +568,7 @@ const TeacherHome = ({ navigation }) => {
           const myDate = myDateSplit[2]+'/'+myDateSplit[1]+'/'+myDateSplit[0]
           return(
             < >
-                {/* <Text style={{alignSelf:'center'}}>Date: {selectedDate}</Text>
-                <Text style={{alignSelf:'center'}}>TeacherID: {teacherIDState}</Text>
-                <Text style={{alignSelf:'center'}}>Time: {localTime}</Text> */}
-                {/* <Calendar 
-                style={{margin:20 , padding:20 , borderRadius:20 , elevation:5 , marginTop:30}}
-                onDayPress={async day => {
-                  var localTime = moment(new Date()).format('HH:mm').toString()
-                  var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
-                  var selectDate = day.dateString
-                  console.log(selectDate);
-                  setSelectedDate(selectDate)
-                  await _fetchSessionsAPI(selectDate,localTime,localDate)
-                  }}
-                  
-                /> */}
+                
                 <View style={{backgroundColor:'white',elevation:2,margin:15,borderRadius:20,padding:15}}>
                     <CalendarPicker
                     width={360}
@@ -481,7 +581,7 @@ const TeacherHome = ({ navigation }) => {
                       var selectDate = moment(date).format('YYYY-MM-DD').toString()
                       console.log(selectDate);
                       setSelectedDate(selectDate)
-                      await _fetchSessionsAPI(selectDate,localTime,localDate)
+                      // await _fetchSessionsAPI(selectDate,localTime,localDate)
                       }}
                     
                     
@@ -497,8 +597,10 @@ const TeacherHome = ({ navigation }) => {
                     <Icon name="plus-circle" size={50}/>
                     <Text >เพิ่มห้องเช็คชื่อ</Text>
                  </TouchableOpacity>
-                 </View>  
-                 <Text style={{alignSelf:'center'}}>การเช็คชื่อของวันที่ {myDate} ({localTime})</Text>     
+                 </View>
+                 <View style={{alignItems:'center',backgroundColor:'#9E76B4',marginHorizontal:16,padding:10,elevation:2,borderRadius:10,marginBottom:5}}>
+                 <Text style={{color:'white'}}>การเช็คชื่อของวันที่ {myDate} ({localTime})</Text> 
+                 </View>      
                       
                
             </>

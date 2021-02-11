@@ -35,7 +35,8 @@ const StudentHome = ({navigation,route}) => {
 
 
     const _retrieveUserData = async () => {
-      const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+      // const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+      const  studentID = await AsyncStorage.getItem('name');
       setStudentIDState(studentID)
 
     }

@@ -13,7 +13,8 @@ const MyQR = ({route}) => {
     const [studentIDState,setStudentIDState] = useState('')
 
     const _retrieveUserData = async () => {
-        const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+        // const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+        const  studentID = await AsyncStorage.getItem('name');
         setStudentIDState(studentID)
   
       }

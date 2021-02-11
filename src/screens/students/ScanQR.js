@@ -21,7 +21,8 @@ class QR_Scan extends PureComponent {
     }
 
     _retrieveUserData = async () => {
-      const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+      // const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+      const  studentID = await AsyncStorage.getItem('name');
       this.setState({studentIDState:studentID})
 
   }

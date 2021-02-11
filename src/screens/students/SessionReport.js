@@ -77,11 +77,12 @@ const SessionReport = ({route}) => {
                   item.isChecked ?
                   <View style={{flexDirection:'row',alignItems:'baseline'}}>
                     <Image source={require('../../assets/vectors/check.png')} style={{width:33,height:33,marginRight:5}} />
-                    <Text>{item.timestamp}</Text>
+                    <Text>เช็คแล้ว {item.timestamp}</Text>
                   </View>
                   :
-                  <View >
-                  <Image source={require('../../assets/vectors/close.png')} style={{width:26,height:26}} />
+                  <View style={{flexDirection:'row',alignItems:'baseline'}}>
+                  <Image source={require('../../assets/vectors/close.png')} style={{width:26,height:26,marginRight:7}} />
+                  <Text style={{color:'red'}}>ไม่ได้เช็คชื่อ</Text>
                   </View>
                 }
               </View>
@@ -110,9 +111,9 @@ const SessionReport = ({route}) => {
                     keyExtractor={item => item.id}
                     ListHeaderComponent={
                     <View style={styles.classDetail}>
-                      <Text style={{fontSize:20}}>สรุปผลการเช็คชื่อ</Text>
-                      <Text style={{fontSize:18}}>ชื่อวิชา: {route.params.className} </Text>
-                      <Text style={{fontSize:18}}>รหัสวิชา: {route.params.classID}</Text>
+                      <Text style={{fontSize:20,color:'white'}}>สรุปผลการเช็คชื่อ</Text>
+                      <Text style={{fontSize:18,color:'white'}}>ชื่อวิชา: {route.params.className} </Text>
+                      <Text style={{fontSize:18,color:'white'}}>รหัสวิชา: {route.params.classID}</Text>
                     </View>}
                 />
                 
@@ -130,6 +131,32 @@ const SessionReport = ({route}) => {
 
 }
 
+const itemStyle = (classStatus,isCheck) => {
+  let borderColor = ''
+  if(classStatus == -1){
+    borderColor = 'orange'
+  }else
+  {
+    if(isCheck){
+      borderColor = 'green'
+    }else
+    {
+      borderColor = 'red'
+    }
+  }
+  return({
+    backgroundColor: '#f9c2ff',
+    padding: 20,
+    marginVertical: 10,
+    marginHorizontal: 16,
+    elevation:2,
+    borderRadius:20,
+    backgroundColor:'white',
+    borderWidth:2,
+    borderColor:borderColor
+  })
+}
+
 const styles = StyleSheet.create({
     container: {
       flex: 1,
@@ -142,7 +169,7 @@ const styles = StyleSheet.create({
       marginHorizontal: 16,
       elevation:2,
       borderRadius:20,
-      backgroundColor:'white'
+      backgroundColor:'white',
     },
     title: {
       fontSize: 20,
@@ -154,7 +181,11 @@ const styles = StyleSheet.create({
       elevation:2,
       padding:12,
       borderRadius:20,
-      paddingHorizontal:50
+      paddingHorizontal:50,
+      backgroundColor:'#9E76B4'
+    },
+    textWhite : {
+      color:'white'
     }
   });
 

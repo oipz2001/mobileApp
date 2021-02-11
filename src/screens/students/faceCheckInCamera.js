@@ -38,7 +38,9 @@ class ExampleApp extends PureComponent {
     }
 
     _retrieveUserData = async () => {
-        const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+        // const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
+        const  studentID = await AsyncStorage.getItem('name');
+        console.log( studentID);
         this.setState({studentIDState:studentID})
   
     }

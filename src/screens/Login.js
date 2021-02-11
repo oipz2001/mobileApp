@@ -56,7 +56,6 @@ const Login = ({navigation}) => {
       const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
       const  teacherName = await AsyncStorage.getItem('NameTeacher');
       const  teacherMail = await AsyncStorage.getItem('MailTeacher');
-      console.log(studentUserID);
       setStudentUserID(studentID)
 
       setTeacherUserID(teacherID)
@@ -65,10 +64,11 @@ const Login = ({navigation}) => {
     }
 
     AsyncStorage.setItem('uniqueIDTeacher','PARINYA SEETAWAN')
+    // AsyncStorage.setItem('uniqueIDTeacher','LIFT')
     AsyncStorage.setItem('NameTeacher','Parinya Seetawan')
     AsyncStorage.setItem('MailTeacher','parinya_seetawan@cmu.ac.th')
 
-    AsyncStorage.setItem('uniqueIDStudent','JETDILOK NGAMKHAM')
+    AsyncStorage.setItem('uniqueIDStudent','SINGKHON KHONGTHAM')
     // AsyncStorage.setItem('uniqueIDStudent','Paradee1')
     AsyncStorage.setItem('NameStudent','Parinyakorn')
 
@@ -172,15 +172,26 @@ const Login = ({navigation}) => {
       })
       // console.log(tokens.expireOn);
       // AsyncStorage.setItem('uniqueIDStudent',info.displayName)
+
       AsyncStorage.setItem('name',info.displayName);
       AsyncStorage.setItem('mail',info.mail);
       AsyncStorage.setItem('id',info.id);
       AsyncStorage.setItem('jobtitle',info.jobTitle);
+      console.log(info.displayName);
+      
       setuser(info.displayName);
       setmail(info.mail)
       setuserId(info.id)
       setjobtitle(info.jobTitle)
       setInfoShow(true)
+
+      if(info.jobTitle == "Student"){
+        await _isStudentFaceAdded(info.displayName);
+      }
+      else
+      {
+        await checkIfTeacherExist(info.displayName)
+      }
     } catch (error) {
       console.log(error)
     }
@@ -225,22 +236,21 @@ const Login = ({navigation}) => {
 
     <SafeAreaView style = {{flex: 1, justifyContent: 'center',alignItems: 'center'}} >
       
-    {/* <TouchableOpacity onPress={_Login} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20}}>
+    <TouchableOpacity onPress={_Login} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20}}>
       <Text style={{color:'white'}}>Login with CMU</Text>
-    </TouchableOpacity> */}
+    </TouchableOpacity>
     {isInfoShow &&
     <View style={{backgroundColor:'#9E76B4',marginTop:30,padding:10,elevation:5,borderRadius:20}}>
       <Text style={{color:"white"}} > Name: {user} </Text> 
       <Text style={{color:"white"}} > Mail: {mail} </Text> 
       <Text style={{color:"white"}} > ID: {userId} </Text> 
       <Text style={{color:"white"}} > JobTitle: {jobtitle} </Text>
-      {/* <Text style={{color:"white"}} > JobTitle: Student </Text> */}
     </View>
     }
     
-    {/* <TouchableOpacity onPress={_onLogout} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20,marginTop:30}}>
+    <TouchableOpacity onPress={_onLogout} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20,marginTop:30}}>
       <Text style={{color:'white'}}>Logout</Text>
-    </TouchableOpacity>  */}
+    </TouchableOpacity> 
     <View >
       <View style = {{marginTop: 30}} >
         <Button title = "Go to Teacher Home" onPress = {async () => {

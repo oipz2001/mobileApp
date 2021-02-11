@@ -215,8 +215,8 @@ const TeacherSeatmap = ({route}) => {
         }
         </ScrollView>)
         :
-            <View style={{backgroundColor:'white',padding:80,borderRadius:20,elevation:2}}>
-                <Text style={{fontSize:20}}>ไม่พบแผนผังที่นั่ง</Text>
+            <View style={{backgroundColor:'white',padding:80,borderRadius:20,elevation:2,backgroundColor:'#9E76B4'}}>
+                <Text style={{fontSize:20,color:'white'}}>ไม่พบแผนผังที่นั่ง</Text>
             </View>
         }
         

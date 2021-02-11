@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-community/async-storage'
 import {useFocusEffect} from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import storage from '@react-native-firebase/storage';
+import firestore from '@react-native-firebase/firestore';
 const MyProfile = () => {
     const [user, setuser] = useState('')
     const [mail, setmail] = useState([])
@@ -38,8 +39,11 @@ const MyProfile = () => {
       };
 
       const _retrieveUserData = async () => {
-        const  teacherID = await AsyncStorage.getItem('uniqueIDStudent');
-        const url = await storage().ref(teacherID).getDownloadURL().then(
+        // const  teacherID = await AsyncStorage.getItem('uniqueIDStudent');
+        const  id = await AsyncStorage.getItem('name');
+        const mail = await AsyncStorage.getItem('mail');
+        const status = await AsyncStorage.getItem('jobtitle');
+        const url = await storage().ref(id).getDownloadURL().then(
           function onResolve(foundURL) {
             setprofilePhoto(foundURL)
           }, 
@@ -47,7 +51,10 @@ const MyProfile = () => {
               const url_notFound = "https://cdn1.vectorstock.com/i/1000x1000/51/05/male-profile-avatar-with-brown-hair-vector-12055105.jpg"
               setprofilePhoto(url_notFound)
           });
-        setTeacherIDState(teacherID)
+        // setTeacherIDState(teacherID)
+        setuserId(id)
+        setmail(mail)
+        setjobtitle(status)
   
       }
 
@@ -73,10 +80,9 @@ const MyProfile = () => {
 
             }
             
-            <Text > Name: {teacherIDState} </Text> 
+            <Text > Name: {userId} </Text> 
             <Text> Mail: {mail} </Text> 
-            <Text> ID: {userId} </Text> 
-            <Text> JobTitle: {jobtitle} </Text>
+            <Text> Status: {jobtitle} </Text>
           </View>
         
         // <WebView source={{ uri: 'https://reactnative.dev/' }} />

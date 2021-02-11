@@ -11,6 +11,7 @@ import {
   } from "react-native-chart-kit";
 import AsyncStorage from '@react-native-community/async-storage'
 import firestore from '@react-native-firebase/firestore';
+import storage from '@react-native-firebase/storage';
   const URL = require('../../config/endpointConfig')
   const myEndpointURL =  URL.myEndpointTeacher
 
@@ -157,16 +158,40 @@ const TeacherSessionStat = ({route}) => {
       />
     );
   };
+
+  
     
     
       
       
-      const Item = ({ item, onPress, style }) => (
-      
+      const Item = ({ item, onPress, style }) => {
+        // let studentImage = ''
+
         
+
+        // storage().ref(item.studentID).getDownloadURL().then(
+        //   function onResolve(foundURL) {
+        //     // studentImage = foundURL
+        //     // console.log(foundURL);
+        //     console.log(foundURL);
+        //   }, 
+        //   function onReject(error){ 
+        //       const url_notFound = "https://cdn1.vectorstock.com/i/1000x1000/51/05/male-profile-avatar-with-brown-hair-vector-12055105.jpg"
+        //       // studentImage = url_notFound
+        //       console.log(url_notFound);
+        //   });
+        
+      
+        return(
         <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
           <View >
               <View style={{alignItems:'center'}}>
+                <Image
+                          style={{width:100,height:100,marginVertical:15}}
+                          source={{
+                          uri: "https://cdn1.vectorstock.com/i/1000x1000/51/05/male-profile-avatar-with-brown-hair-vector-12055105.jpg"
+                          }}
+                />
                 <Text style={styles.id}>{item.studentUqID}</Text>
                 <Text style={styles.name}>{item.studentName}</Text>
               </View>
@@ -189,15 +214,16 @@ const TeacherSessionStat = ({route}) => {
           </View>
         </TouchableOpacity>
         
-        );
+        )
+      };
 
     const ListHeaderComponent = () => {
       const myDate = classSelectedDate.split('-')[2]+'/'+classSelectedDate.split('-')[1]+'/'+classSelectedDate.split('-')[0]
         return(
             <View style={{alignItems:'center',marginTop:15,}}>
               
-                <View style={{backgroundColor:'white',alignItems:'center',padding:20,justifyContent:'center',elevation:2,borderRadius:10,width:370}}>
-                  <Text style={{fontSize:20}}>กราฟแสดงสถิติการเข้าห้อง</Text>
+                <View style={{backgroundColor:'white',alignItems:'center',padding:20,justifyContent:'center',elevation:2,borderRadius:10,width:370,backgroundColor:'#9E76B4'}}>
+                  <Text style={{fontSize:20,color:'white'}}>กราฟแสดงสถิติการเข้าห้อง</Text>
                   <Text style={styles.classDetailText}>รหัสวิชา: {classStatData.classId}</Text>
                   <Text style={styles.classDetailText}>ชื่อวิชา: {classStatData.className}</Text>
                   <Text style={styles.classDetailText}>วันเวลา: {myDate}</Text>
@@ -277,7 +303,8 @@ const styles = StyleSheet.create({
       fontSize: 19 
     },
     classDetailText:{
-      fontSize: 18
+      fontSize: 18,
+      color:'white'
     }
   });
 

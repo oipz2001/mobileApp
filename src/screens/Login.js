@@ -63,7 +63,7 @@ const Login = ({navigation}) => {
       setTeacherUserMail(teacherMail)
     }
 
-    AsyncStorage.setItem('uniqueIDTeacher','PARINYA SEETAWAN')
+    AsyncStorage.setItem('uniqueIDTeacher','PARINYA')
     // AsyncStorage.setItem('uniqueIDTeacher','LIFT')
     AsyncStorage.setItem('NameTeacher','Parinya Seetawan')
     AsyncStorage.setItem('MailTeacher','parinya_seetawan@cmu.ac.th')

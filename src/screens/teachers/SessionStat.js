@@ -1,5 +1,5 @@
 import React,{useEffect, useState} from 'react'
-import { Button, View,Text,Dimensions,FlatList,TouchableOpacity,StyleSheet,StatusBar,Image,ActivityIndicator } from 'react-native'
+import { Button, View,Text,Dimensions,FlatList,TouchableOpacity,StyleSheet,StatusBar,Image,ActivityIndicator,Modal } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
     LineChart,
@@ -33,6 +33,10 @@ const TeacherSessionStat = ({route}) => {
     const [teacherIDState,setTeacherIDState] = useState(null)
     const [classStatData,setClassStatData] = useState({})
     const [studentStatList,setStudentStatList] = useState([])
+    const [isShowStProfile,setIsShowStProfile] = useState(false)
+    const [selectedStudent,setSelectedStudent] = useState(null)
+
+    const [modalData,setModalData] = useState({})
 
     const [chartData,setChartData] = useState(
       [
@@ -98,6 +102,50 @@ const TeacherSessionStat = ({route}) => {
       
       }, [teacherIDState,classUqID]);
 
+      useEffect(() => {
+
+        const retrieveStudent = async (selectedStudent) => {
+          
+          const student = await firestore().collection('Students').doc(selectedStudent).get();
+          const studentData = student.data()
+          console.log(studentData.fullName);
+          const name = studentData.fullName
+          const uqID = studentData.uqID
+          let mail = studentData.mail
+          if(mail == undefined){
+            mail = '(ไม่ได้ระบุ)'
+          }
+
+          storage().ref(selectedStudent).getDownloadURL().then(
+          function onResolve(foundURL) {
+            setModalData({
+              studentUqID : uqID,
+              studentName : name,
+              studentMail : mail,
+              studentImage : foundURL
+            })
+            setIsShowStProfile(true)
+          }, 
+          function onReject(error){ 
+              const url_notFound = "https://cdn1.vectorstock.com/i/1000x1000/51/05/male-profile-avatar-with-brown-hair-vector-12055105.jpg"
+              setModalData({
+                studentUqID : uqID,
+                studentName : name,
+                studentMail : mail,
+                studentImage : url_notFound
+              })
+              setIsShowStProfile(true)
+          });
+          
+        }
+
+        if(selectedStudent != null){
+          retrieveStudent(selectedStudent)
+          
+        }
+
+        
+      },[selectedStudent])
       
 
     
@@ -183,15 +231,18 @@ const TeacherSessionStat = ({route}) => {
         
       
         return(
-        <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
+        <TouchableOpacity onPress={() => {
+          setSelectedStudent( item.studentName)
+          }} 
+          style={[styles.item, style]}>
           <View >
               <View style={{alignItems:'center'}}>
-                <Image
+                {/* <Image
                           style={{width:100,height:100,marginVertical:15}}
                           source={{
                           uri: "https://cdn1.vectorstock.com/i/1000x1000/51/05/male-profile-avatar-with-brown-hair-vector-12055105.jpg"
                           }}
-                />
+                /> */}
                 <Text style={styles.id}>{item.studentUqID}</Text>
                 <Text style={styles.name}>{item.studentName}</Text>
               </View>
@@ -266,6 +317,37 @@ const TeacherSessionStat = ({route}) => {
                     />
                   </View>
                 
+                <Modal
+                animationType="fade"
+                transparent={true}
+                visible={isShowStProfile}
+                onRequestClose={() => {
+                Alert.alert("Modal has been closed.");
+                }}
+            >
+                <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:8,marginBottom:190}}>
+                    <View style={{flex:1,justifyContent:'center'}}>
+                        <TouchableOpacity  onPress={() => setIsShowStProfile(!isShowStProfile)}>
+                            <Image source={require('../../assets/vectors/close.png')} style={{width:30,height:30}} />
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{flex:4,justifyContent:'space-evenly',alignItems:'center',marginBottom:20}}>
+                        <Image
+                        style={{width:200,height:200}}
+                        source={{
+                        uri: modalData.studentImage
+                        }}
+                        />
+                        <View style={{marginTop:10}}>
+                          <Text>รหัสนักศึกษา: {modalData.studentUqID}</Text> 
+                          <Text>ชื่อ: {modalData.studentName}</Text> 
+                          <Text>อีเมลล์: {modalData.studentMail}</Text> 
+                        </View>
+                    </View>
+                    
+
+                </View>
+            </Modal>
                 
                 
 

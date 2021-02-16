@@ -17,6 +17,7 @@ class CameraAddFaceList extends PureComponent {
         this.state = {
             studentIDState:'',
             studentNameState : '',
+            studentMailState : '',
             isInprogressModalShow:false
         }
     }
@@ -28,7 +29,9 @@ class CameraAddFaceList extends PureComponent {
         // const studentName = await AsyncStorage.getItem('NameStudent');
         const  studentID = await AsyncStorage.getItem('name');
         // const studentName = await AsyncStorage.getItem('name');
-        this.setState({studentIDState:studentID,studentNameState:studentID})
+        const  studentMail = await AsyncStorage.getItem('mail');
+        console.log(studentID,studentMail);
+        this.setState({studentIDState:studentID,studentNameState:studentID,studentMailState:studentMail})
   
     }
 
@@ -151,10 +154,10 @@ class CameraAddFaceList extends PureComponent {
         .then(async data => {
           
             if(this.props.route.params.response == false){
-              await this._AddStudentFaceListDB(this.state.studentIDState)
+              await this._AddStudentFaceListDB(this.state.studentIDState,this.state.studentMailState)
             }
             else if(this.props.route.params.response == null){
-              await this._AddNewStudent(this.state.studentIDState,this.state.studentNameState)
+              await this._AddNewStudent(this.state.studentIDState,this.state.studentNameState,this.state.studentMailState)
             }
 
             
@@ -184,7 +187,8 @@ class CameraAddFaceList extends PureComponent {
     }
 
 
-    _AddStudentFaceListDB = async (studentID) => {
+    _AddStudentFaceListDB = async (studentID,studentMail) => {
+      console.log('_AddStudentFaceListDB');
       console.log(studentID);
       await fetch(myEndpointStudent+'/addFaceListToStudent', {
         method: 'POST',
@@ -193,7 +197,8 @@ class CameraAddFaceList extends PureComponent {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-          faceListId:studentID
+          faceListId:studentID,
+          studentMail:studentMail
 
         })
         })
@@ -208,8 +213,8 @@ class CameraAddFaceList extends PureComponent {
         });
     }
 
-    _AddNewStudent = async (studentID,studentName) => {
-
+    _AddNewStudent = async (studentID,studentName,studentMail) => {
+      console.log('_AddNewStudent');
       await fetch(myEndpointStudent+'/addNewStudent', {
         method: 'POST',
         headers: {
@@ -220,6 +225,7 @@ class CameraAddFaceList extends PureComponent {
           studentID: studentID,
           faceListId:studentID ,
           studentName: studentName,
+          studentMail:studentMail
 
 
         })

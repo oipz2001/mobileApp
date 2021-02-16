@@ -294,12 +294,13 @@ takePictureMatch = async () => {
           .then(async matchResult => {
             console.log(matchResult );
             if(matchResult.length != 0){
+              
+            //   this.props.navigation.navigate('StudentHome')
+            if(matchResult[0].confidence >= 0.7){
               this.setState({matchResult:true,
                 isInprogressModalShow:false,
                 shouldFaceDetect:false,
                 })
-            //   this.props.navigation.navigate('StudentHome')
-            if(matchResult[0].confidence >= 0.7){
                 await this.checkInAPI(
                     this.props.route.params.studentID,
                     this.props.route.params.teacherID,

@@ -141,12 +141,15 @@ const StudentHome = ({navigation,route}) => {
 
 
       const getWifiList = async (studentID,teacherID,uqID) => {
+        askForUserPermissions()
         setIsWifiMatchModalShow(true)
         await wifi.reScanAndLoadWifiList(
           async wifis =>{
             var tempWifis = JSON.parse(wifis)
             var wifisArr = []
             tempWifis.forEach(wifisData => {
+              if( wifisData.SSID == "@JumboPlus5GHz")
+              console.log(wifisData.BSSID,wifisData.SSID);
               wifisArr.push(wifisData.BSSID)
             })
             // console.log(wifisArr);

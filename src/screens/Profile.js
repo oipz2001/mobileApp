@@ -6,7 +6,11 @@ import {useFocusEffect} from '@react-navigation/native';
 import { WebView } from 'react-native-webview';
 import storage from '@react-native-firebase/storage';
 import firestore from '@react-native-firebase/firestore';
-const MyProfile = () => {
+import AzureAuth from 'react-native-azure-auth';
+const azureAuth = new AzureAuth({
+  clientId: '234c43b9-e653-4646-97c6-1903cfac1c03'
+});
+const MyProfile = ({navigation}) => {
     const [user, setuser] = useState('')
     const [mail, setmail] = useState([])
     const [userId, setuserId] = useState('')
@@ -62,14 +66,31 @@ const MyProfile = () => {
         _retrieveUserData()
       },[])
 
+
+      const _onLogout = () => {
+        azureAuth.webAuth
+          .clearSession()
+          .then(success => {
+            AsyncStorage.removeItem('name')
+            AsyncStorage.removeItem('mail')
+            AsyncStorage.removeItem('id')
+            AsyncStorage.removeItem('jobtitle')
+            navigation.navigate('Login')
+          })
+          .catch(error => console.log(error));
+      };
+
     
     return(
         
           <View style={styles.profile}>
+            <View style={{marginBottom:25}}>
+            <Text style={{fontSize:20}}>ข้อมูลโปรไฟล์</Text>
+            </View>
             {
               profilePhoto != '' ?
               <Image
-                        style={{width:200,height:200}}
+                        style={{width:250,height:250}}
                         source={{
                         uri: profilePhoto
                         }}
@@ -79,10 +100,14 @@ const MyProfile = () => {
                
 
             }
-            
-            <Text > Name: {userId} </Text> 
-            <Text> Mail: {mail} </Text> 
-            <Text> Status: {jobtitle} </Text>
+            <View style={{marginTop:15}}>
+              <Text >ชื่อ: {userId} </Text> 
+              <Text>อีเมลล์: {mail} </Text> 
+              <Text>สถานะ: {jobtitle} </Text>
+            </View>
+            <TouchableOpacity onPress={_onLogout} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20,marginTop:10}}>
+              <Text style={{color:'white'}}>ออกจากระบบ</Text>
+            </TouchableOpacity> 
           </View>
         
         // <WebView source={{ uri: 'https://reactnative.dev/' }} />
@@ -94,7 +119,12 @@ const styles = StyleSheet.create({
   profile : {
       justifyContent:'center',
       alignItems:'center',
-      flex:1
+      flex:1,
+      backgroundColor:'white',
+      margin:20,
+      marginVertical:100,
+      borderRadius:20,
+      elevation:2
   }
 })
 

@@ -62,7 +62,7 @@ const _hearderProfile = ({...props}) => {
         <Stack.Screen name="MyQR" component={MyQR}/>
         <Stack.Screen name="SessionReport" component={StudentReport} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'การสรุปผล'})}/>
 
-        <Stack.Screen name="Profile" component={MyProfile} />
+        <Stack.Screen name="Profile" component={MyProfile} options={{headerTitle:'โปรไฟล์'}} />
         
       </Stack.Navigator>
     </NavigationContainer>

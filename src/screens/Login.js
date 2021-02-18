@@ -77,7 +77,7 @@ const Login = ({navigation}) => {
   },[user,studentUserID])
 
 
-  const checkIfTeacherExist = async (teacherID) => {
+  const checkIfTeacherExist = async (teacherID,teacherMail) => {
     await fetch(myEndpointURLTeacher+'/checkIfTeacherExist', {
       method: 'POST',
       headers: {
@@ -96,7 +96,7 @@ const Login = ({navigation}) => {
               navigation.navigate('TeacherHome')
           }else{
             
-            await addNewTeacher(teacherUserID,teacherUserName,teacherUserMail)
+            await addNewTeacher(teacherID,teacherMail)
           }
       })
       .catch((error) => {
@@ -106,7 +106,8 @@ const Login = ({navigation}) => {
 
 
 
-  const addNewTeacher = async (teacherID,teacherName,teacherMail) => {
+  const addNewTeacher = async (teacherID,teacherMail) => {
+    console.log(teacherID,teacherMail);
     await fetch(myEndpointURLTeacher+'/addNewTeacher', {
       method: 'POST',
       headers: {
@@ -115,7 +116,7 @@ const Login = ({navigation}) => {
       },
       body: JSON.stringify({
         teacherID:teacherID,
-        teacherName:teacherName,
+        teacherName:teacherID,
         teacherMail:teacherMail
 
       })
@@ -176,7 +177,7 @@ const Login = ({navigation}) => {
       AsyncStorage.setItem('name',info.displayName);
       AsyncStorage.setItem('mail',info.mail);
       AsyncStorage.setItem('id',info.id);
-      AsyncStorage.setItem('jobtitle',info.jobTitle);
+      
       console.log(info.displayName);
       
       setuser(info.displayName);
@@ -185,12 +186,15 @@ const Login = ({navigation}) => {
       setjobtitle(info.jobTitle)
       setInfoShow(true)
 
-      if(info.jobTitle == "Student"){
+      // let role = info.jobTitle
+      let role = 'E'
+      AsyncStorage.setItem('jobtitle',role);
+      if(role == "Student"){
         await _isStudentFaceAdded(info.displayName);
       }
       else
       {
-        await checkIfTeacherExist(info.displayName)
+        await checkIfTeacherExist(info.displayName,info.mail)
       }
     } catch (error) {
       console.log(error)
@@ -237,42 +241,42 @@ const Login = ({navigation}) => {
     <SafeAreaView style = {{flex: 1, justifyContent: 'center',alignItems: 'center'}} >
       
     <TouchableOpacity onPress={_Login} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20}}>
-      <Text style={{color:'white'}}>Login with CMU</Text>
+      <Text style={{color:'white'}}>เข้าสู่ระบบด้วย CMU Account</Text>
     </TouchableOpacity>
-    {isInfoShow &&
+    {/* {isInfoShow &&
     <View style={{backgroundColor:'#9E76B4',marginTop:30,padding:10,elevation:5,borderRadius:20}}>
       <Text style={{color:"white"}} > Name: {user} </Text> 
       <Text style={{color:"white"}} > Mail: {mail} </Text> 
       <Text style={{color:"white"}} > ID: {userId} </Text> 
       <Text style={{color:"white"}} > JobTitle: {jobtitle} </Text>
     </View>
-    }
+    } */}
     
-    <TouchableOpacity onPress={_onLogout} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20,marginTop:30}}>
+    {/* <TouchableOpacity onPress={_onLogout} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20,marginTop:30}}>
       <Text style={{color:'white'}}>Logout</Text>
-    </TouchableOpacity> 
+    </TouchableOpacity>  */}
     <View >
-      <View style = {{marginTop: 30}} >
+      {/* <View style = {{marginTop: 30}} >
         <Button title = "Go to Teacher Home" onPress = {async () => {
           await checkIfTeacherExist(teacherUserID)
           // navigation.navigate('TeacherHome')
       }}/> 
       </View> 
-      <Text>{teacherUserID}</Text>
+      <Text>{teacherUserID}</Text> */}
       {/* <View style = {{marginTop: 30 }} >
         <Button title = "Go to Student Home" onPress = {async () => {
           navigation.navigate('StudentHome')
           } }/> 
       </View>  */}
       
-      <View style = {{marginTop: 30 }} >
+      {/* <View style = {{marginTop: 30 }} >
         <Button title = "Go to Student Home" onPress = {async () => {
           const  studentID = await AsyncStorage.getItem('uniqueIDStudent');
           await _isStudentFaceAdded(studentID);
           
           }}/> 
       </View>
-      <Text>{studentUserID}</Text> 
+      <Text>{studentUserID}</Text>  */}
       
     </View>
     

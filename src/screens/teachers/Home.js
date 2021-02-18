@@ -34,7 +34,8 @@ const TeacherHome = ({ navigation }) => {
     const [isInprogressModalShow,setIsInprogressModalShow] = useState(false)
 
     const _retrieveUserData = async () => {
-      const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
+      // const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
+      const  teacherID = await AsyncStorage.getItem('name');
       setTeacherIDState(teacherID)
 
     }
@@ -565,7 +566,7 @@ const TeacherHome = ({ navigation }) => {
 
             {
               item.isLocationSet ?
-              <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20,alignSelf:'center'}}>
+              <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20,alignSelf:'center',marginTop:15}}>
                 <TouchableOpacity onPress={async () => {
                     await updateWifiLocAPI(item.uqID,teacherIDState)
                 }}  >

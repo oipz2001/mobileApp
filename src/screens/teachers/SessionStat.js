@@ -164,7 +164,8 @@ const TeacherSessionStat = ({route}) => {
   },[])
 
   const _retrieveUserData = async () => {
-    const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
+    // const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
+    const  teacherID = await AsyncStorage.getItem('name');
     setTeacherIDState(teacherID)
 
   }

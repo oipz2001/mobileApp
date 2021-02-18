@@ -64,7 +64,8 @@ const TeacherSessionCreate = ({navigation}) => {
     const [teacherIDState,setTeacherIDState] = useState(null)
     // retrive user data
     const _retrieveUserData = async () => {
-        const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
+        // const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
+        const  teacherID = await AsyncStorage.getItem('name');
         setTeacherIDState(teacherID)
   
     }

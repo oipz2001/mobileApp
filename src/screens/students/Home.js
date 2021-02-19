@@ -245,8 +245,9 @@ const StudentHome = ({navigation,route}) => {
                 
               />
               </View>
-              <Text style={{alignSelf:'center'}}>การเช็คชื่อในวันที่ {myDate} ({localTime})</Text>
-          
+              <View style={{alignItems:'center',backgroundColor:'#9E76B4',marginHorizontal:16,padding:10,elevation:2,borderRadius:10,marginBottom:5}}>
+              <Text style={{alignSelf:'center',color:'white'}}>การเช็คชื่อในวันที่ {myDate} ({localTime})</Text>
+              </View>
     
           
           </View>
@@ -429,7 +430,7 @@ const StudentHome = ({navigation,route}) => {
                   >
                       <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:2,marginBottom:190}}>
                           <View style={{flex:1,justifyContent:'center'}}>
-                            <Text>Verify Location...</Text>
+                            <Text>กำลังตรวจสอบสถานที่...</Text>
                           </View>
                           <View style={{flex:3,justifyContent:'center'}}>
                             <ActivityIndicator size={200} color="#9E76B4" />

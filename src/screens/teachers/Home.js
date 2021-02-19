@@ -589,7 +589,7 @@ const TeacherHome = ({ navigation }) => {
                   var localTime = moment(new Date()).format('HH:mm').toString()
                   var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
                   await _cancelSession(item.currentDate,item.uqID)
-                  // await _fetchSessionsAPI(item.currentDate,localTime,localDate)
+                  await _fetchSessionsAPI(item.currentDate,localTime,localDate)
                   }} >
                   <Text style={{color:'white'}}>ยกเลิกการเช็คชื่อ</Text>
                 </TouchableOpacity>

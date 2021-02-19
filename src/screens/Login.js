@@ -186,9 +186,11 @@ const Login = ({navigation}) => {
       setjobtitle(info.jobTitle)
       setInfoShow(true)
 
-      // let role = info.jobTitle
-      let role = 'E'
-      AsyncStorage.setItem('jobtitle',role);
+      let role = info.jobTitle
+      // let role = 'Employee'
+
+
+      // AsyncStorage.setItem('jobtitle',role);
       if(role == "Student"){
         await _isStudentFaceAdded(info.displayName);
       }

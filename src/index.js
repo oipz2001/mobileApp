@@ -50,7 +50,7 @@ const _hearderProfile = ({...props}) => {
         {/* <Stack.Screen name="TeacherHome" component={TeacherHome} options={({ navigation, route }) => ({headerRight: () => <Button title="ss" onPress={() => navigation.navigate('MyProfile')} />,})} /> */}
         <Stack.Screen name="TeacherHome" component={TeacherHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'ห้องเช็คชื่อ'})} />
         <Stack.Screen name="TeacherCreateRoom" component={TeacherSessionCreate} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'การสร้างห้องเช็คชื่อ'})} />
-        <Stack.Screen name="TeacherSettingLocation" component={SettingLocation} options={{headerTitle:'Setting Location'}} />
+        <Stack.Screen name="TeacherSettingLocation" component={SettingLocation} options={{headerTitle:'การระบุสถานที่'}} />
         <Stack.Screen name="RoomStat" component={TeacherSessionStat} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'สถิติการเข้าห้อง'})}/>
         <Stack.Screen name="TeacherSeatmap" component={TeacherSeatmap} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'แผนผังที่นั่ง'})}/>
 

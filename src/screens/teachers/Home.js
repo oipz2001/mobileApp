@@ -33,6 +33,12 @@ const TeacherHome = ({ navigation }) => {
 
     const [isInprogressModalShow,setIsInprogressModalShow] = useState(false)
 
+    const [cancelSelectedData,setCancelSelectedData] = useState(false)
+    const [isCancelModalShow,setIsCancelModalShow] = useState(false)
+
+    const [selectedChangeLocData,setSelectedChangeLocData] = useState('')
+    const [isChangeLocModalShow,setIsChangeLocModalShow] = useState(false)
+
     const _retrieveUserData = async () => {
       // const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
       const  teacherID = await AsyncStorage.getItem('name');
@@ -345,7 +351,7 @@ const TeacherHome = ({ navigation }) => {
 
       // console.log(teacherID);
 
-       
+
         await fetch(myEndpointURL+'/cancelSession', {
         method: 'POST',
         headers: {
@@ -447,6 +453,31 @@ const TeacherHome = ({ navigation }) => {
       
       
      
+  }
+
+  const checkAllStudent = async (teacherID,uqID,date) => {
+    console.log(teacherID,uqID,date);
+    await fetch(defaultEndpoint+'/webApp/checkAllStudent', {
+      method: 'POST',
+      headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        uqID: uqID,
+        teacherID:teacherID,
+        date : date
+
+      })
+      })
+      .then((response) => response.json())
+      .then((data) => {
+          
+          console.log(data);
+      })
+      .catch((error) => {
+      console.error(error);
+      });
   }
 
 
@@ -568,7 +599,17 @@ const TeacherHome = ({ navigation }) => {
               item.isLocationSet ?
               <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20,alignSelf:'center',marginTop:15}}>
                 <TouchableOpacity onPress={async () => {
-                    await updateWifiLocAPI(item.uqID,teacherIDState)
+                  setIsChangeLocModalShow(true)
+                  setSelectedChangeLocData(
+                    {
+                      uqID : item.uqID,
+                      teacherID : teacherIDState,
+                      className : item.name,
+                      classID : item.id,
+                      date : item.currentDate
+                    }
+                  )
+                    // await updateWifiLocAPI(item.uqID,teacherIDState)
                 }}  >
                   <View style={{flexDirection:'row'}}>
                     <Icon name="map-marker" size={25} color="white" /> 
@@ -586,10 +627,15 @@ const TeacherHome = ({ navigation }) => {
               <View >
                 <TouchableOpacity style={{backgroundColor:'red',padding:15,elevation:2,borderRadius:25,alignSelf:'center',marginTop:15}}
                 onPress={async () => {
-                  var localTime = moment(new Date()).format('HH:mm').toString()
-                  var localDate = moment(new Date()).format('YYYY-MM-DD').toString()
-                  await _cancelSession(item.currentDate,item.uqID)
-                  await _fetchSessionsAPI(item.currentDate,localTime,localDate)
+                  setIsCancelModalShow(true)
+                  setCancelSelectedData({
+                    uqID : item.uqID,
+                    date : item.currentDate,
+                    classID : item.id,
+                    className : item.name
+                  })
+                  // await _cancelSession(item.currentDate,item.uqID)
+                  // await _fetchSessionsAPI(item.currentDate,localTime,localDate)
                   }} >
                   <Text style={{color:'white'}}>ยกเลิกการเช็คชื่อ</Text>
                 </TouchableOpacity>
@@ -608,6 +654,19 @@ const TeacherHome = ({ navigation }) => {
                   // await _fetchSessionsAPI(item.currentDate,localTime,localDate)
                   }} >
                       <Text style={{color:'white'}}>Test Add Students</Text>
+                </TouchableOpacity>
+            </View>
+            :
+            <></>
+            }
+
+            {item.isStudentAdded ? 
+            <View>
+                <TouchableOpacity style={{backgroundColor:'green',padding:15,elevation:5,borderRadius:25,alignSelf:'center',marginTop:15}}
+                onPress={async () => {
+                   await  checkAllStudent(teacherIDState,item.uqID,selectedDate)
+                  }} >
+                      <Text style={{color:'white'}}>Check all student</Text>
                 </TouchableOpacity>
             </View>
             :
@@ -705,7 +764,7 @@ const TeacherHome = ({ navigation }) => {
                 onRequestClose={() => {
                 Alert.alert("Modal has been closed.");
                 }}
-            >
+              >
                 <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:2,marginBottom:190}}>
                     <View style={{marginTop:50}}>
                       <Text style={{fontSize:20}}>กำลังอัปเดตสถานที่</Text>
@@ -715,6 +774,90 @@ const TeacherHome = ({ navigation }) => {
                     </View>
                 </View>
               </Modal>
+
+              <Modal
+                      animationType="fade"
+                      transparent={true}
+                      visible={isCancelModalShow}
+                      onRequestClose={() => {
+                      Alert.alert("Modal has been closed.");
+                      }}
+                  >
+                    
+                      <View style={{backgroundColor:'white',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:2,marginBottom:190}}>
+                          <View style={{flex:1,justifyContent:'center',alignSelf:'center'}}>
+                             <Icon name="exclamation-circle" size={100} color='red'/>
+                          </View>
+                          <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                            <Text  >คุณแน่ใจหรือไม่ว่าต้องการยกเลิก?</Text>
+                            <Text  >ชื่อวิชา: {cancelSelectedData.className}</Text>
+                            <Text  >รหัสวิชา: {cancelSelectedData.classID}</Text>
+                            <Text  >วันที่: {cancelSelectedData.date}</Text>
+                          </View>
+                          <View style={{flexDirection:'row',justifyContent:'space-evenly',marginBottom:20}}>
+                            <TouchableOpacity 
+                            style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
+                            onPress={async () => {
+                              console.log(cancelSelectedData);
+                              await _cancelSession(cancelSelectedData.date,cancelSelectedData.uqID)
+                              setIsCancelModalShow(false)
+                            }}
+                            >
+                              <Text style={{color:'white'}}>ตกลง</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity 
+                            style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
+                            onPress={() => setIsCancelModalShow(false)}
+                            >
+                              <Text style={{color:'white'}}>ยกเลิก</Text>
+                            </TouchableOpacity>
+                          </View>
+                      </View>
+                    
+                </Modal>
+
+                <Modal
+                      animationType="fade"
+                      transparent={true}
+                      visible={isChangeLocModalShow}
+                      onRequestClose={() => {
+                      Alert.alert("Modal has been closed.");
+                      }}
+                  >
+                    
+                      <View style={{backgroundColor:'white',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:2,marginBottom:190}}>
+                          <View style={{flex:1,justifyContent:'center',alignSelf:'center'}}>
+                             <Icon name="exclamation-circle" size={100} color='red'/>
+                          </View>
+                          <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                            <Text  >คุณแน่ใจหรือไม่ว่าต้องการเปลี่ยนสถานที่?</Text>
+                            <Text  >ชื่อวิชา: {selectedChangeLocData.className}</Text>
+                            <Text  >รหัสวิชา: {selectedChangeLocData.classID}</Text>
+                          </View>
+                          <View style={{flexDirection:'row',justifyContent:'space-evenly',marginBottom:20}}>
+                            <TouchableOpacity 
+                            style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
+                            onPress={async () => {
+                              console.log(selectedChangeLocData);
+                              await updateWifiLocAPI(selectedChangeLocData.uqID,selectedChangeLocData.teacherID)
+                              setIsChangeLocModalShow(false)
+                            }}
+                            >
+                              <Text style={{color:'white'}}>ตกลง</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity 
+                            style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
+                            onPress={() => setIsChangeLocModalShow(false)}
+                            >
+                              <Text style={{color:'white'}}>ยกเลิก</Text>
+                            </TouchableOpacity>
+                          </View>
+                      </View>
+                    
+                </Modal>
+
+
+               
              
             </SafeAreaView>
         </>

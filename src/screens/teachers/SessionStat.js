@@ -292,8 +292,8 @@ const TeacherSessionStat = ({route}) => {
                 />
             
 
-            <View style={{backgroundColor:'white',alignSelf:'center',padding:10,justifyContent:'center',elevation:2,borderRadius:10,marginTop:10}}>
-                <Text style={{fontSize:20}}>รายชื่อนักศึกษา</Text>
+            <View style={{backgroundColor:'white',alignSelf:'center',padding:10,justifyContent:'center',elevation:2,borderRadius:10,marginTop:10,backgroundColor:'#9E76B4'}}>
+                <Text style={{fontSize:20,color:'white'}}>รายชื่อนักศึกษา</Text>
             </View>
             
             </View>

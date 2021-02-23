@@ -186,8 +186,8 @@ const Login = ({navigation}) => {
       setjobtitle(info.jobTitle)
       setInfoShow(true)
 
-      let role = info.jobTitle
-      // let role = 'Employee'
+      // let role = info.jobTitle
+      let role = 'Employee'
 
 
       // AsyncStorage.setItem('jobtitle',role);

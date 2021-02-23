@@ -230,9 +230,11 @@ const SettingLoc = ({navigation,route}) => {
         
         
         <View style={{backgroundColor:'white', margin:10,padding:10,borderRadius:20,elevation:7,paddingBottom:25,flex:1,alignItems:'center',justifyContent:'space-between'}}>
-        <Text style={{fontSize:20,backgroundColor:'#9E76B4',alignSelf:'center',padding:10,elevation:7,borderRadius:20,color:'white'}}>การระบุสถานที่</Text>
-        <Text  >กรุณาอยู่ในบริเวณที่ต้องการทำการสร้างห้องเรียนเช็คชื่อ และเลือกสัญญาณ Wi-Fi โดยจะให้ระบบเลือกอัตโนมัติ หรือเลือกด้วยตนเอง ควรเลือกจากความแรงของสัญญาณที่มากที่สุด เพื่อจำกัดขอบเขตให้อยู่ในบริเวณมากที่สุด</Text>
-        <View style={{flexDirection:'row'}}>
+        <View style={{padding:10,marginTop:15,backgroundColor:'#9E76B4',borderRadius:20,padding:20}}>
+          <Text style={{fontSize:20,color:'white',alignSelf:'center'}}>*คำแนะนำ*</Text>
+          <Text style={styles.textColor}>1.อยู่ในบริเวณที่ต้องการให้ทำการเช็คชื่อ</Text>
+          <Text style={styles.textColor}>2.เลือกสัญญาณ Wi-Fi โดยจะให้ระบบเลือกอัตโนมัติหรือเลือกด้วยตนเอง</Text>
+          <Text style={styles.textColor}>3.ควรเลือกจากความแรงของสัญญาณที่มากที่สุดเพื่อจำกัดขอบเขตให้อยู่ในบริเวณมากที่สุด</Text>
         </View>
         { !isAutoSelected &&
         <View style={{backgroundColor:'#9E76B4',width:350,borderRadius:25,elevation:8,padding:15}}>
@@ -279,5 +281,11 @@ const SettingLoc = ({navigation,route}) => {
     )
 
 }
+
+const styles = StyleSheet.create({
+  textColor : {
+    color : 'white'
+  }
+})
 
 export default SettingLoc

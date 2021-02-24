@@ -2,7 +2,7 @@ import React,{useEffect, useState} from 'react'
 import { Button, View,Text,Image,StyleSheet } from 'react-native'
 import { TouchableHighlight, TouchableOpacity } from 'react-native-gesture-handler';
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 
 
@@ -10,6 +10,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 const InClassRoom = ({route,navigation}) => {
     const classUqID = route.params.uqID
     const teacherID = route.params.teacherID 
+    const circleSize = 40
+    const arrowSize = 40
     const date = route.params.date
     useEffect(() => {
         console.log(classUqID + ' ' +teacherID+ ' '+ date);
@@ -20,7 +22,7 @@ const InClassRoom = ({route,navigation}) => {
         <>
         
                 <SafeAreaView style={{flex:1}}>
-                <View style={{marginTop:25}} >
+                <View style={{marginTop:25,flex:1}} >
                     <Text style={{alignSelf:'center',fontSize:20}} >การสร้างแผนผังที่นั่งห้องเรียน</Text>
                 
                     <View style={{flexDirection:'row',justifyContent:'space-around',padding:10}}>
@@ -47,6 +49,56 @@ const InClassRoom = ({route,navigation}) => {
                         </TouchableOpacity>
                     </View>
                 </View> */}
+                <View style={{backgroundColor:'#9E76B4',flex:2,margin:30,borderRadius:25}}>
+                    <View style={{alignItems:'center'}}>
+                        <Text style={{color:'white',fontSize:19,marginTop:15,textDecorationLine: 'underline',fontWeight: 'bold'}}>การสร้างแผนผังที่นั่ง</Text>
+                        <Text style={{color:'white',fontSize:15,fontStyle:'italic'}}>- สำหรับผู้สแกน -</Text>
+                        <View>
+                        <Text style={{color:'white'}}>1.หากมีคนด้านหน้าให้สแกนด้านหน้า</Text>
+                        <Text style={{color:'white'}}>2.หากไม่มีคนด้านหน้าให้สแกนด้านขวา</Text>
+                        <Text style={{color:'white'}}>3.นอกเหนือจากนั้นไม่ต้องสแกน</Text>
+                        </View>
+                        <Text style={{color:'white',fontSize:15,fontStyle:'italic'}}>- สำหรับผู้ถูกสแกน -</Text>
+                        <Text style={{color:'white'}}>ให้กดปุ่ม QR ของฉันเพื่อถูกสแกน</Text>
+                    </View>
+                    <View style={{flexDirection:'row',justifyContent:'space-evenly',padding:18,marginBottom:-19}}>
+                        <Icon name="circle" size={circleSize} color='white'/>
+                        <Icon name="arrow-right" size={arrowSize} color='white'/>
+                        <Icon name="circle" size={circleSize} color='white'/>
+                        <Icon name="arrow-right" size={arrowSize} color='white'/>
+                        <Icon name="circle" size={circleSize} color='white'/>
+                    </View>
+                    <View style={{flexDirection:'row',justifyContent:'space-around'}}>
+                        <View>
+                        <Icon name="arrow-up" size={arrowSize} color='white'/>
+                        <Icon name="circle" size={circleSize} color='white'/>
+                        </View>
+                        <View>
+                        <Icon name="arrow-up" size={arrowSize} color='white'/>
+                        <Icon name="circle" size={circleSize} color='white'/>
+                        </View>
+                        <View>
+                        <Icon name="arrow-up" size={arrowSize} color='white'/>
+                        <Icon name="circle" size={circleSize} color='white'/>
+                        </View>
+                    </View>
+                    <View style={{flexDirection:'row',justifyContent:'space-around'}}>
+                        <View>
+                        <Icon name="arrow-up" size={arrowSize} color='white'/>
+                        <Icon name="circle" size={circleSize} color='white'/>
+                        </View>
+                        <View>
+                        <Icon name="arrow-up" size={arrowSize} color='white'/>
+                        <Icon name="circle" size={circleSize} color='white'/>
+                        </View>
+                        <View>
+                        <Icon name="arrow-up" size={arrowSize} color='white'/>
+                        <Icon name="circle" size={circleSize} color='white'/>
+                        </View>
+                    </View>
+                    
+                    
+                </View>
                 </SafeAreaView>
 
         </>

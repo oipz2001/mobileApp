@@ -8,7 +8,8 @@ import {
   TouchableHighlight,
   SafeAreaView,
   Modal,
-  ActivityIndicator
+  ActivityIndicator,
+  Image
 } from 'react-native';
 import TextInput from '../components/TextInput'
 import AzureAuth from 'react-native-azure-auth';
@@ -241,10 +242,17 @@ const Login = ({navigation}) => {
 
 
     <SafeAreaView style = {{flex: 1, justifyContent: 'center',alignItems: 'center'}} >
-      
-    <TouchableOpacity onPress={_Login} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20}}>
-      <Text style={{color:'white'}}>เข้าสู่ระบบด้วย CMU Account</Text>
-    </TouchableOpacity>
+      <View style={{flex:1,backgroundColor:'white',borderRadius:20,elevation:2,margin:20}}>
+      <View style={{flex:3,justifyContent:'center'}}>
+      <Image source={require('../assets/vectors/logo_transformation1-removebg.png')} style={{width:2*180,height:2*110}} />
+      </View>
+      <View style={{alignSelf:'center',flex:1}}>
+        <TouchableOpacity onPress={_Login} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20}}>
+          <Text style={{color:'white'}}>เข้าสู่ระบบด้วย CMU Account</Text>
+        </TouchableOpacity>
+      </View>
+      </View>
+    
     {/* {isInfoShow &&
     <View style={{backgroundColor:'#9E76B4',marginTop:30,padding:10,elevation:5,borderRadius:20}}>
       <Text style={{color:"white"}} > Name: {user} </Text> 
@@ -257,7 +265,7 @@ const Login = ({navigation}) => {
     {/* <TouchableOpacity onPress={_onLogout} style={{backgroundColor:'#9E76B4',padding:12,elevation:5,borderRadius:20,marginTop:30}}>
       <Text style={{color:'white'}}>Logout</Text>
     </TouchableOpacity>  */}
-    <View >
+    {/* <View > */}
       {/* <View style = {{marginTop: 30}} >
         <Button title = "Go to Teacher Home" onPress = {async () => {
           await checkIfTeacherExist(teacherUserID)
@@ -280,7 +288,7 @@ const Login = ({navigation}) => {
       </View>
       <Text>{studentUserID}</Text>  */}
       
-    </View>
+    {/* </View> */}
     
     </SafeAreaView>
   );

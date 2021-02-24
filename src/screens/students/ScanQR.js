@@ -111,11 +111,6 @@ class QR_Scan extends PureComponent {
                   >
                     
                       <View style={{backgroundColor:'white',alignItems:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:8,marginBottom:200}}>
-                        <View style={{flex:1,alignItems:'center',justifyContent:'center',marginTop:30}}>
-                        <Text>*กฎในการสแกน*</Text>
-                        <Text>สแกนด้านหน้า (หากมีคนด้านหน้า)</Text>
-                        <Text>สแกนด้านขวา (หากไม่มีคนด้านหน้า)</Text>
-                        </View>
                           <View style={{flex:1,justifyContent:'center'}}>
                             <Text>โปรดเลือกทิศทางในการสแกน</Text>
                           </View>

@@ -45,21 +45,21 @@ const _hearderProfile = ({...props}) => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login" screenOptions={{headerTitleAlign:'center'}}   >
 
-        <Stack.Screen name="Login" component={Login}  /> 
+        <Stack.Screen name="Login" component={Login} options={{headerTitle:'การล็อกอิน'}} /> 
         {/* <Stack.Screen name="TeacherHome" component={TeacherHome} options={{headerTitle:'My Sessions',headerRight:_hearderProfile}} /> */}
         {/* <Stack.Screen name="TeacherHome" component={TeacherHome} options={({ navigation, route }) => ({headerRight: () => <Button title="ss" onPress={() => navigation.navigate('MyProfile')} />,})} /> */}
-        <Stack.Screen name="TeacherHome" component={TeacherHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'ห้องเช็คชื่อ'})} />
+        <Stack.Screen name="TeacherHome" component={TeacherHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'ห้องเช็คชื่อ',headerLeft: null})} />
         <Stack.Screen name="TeacherCreateRoom" component={TeacherSessionCreate} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'การสร้างห้องเช็คชื่อ'})} />
         <Stack.Screen name="TeacherSettingLocation" component={SettingLocation} options={{headerTitle:'การระบุสถานที่'}} />
         <Stack.Screen name="RoomStat" component={TeacherSessionStat} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'สถิติการเข้าห้อง'})}/>
         <Stack.Screen name="TeacherSeatmap" component={TeacherSeatmap} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'แผนผังที่นั่ง'})}/>
 
-        <Stack.Screen name="StudentAddFaceList" component={CameraAddFaceList}/>
-        <Stack.Screen name="StudentHome" component={StudentHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'ห้องเช็คชื่อ'})}/>
-        <Stack.Screen name="StudentFaceCheckIn" component={StudentFaceCheckIn} />
+        <Stack.Screen name="StudentAddFaceList" component={CameraAddFaceList} options={{headerTitle:'สร้างการระบุตัวตน'}}/>
+        <Stack.Screen name="StudentHome" component={StudentHome} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'ห้องเช็คชื่อ',headerLeft: null})}/>
+        <Stack.Screen name="StudentFaceCheckIn" component={StudentFaceCheckIn} options={{headerTitle:'การระบุตัวตน'}} />
         <Stack.Screen name="Seatmap" component={Seatmap} options={({navigation,route}) => ({headerTitle:route.params.sessionTitle,headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'การสร้างแผนผังที่นั่ง'})}/>
-        <Stack.Screen name="ScanQR" component={ScanQR} />
-        <Stack.Screen name="MyQR" component={MyQR}/>
+        <Stack.Screen name="ScanQR" component={ScanQR} options={{headerTitle:'สแกน QR Code'}} />
+        <Stack.Screen name="MyQR" component={MyQR} options={{headerTitle:'QR ของฉัน'}}/>
         <Stack.Screen name="SessionReport" component={StudentReport} options={({ navigation, route }) => ({headerRight: () => <_hearderProfile onPress={() => navigation.navigate('Profile')}/>,headerTitle:'การสรุปผล'})}/>
 
         <Stack.Screen name="Profile" component={MyProfile} options={{headerTitle:'โปรไฟล์'}} />

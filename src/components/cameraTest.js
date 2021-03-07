@@ -18,7 +18,7 @@ class ExampleApp extends PureComponent {
             shouldFaceDetect : true
             
         }
-    }
+  }
     
   render() {
     return (
@@ -46,6 +46,7 @@ class ExampleApp extends PureComponent {
           faceDetectionMode={RNCamera.Constants.FaceDetection.Mode.accurate}
           faceDetectionClassifications={RNCamera.Constants.FaceDetection.Classifications.all}
           onFacesDetected={this.state.shouldFaceDetect ? this.handleFaceDetected : null}
+          // onFacesDetected={this.handleFaceDetected}
         />
         <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
           {/* <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
@@ -66,14 +67,16 @@ class ExampleApp extends PureComponent {
     var leftEyeOpenProp = faceArray.faces[0].leftEyeOpenProbability.toFixed(3) ;
     var rightEyeOpenProp = faceArray.faces[0].rightEyeOpenProbability.toFixed(3) ;
     var smilingProb = faceArray.faces[0].smilingProbability.toFixed(6) ;
-
-      
+    
+     
+      console.log(this.state.timeCount);
     this.setState({timeCount : this.state.timeCount+1})
-    // console.log("right: "+ leftEyeOpenProp + "  left: "+rightEyeOpenProp + "  smile: "+smilingProb + "  " + this.state.timeCount);
+    console.log("right: "+ leftEyeOpenProp + "  left: "+rightEyeOpenProp + "  smile: "+smilingProb + "  " + this.state.timeCount);
     if(leftEyeOpenProp < 0.5 && rightEyeOpenProp < 0.5 ){
       var eyeClosedCount = 1
       this.state.closedEyeTime.push(this.state.timeCount)
       var closedEyeTime = this.state.closedEyeTime 
+      console.log(closedEyeTime);
       if(closedEyeTime.length != 0){
         
         for(var i=0;i<closedEyeTime.length-1;i++){
@@ -103,7 +106,8 @@ class ExampleApp extends PureComponent {
         smile=smileCount
       }
     }
-    // console.log(smile);
+    
+    console.log(smile);
     
 
     

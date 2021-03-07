@@ -35,9 +35,22 @@ const TeacherSeatmap = ({route}) => {
                 {
                     let myGraphsList = documentSnapshot.data().seatmap[selectedDate].graphs
                     var seatmapGraphsList = get2DArrayGraphs(myGraphsList)
-                    console.log(seatmapGraphsList);
+                   
+                    
                     if(seatmapGraphsList.length != 0){
+                        seatmapGraphsList.sort(function mySort(a,b){
+                            return -(a.sumMax - b.sumMax)
+                        })
+                        seatmapGraphsList.forEach((element,idx) => {
+                            const graphKey = Object.keys(element)[0]
+                            element[`graph${idx}`] = element[graphKey]
+                            if(graphKey != `graph${idx}`){
+                            delete element[graphKey]
+                            }
+                        });
+                        console.log(seatmapGraphsList);
                         setSeatmapGraphArray(seatmapGraphsList)
+
                         setIsSeatmapFound(true)
                     }
                     else{
@@ -60,7 +73,8 @@ const TeacherSeatmap = ({route}) => {
     const _pressSeatmap = async (k,i,j) =>{
         const studentID = seatmapGraphArray[k][`graph${k}`][i][j]
         // const url = await storage().ref(studentID).getDownloadURL();
-        const url = await storage().ref(studentID).getDownloadURL().then(
+        const url = await storage().ref(studentID).getDownloadURL()
+        .then(
             function onResolve(foundURL) {
                 setStudentPhotoURL(foundURL)
             }, 
@@ -68,8 +82,15 @@ const TeacherSeatmap = ({route}) => {
                 const url_notFound = "https://cdn1.vectorstock.com/i/1000x1000/51/05/male-profile-avatar-with-brown-hair-vector-12055105.jpg"
                 setStudentPhotoURL(url_notFound)
             });
-        
-        setModalData(studentID)
+
+        const studentRef = firestore().collection('Students').doc(studentID).get()
+        const studentData = (await studentRef).data()
+        const studentUqID = studentData.uqID
+        console.log(studentUqID);
+        setModalData({
+            studentID:studentID,
+            studentUqID:studentUqID
+        })
         setShowSeatmapModal(!showSeatmapModal)
     }
 
@@ -131,8 +152,13 @@ const TeacherSeatmap = ({route}) => {
                     arr.push(myArr)
                     
                 }
-
-                myGraphs.push({[`graph${i}`] : arr , sumMax : delX+delY  }) 
+                let maxDif = 0
+                if(delX > delY ){
+                    maxDif = delX
+                }else{
+                    maxDif = delY
+                }
+                myGraphs.push({[`graph${i}`] : arr , sumMax : maxDif  }) 
         
 
         }
@@ -162,19 +188,26 @@ const TeacherSeatmap = ({route}) => {
                 }}
             >
                 <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:8,marginBottom:190}}>
-                    <View style={{flex:1,justifyContent:'center'}}>
-                        <TouchableOpacity  onPress={() => setShowSeatmapModal(!showSeatmapModal)}>
-                            <Image source={require('../../assets/vectors/close.png')} style={{width:30,height:30}} />
-                        </TouchableOpacity>
-                    </View>
-                    <View style={{flex:4,justifyContent:'space-evenly',alignItems:'center'}}>
+                    
+                    <View style={{flex:5,justifyContent:'space-evenly',alignItems:'center',elevation:2}}>
                         <Image
                         style={{width:200,height:200}}
                         source={{
                         uri: studentPhotoURL
                         }}
                         />
-                        <Text>{modalData}</Text> 
+                        <View>
+                            
+                        <Text>รหัสนักศึกษา: {modalData.studentUqID}</Text> 
+                        <Text>ชื่อ: {modalData.studentID}</Text> 
+                        </View>
+                    </View>
+                    <View style={{flex:1,justifyContent:'center'}}>
+                        <TouchableOpacity  
+                        style={{backgroundColor:'#9E76B4',paddingHorizontal:20,paddingVertical:6,borderRadius:20,elevation:2,marginTop:-25}}
+                        onPress={() => setShowSeatmapModal(!showSeatmapModal)}>
+                            <Text style={{color:'white'}}>ปิด</Text>
+                        </TouchableOpacity>
                     </View>
                     
 
@@ -242,8 +275,8 @@ const seatmapButten = (sumMax,color) => {
     
     return {
         backgroundColor:color,
-        width:200/sumMax,
-        height:200/sumMax,
+        width:110/sumMax,
+        height:110/sumMax,
         borderRadius:10,
         justifyContent:'center',
         alignItems:'center',

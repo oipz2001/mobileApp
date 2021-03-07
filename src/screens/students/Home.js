@@ -21,7 +21,7 @@ const StudentHome = ({navigation,route}) => {
   // const [currentDate,setcurrentDate] = useState(moment(new Date()).format('YYYY-MM-DD').toString())
   //   const [currentTime,setcurrentTime] = useState(moment(new Date()).format('HH:mm').toString())
     const [wifiList,setWifiList] = useState([])
-    const [sessionsData,setSessionsData] = useState(null)
+    const [sessionsData,setSessionsData] = useState([])
 
 
     const [localTime,setLocalTime] = useState(moment(new Date()).format('HH:mm').toString())
@@ -247,6 +247,13 @@ const StudentHome = ({navigation,route}) => {
               </View>
               <View style={{alignItems:'center',backgroundColor:'#9E76B4',marginHorizontal:16,padding:10,elevation:2,borderRadius:10,marginBottom:5}}>
               <Text style={{alignSelf:'center',color:'white'}}>การเช็คชื่อในวันที่ {myDate} ({localTime})</Text>
+              {
+                   sessionsData.length == 0  ? 
+                   <Text style={{color:'white'}}>(ไม่พบรายวิชาเช็คชื่อในวันนี้)</Text>
+                   :
+                   <></>
+              
+                 }
               </View>
     
           

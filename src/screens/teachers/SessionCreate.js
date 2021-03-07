@@ -7,6 +7,8 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 const moment = require('moment')
 import CheckBox from '@react-native-community/checkbox'
 import AsyncStorage from '@react-native-community/async-storage'
+import { KeyboardAvoidingView } from 'react-native';
+import { ScrollView } from 'react-native';
 const URL = require('../../config/endpointConfig')
 // const myEndpointURL =  URL.localEndpoint
 const myEndpointURL =  URL.myEndpointTeacher
@@ -240,11 +242,15 @@ const TeacherSessionCreate = ({navigation}) => {
     return(
         <>
         
+        {/* <KeyboardAvoidingView 
+            behavior={ Platform.OS === 'ios' ? 'padding' : 'height'}
+            style={{flex : 1}}
+        > */}
                 
                 <SafeAreaView style={{flex:1}}>
                 
-                <View style={{backgroundColor:'white',margin:14,padding:30,borderRadius:20,elevation:2,paddingBottom:20}}>
-                <View style={{alignItems:'center'}}>
+                <ScrollView style={{backgroundColor:'white',margin:14,padding:0,borderRadius:20,elevation:2,paddingBottom:20}}>
+                <View style={{alignItems:'center',marginTop:40}}>
                 <View style={{flexDirection:'column',justifyContent:'space-between'}} >
                 <View style={{flexDirection:'row',justifyContent:'space-between',backgroundColor:'#9E76B4',paddingLeft:15,borderRadius:20,elevation:2}}>
                     <Text style={{fontSize:20,color:'white'}}>ภาคการศึกษา</Text>
@@ -286,12 +292,20 @@ const TeacherSessionCreate = ({navigation}) => {
 
                         
                 </View>
-                    <Text style={styles.title}>รหัสวิชา</Text>
-                    <TextInput placeholder='รหัสวิชาของคุณ' onChangeText={text => setSessionID(text)} />
-                    <Text style={styles.title}>ชื่อวิชา</Text>
-                    <TextInput placeholder='ชื่อวิชาของคุณ' onChangeText={text => setSessionName(text)}/>
-                    <Text style={styles.title}>คำอธิบายห้องเช็คชื่อ</Text>
-                    <TextInput placeholder='คำอธิบายห้องเรียนหรือสถานที่' onChangeText={text => setSessionDesc(text)}/>
+                <View style={{alignItems:'center'}}>
+                    <View>
+                        <Text style={styles.title}>รหัสวิชา</Text>
+                        <TextInput placeholder='รหัสวิชาของคุณ' onChangeText={text => setSessionID(text)} />
+                    </View>
+                    <View>
+                        <Text style={styles.title}>ชื่อวิชา</Text>
+                        <TextInput placeholder='ชื่อวิชาของคุณ' onChangeText={text => setSessionName(text)}/>
+                    </View>
+                    <View>
+                        <Text style={styles.title}>คำอธิบายห้องเช็คชื่อ</Text>
+                        <TextInput placeholder='คำอธิบายห้องเรียนหรือสถานที่' onChangeText={text => setSessionDesc(text)}/>
+                    </View>
+                </View>
                     <View style={{flexDirection:'row',justifyContent:'space-around'}}>
                         <View>
                             <Text style={styles.title}>เริ่มเวลา</Text>
@@ -365,10 +379,9 @@ const TeacherSessionCreate = ({navigation}) => {
                     </View>
                     
                     
+                
                     
-                    
-                    
-                </View>
+                </ScrollView>
                 
 
                 {showTimePicker_start && (
@@ -415,9 +428,8 @@ const TeacherSessionCreate = ({navigation}) => {
                 
                 
                 
-                
                 </SafeAreaView>
-
+                {/* </KeyboardAvoidingView> */}
         </>
             
         

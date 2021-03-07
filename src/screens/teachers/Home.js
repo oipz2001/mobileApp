@@ -26,7 +26,7 @@ const TeacherHome = ({ navigation }) => {
 
     const [localTime,setLocalTime] = useState(moment(new Date()).format('HH:mm').toString())
 
-    const [sessionsData,setSessionsData] = useState(null)
+    const [sessionsData,setSessionsData] = useState([])
     const [teacherIDState,setTeacherIDState] = useState(null)
 
     const [wifiList,setWifiList] = useState([])
@@ -58,12 +58,14 @@ const TeacherHome = ({ navigation }) => {
         .doc(teacherIDState)
         .collection('sessions')
         .onSnapshot(teacherClassroom => {
+          
           let myClassDataList = []
           teacherClassroom.forEach(data => {
             
             const regisDateList = data.data().registeredDay
             if(regisDateList.includes(selectedDate))
             {
+              // console.log(teacherClassroom);
               let myClassObject = {}
               const classData =  data.data()
               // get class detail
@@ -153,7 +155,7 @@ const TeacherHome = ({ navigation }) => {
           myClassDataList.sort(function (a, b) {
           return (order[a.sessionStatusString] || order.default) - (order[b.sessionStatusString] || order.default);
         })
-        console.log(myClassDataList);
+        // console.log(myClassDataList);
           setSessionsData(myClassDataList)
 
         });
@@ -236,6 +238,7 @@ const TeacherHome = ({ navigation }) => {
       var uqID = classUqID
       var teacherID = teacherIDState
       var studentList = [
+        {id: 600610143, name: "NUTTAWAT PINYO"},
         {id: 590610671, name: "SINGKHON KHONGTHAM"},
         {id: 590610677, name: "ATHITAKARN MUANGKEING"},
         {id: 590610679, name: "AMONWAN LAPINSEE"},
@@ -361,6 +364,32 @@ const TeacherHome = ({ navigation }) => {
         body: JSON.stringify({
             uqID:uqClassID,
             date:date,
+            teacherID:teacherID
+        })
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            
+            console.log(data);
+        })
+        .catch((error) => {
+        console.error(error);
+        });
+
+    };
+
+    const _cancelSessionAll = async (teacherID,uqClassID) => {
+      console.log(teacherID,uqClassID);
+
+
+        await fetch(defaultEndpoint+'/webApp/removeClassAllDate', {
+        method: 'POST',
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            uqID:uqClassID,
             teacherID:teacherID
         })
         })
@@ -622,8 +651,8 @@ const TeacherHome = ({ navigation }) => {
             <></>
             }
             
-            {
-              item.isStudentAdded ?
+            {/* {
+              item.isStudentAdded ? */}
               <View >
                 <TouchableOpacity style={{backgroundColor:'red',padding:15,elevation:2,borderRadius:25,alignSelf:'center',marginTop:15}}
                 onPress={async () => {
@@ -637,12 +666,30 @@ const TeacherHome = ({ navigation }) => {
                   // await _cancelSession(item.currentDate,item.uqID)
                   // await _fetchSessionsAPI(item.currentDate,localTime,localDate)
                   }} >
-                  <Text style={{color:'white'}}>ยกเลิกการเช็คชื่อ</Text>
+                  <Text style={{color:'white'}}>ยกเลิกการเช็คชื่อของวันนี้</Text>
                 </TouchableOpacity>
               </View>
-              :
+              {/* :
               <></>
-            }
+            } */}
+
+            <View >
+                <TouchableOpacity style={{backgroundColor:'red',padding:15,elevation:2,borderRadius:25,alignSelf:'center',marginTop:15}}
+                onPress={async () => {
+                  // setIsCancelModalShow(true)
+                  // setCancelSelectedData({
+                  //   uqID : item.uqID,
+                  //   date : item.currentDate,
+                  //   classID : item.id,
+                  //   className : item.name
+                  // })
+                  
+                  await _cancelSessionAll(teacherIDState,item.uqID)
+                  // await _fetchSessionsAPI(item.currentDate,localTime,localDate)
+                  }} >
+                  <Text style={{color:'white'}}>ยกเลิกการเช็คชื่อของทุกวัน</Text>
+                </TouchableOpacity>
+              </View>
             
             {!item.isStudentAdded ? 
             <View>
@@ -735,6 +782,13 @@ const TeacherHome = ({ navigation }) => {
                  </View>
                  <View style={{alignItems:'center',backgroundColor:'#9E76B4',marginHorizontal:16,padding:10,elevation:2,borderRadius:10,marginBottom:5}}>
                  <Text style={{color:'white'}}>การเช็คชื่อของวันที่ {myDate} ({localTime})</Text> 
+
+                 {
+                   sessionsData.length == 0  ? 
+                   <Text style={{color:'white'}}>(ไม่พบรายวิชาเช็คชื่อในวันนี้)</Text>
+                   :
+                   <></>
+                 }
                  </View>      
                       
                

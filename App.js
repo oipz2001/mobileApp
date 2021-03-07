@@ -29,7 +29,7 @@ const App = () => {
     
     return(
     // <WifiPresent />
-    // <Camera />
+    // <Camera/>
     // <Login />
     
     // <CameraAddFaceList/>

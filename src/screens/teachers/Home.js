@@ -35,9 +35,12 @@ const TeacherHome = ({ navigation }) => {
 
     const [cancelSelectedData,setCancelSelectedData] = useState(false)
     const [isCancelModalShow,setIsCancelModalShow] = useState(false)
+    const [isCancelAllModalShow,setIsCancelAllModalShow] =useState(false)
 
     const [selectedChangeLocData,setSelectedChangeLocData] = useState('')
     const [isChangeLocModalShow,setIsChangeLocModalShow] = useState(false)
+
+    const [isDupDateSet,setIsDupDateSet] = useState(false)
 
     const _retrieveUserData = async () => {
       // const  teacherID = await AsyncStorage.getItem('uniqueIDTeacher');
@@ -80,8 +83,12 @@ const TeacherHome = ({ navigation }) => {
               const isClassLocSet = classData.isLocationSet
               const isClassStudentAdded = classData.isStudentAdded
               const isClassSeatmapSet = classData.isSeatmapSet
-              
 
+              let classDupDate = classData.duplicatedDay
+              const classStartDate = classData.startDate
+              const classEndDate = classData.endDate
+              
+             
               
              
 
@@ -103,7 +110,9 @@ const TeacherHome = ({ navigation }) => {
                   semester: classSemester, 
                   sessionStatus: classStatus,
                   startTime: classStartTime, 
-                  uqID: classUqID
+                  uqID: classUqID,
+                  peroidDate : `${moment(classStartDate).format('DD/MM/YYYY')} ถึง ${moment(classEndDate).format('DD/MM/YYYY')}`,
+                  dupDate : classDupDate
                 }
 
               }else
@@ -131,7 +140,9 @@ const TeacherHome = ({ navigation }) => {
                   uqID: classUqID,
                   checkedStudent: present,
                   uncheckedStudent : absent,
-                  totalStudent : totalClassStudent
+                  totalStudent : totalClassStudent,
+                  peroidDate : `${moment(classStartDate).format('DD/MM/YYYY')} ถึง ${moment(classEndDate).format('DD/MM/YYYY')}`,
+                  dupDate : classDupDate
                   
 
                 }
@@ -155,7 +166,7 @@ const TeacherHome = ({ navigation }) => {
           myClassDataList.sort(function (a, b) {
           return (order[a.sessionStatusString] || order.default) - (order[b.sessionStatusString] || order.default);
         })
-        // console.log(myClassDataList);
+        console.log(myClassDataList);
           setSessionsData(myClassDataList)
 
         });
@@ -553,6 +564,12 @@ const TeacherHome = ({ navigation }) => {
                     </View>
                     <View>
                       <Text style={styles.descrption}>ภาคการศึกษา: {item.semester} </Text>
+                      <Text style={styles.descrption}>ระยะเวลา: {item.peroidDate} </Text>
+                      <Text style={styles.descrption}>ทำซํ้าทุกวัน: </Text>
+                      {
+                        DupDay(item.dupDate)
+                        
+                      }
                       <Text style={styles.descrption}>เวลาเช็คชื่อ: {item.startTime} - {item.endTime} </Text>
                       <Text style={styles.descrption}>วันที่: {item.currentDate.split('-')[2] +'/'+ item.currentDate.split('-')[1] +'/'+ item.currentDate.split('-')[0] } </Text>
                       <Text style={styles.descrption}>คำอธิบาย: {item.desc == "" ? "(ไม่ได้ระบุไว้)" : item.desc} </Text>
@@ -674,24 +691,24 @@ const TeacherHome = ({ navigation }) => {
             } */}
 
             <View >
-                <TouchableOpacity style={{backgroundColor:'red',padding:15,elevation:2,borderRadius:25,alignSelf:'center',marginTop:15}}
+                <TouchableOpacity style={{backgroundColor:'black',padding:15,elevation:2,borderRadius:25,alignSelf:'center',marginTop:15}}
                 onPress={async () => {
-                  // setIsCancelModalShow(true)
-                  // setCancelSelectedData({
-                  //   uqID : item.uqID,
-                  //   date : item.currentDate,
-                  //   classID : item.id,
-                  //   className : item.name
-                  // })
+                  setIsCancelAllModalShow(true)
+                  setCancelSelectedData({
+                    uqID : item.uqID,
+                    date : item.currentDate,
+                    classID : item.id,
+                    className : item.name
+                  })
                   
-                  await _cancelSessionAll(teacherIDState,item.uqID)
+                  // await _cancelSessionAll(teacherIDState,item.uqID)
                   // await _fetchSessionsAPI(item.currentDate,localTime,localDate)
                   }} >
                   <Text style={{color:'white'}}>ยกเลิกการเช็คชื่อของทุกวัน</Text>
                 </TouchableOpacity>
               </View>
             
-            {!item.isStudentAdded ? 
+            {/* {!item.isStudentAdded ? 
             <View>
                 <TouchableOpacity style={{backgroundColor:'green',padding:15,elevation:5,borderRadius:25,alignSelf:'center',marginTop:15}}
                 onPress={async () => {
@@ -718,7 +735,7 @@ const TeacherHome = ({ navigation }) => {
             </View>
             :
             <></>
-            }
+            } */}
             
             
             </View>
@@ -743,6 +760,43 @@ const TeacherHome = ({ navigation }) => {
           
         );
       };
+
+      const DupDay = (dupDate) => {
+        let dupDayColor = ['','','','','','','']
+
+        if(dupDate[0]) dupDayColor[6] = 'green'
+        else dupDayColor[6] = '#a9a9a9'
+
+        if(dupDate[1]) dupDayColor[0] = 'green'
+        else dupDayColor[0] = '#a9a9a9'
+
+        if(dupDate[2]) dupDayColor[1] = 'green'
+        else dupDayColor[1] = '#a9a9a9'
+
+        if(dupDate[3]) dupDayColor[2] = 'green'
+        else dupDayColor[2] = '#a9a9a9'
+
+        if(dupDate[4]) dupDayColor[3] = 'green'
+        else dupDayColor[3] = '#a9a9a9'
+
+        if(dupDate[5]) dupDayColor[4] = 'green'
+        else dupDayColor[4] = '#a9a9a9'
+
+        if(dupDate[6]) dupDayColor[5] = 'green'
+        else dupDayColor[5] = '#a9a9a9'
+        
+        return (
+          <View   style={{flexDirection:'row',marginVertical:5,alignSelf:'center'}}>
+            <View style={{backgroundColor:dupDayColor[0],paddingHorizontal:15,borderTopLeftRadius:10,borderBottomLeftRadius:10,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>จ</Text></View>
+            <View style={{backgroundColor:dupDayColor[1],paddingHorizontal:15,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>อ</Text></View>
+            <View style={{backgroundColor:dupDayColor[2],paddingHorizontal:15,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>พ</Text></View>
+            <View style={{backgroundColor:dupDayColor[3],paddingHorizontal:11,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>พฤ</Text></View>
+            <View style={{backgroundColor:dupDayColor[4],paddingHorizontal:15,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>ศ</Text></View>
+            <View style={{backgroundColor:dupDayColor[5],paddingHorizontal:15,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>ส</Text></View>
+            <View style={{backgroundColor:dupDayColor[6],paddingHorizontal:15,borderTopRightRadius:10,borderBottomEndRadius:10,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>อา</Text></View>
+          </View> 
+        )
+      }
 
 
         const HeaderFlatlistComponent = ()=>{
@@ -846,7 +900,7 @@ const TeacherHome = ({ navigation }) => {
                             <Text  >คุณแน่ใจหรือไม่ว่าต้องการยกเลิก?</Text>
                             <Text  >ชื่อวิชา: {cancelSelectedData.className}</Text>
                             <Text  >รหัสวิชา: {cancelSelectedData.classID}</Text>
-                            <Text  >วันที่: {cancelSelectedData.date}</Text>
+                            <Text  >วันที่: {moment( cancelSelectedData.date).format('DD/MM/YYYY')}</Text>
                           </View>
                           <View style={{flexDirection:'row',justifyContent:'space-evenly',marginBottom:20}}>
                             <TouchableOpacity 
@@ -862,6 +916,47 @@ const TeacherHome = ({ navigation }) => {
                             <TouchableOpacity 
                             style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
                             onPress={() => setIsCancelModalShow(false)}
+                            >
+                              <Text style={{color:'white'}}>ยกเลิก</Text>
+                            </TouchableOpacity>
+                          </View>
+                      </View>
+                    
+                </Modal>
+
+                <Modal
+                      animationType="fade"
+                      transparent={true}
+                      visible={isCancelAllModalShow}
+                      onRequestClose={() => {
+                      Alert.alert("Modal has been closed.");
+                      }}
+                  >
+                    
+                      <View style={{backgroundColor:'white',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:2,marginBottom:190}}>
+                          <View style={{flex:1,justifyContent:'center',alignSelf:'center'}}>
+                             <Icon name="exclamation-circle" size={100} color='red'/>
+                          </View>
+                          <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
+                            <Text  >คุณแน่ใจหรือไม่ว่าต้องการยกเลิกทุกวัน?</Text>
+                            <Text  >ชื่อวิชา: {cancelSelectedData.className}</Text>
+                            <Text  >รหัสวิชา: {cancelSelectedData.classID}</Text>
+                            {/* <Text  >วันที่: {cancelSelectedData.date}</Text> */}
+                          </View>
+                          <View style={{flexDirection:'row',justifyContent:'space-evenly',marginBottom:20}}>
+                            <TouchableOpacity 
+                            style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
+                            onPress={async () => {
+                              console.log(cancelSelectedData);
+                              await _cancelSessionAll(teacherIDState,cancelSelectedData.uqID)
+                              setIsCancelAllModalShow(false)
+                            }}
+                            >
+                              <Text style={{color:'white'}}>ตกลง</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity 
+                            style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
+                            onPress={() => setIsCancelAllModalShow(false)}
                             >
                               <Text style={{color:'white'}}>ยกเลิก</Text>
                             </TouchableOpacity>

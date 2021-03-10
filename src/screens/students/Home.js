@@ -286,8 +286,15 @@ const StudentHome = ({navigation,route}) => {
                           <Text style={styles.title}>ชื่อวิชา: {item.name}</Text>
                           <Text style={styles.title}>รหัสวิชา: { item.id == "" ? "" :  item.id}</Text>
                         </View>
-                        <Text style={{fontSize:12}}>เวลาเช็คชื่อ: {item.startTime} - {item.endTime} ({item.currentDate.split('-')[2] +'/'+ item.currentDate.split('-')[1] +'/'+ item.currentDate.split('-')[0] }) </Text>
                         <Text style={{fontSize:12}}>ภาคการศึกษา: {item.semester} </Text>
+                        <Text style={{fontSize:12}}>ระยะเวลา: {moment( item.startDate).format("DD/MM/YYYY")} ถึง {moment( item.endDate).format("DD/MM/YYYY")} </Text>
+                        <Text style={{fontSize:12}}>ทำซํ้าทุกวัน:</Text>
+                        {
+                        DupDay(item.duplicatedDay)
+                      }
+                        <Text style={{fontSize:12}}>เวลาเช็คชื่อ: {item.startTime} - {item.endTime} ({item.currentDate.split('-')[2] +'/'+ item.currentDate.split('-')[1] +'/'+ item.currentDate.split('-')[0] }) </Text>
+                        <Text style={{fontSize:12}}>วันที่: {moment( item.currentDate).format("DD/MM/YYYY")} </Text>
+                        
                         <Text style={{fontSize:12}}>อาจารย์: {item.teacherID} </Text>
                         <Text style={{fontSize:12}}>คำอธิบาย: {item.desc == '' ? "(ไม่ได้ระบุไว้)" : item.desc } </Text>
                         <Text style={{fontSize:12}}>รูปแบบการเช็คชื่อ: {item.isLocationSet ? "ระบุสถานที่" : "ออนไลน์"} </Text>
@@ -483,6 +490,43 @@ const StudentHome = ({navigation,route}) => {
 
 }
 
+const DupDay = (dupDate) => {
+  let dupDayColor = ['','','','','','','']
+
+  if(dupDate[0]) dupDayColor[6] = 'green'
+        else dupDayColor[6] = '#a9a9a9'
+
+        if(dupDate[1]) dupDayColor[0] = 'green'
+        else dupDayColor[0] = '#a9a9a9'
+
+        if(dupDate[2]) dupDayColor[1] = 'green'
+        else dupDayColor[1] = '#a9a9a9'
+
+        if(dupDate[3]) dupDayColor[2] = 'green'
+        else dupDayColor[2] = '#a9a9a9'
+
+        if(dupDate[4]) dupDayColor[3] = 'green'
+        else dupDayColor[3] = '#a9a9a9'
+
+        if(dupDate[5]) dupDayColor[4] = 'green'
+        else dupDayColor[4] = '#a9a9a9'
+
+        if(dupDate[6]) dupDayColor[5] = 'green'
+        else dupDayColor[5] = '#a9a9a9'
+  
+  return (
+    <View   style={{flexDirection:'row',marginVertical:5,alignSelf:'center'}}>
+      <View style={{backgroundColor:dupDayColor[0],paddingHorizontal:15,borderTopLeftRadius:10,borderBottomLeftRadius:10,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>จ</Text></View>
+      <View style={{backgroundColor:dupDayColor[1],paddingHorizontal:15,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>อ</Text></View>
+      <View style={{backgroundColor:dupDayColor[2],paddingHorizontal:15,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>พ</Text></View>
+      <View style={{backgroundColor:dupDayColor[3],paddingHorizontal:11,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>พฤ</Text></View>
+      <View style={{backgroundColor:dupDayColor[4],paddingHorizontal:15,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>ศ</Text></View>
+      <View style={{backgroundColor:dupDayColor[5],paddingHorizontal:15,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>ส</Text></View>
+      <View style={{backgroundColor:dupDayColor[6],paddingHorizontal:15,borderTopRightRadius:10,borderBottomEndRadius:10,borderColor:'white',borderWidth:0.5}}><Text style={{color:'white'}}>อา</Text></View>
+    </View> 
+  )
+}
+
 const statusButtStyle = (classStatus) => {
   let background = ''
   if(classStatus == -1){
@@ -494,7 +538,7 @@ const statusButtStyle = (classStatus) => {
   }
   else if(classStatus == 1)
   {
-    background = 'red'
+    background = '#9E76B4'
   }
   
   

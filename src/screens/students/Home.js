@@ -6,6 +6,7 @@ import {useFocusEffect} from '@react-navigation/native';
 import wifi from 'react-native-android-wifi';
 import AsyncStorage from '@react-native-community/async-storage'
 import Icon from 'react-native-vector-icons/FontAwesome';
+import Ioniconcs from 'react-native-vector-icons/Ionicons';
 import CalendarPicker from 'react-native-calendar-picker';
 
 const URL = require('../../config/endpointConfig')
@@ -286,31 +287,29 @@ const StudentHome = ({navigation,route}) => {
                           <Text style={styles.title}>ชื่อวิชา: {item.name}</Text>
                           <Text style={styles.title}>รหัสวิชา: { item.id == "" ? "" :  item.id}</Text>
                         </View>
-                        <Text style={{fontSize:12}}>ภาคการศึกษา: {item.semester} </Text>
-                        <Text style={{fontSize:12}}>ระยะเวลา: {moment( item.startDate).format("DD/MM/YYYY")} ถึง {moment( item.endDate).format("DD/MM/YYYY")} </Text>
-                        <Text style={{fontSize:12}}>ทำซํ้าทุกวัน:</Text>
+                        <Text style={{fontSize:10}}>ภาคการศึกษา: {item.semester} </Text>
+                        <Text style={{fontSize:10}}>ระยะเวลา: {moment( item.startDate).format("DD/MM/YYYY")} ถึง {moment( item.endDate).format("DD/MM/YYYY")} </Text>
+                        <Text style={{fontSize:10}}>ทำซํ้าทุกวัน:</Text>
                         {
                         DupDay(item.duplicatedDay)
                       }
-                        <Text style={{fontSize:12}}>เวลาเช็คชื่อ: {item.startTime} - {item.endTime} ({item.currentDate.split('-')[2] +'/'+ item.currentDate.split('-')[1] +'/'+ item.currentDate.split('-')[0] }) </Text>
-                        <Text style={{fontSize:12}}>วันที่: {moment( item.currentDate).format("DD/MM/YYYY")} </Text>
+                        <Text style={{fontSize:10}}>เวลาเช็คชื่อ: {item.startTime} - {item.endTime} ({item.currentDate.split('-')[2] +'/'+ item.currentDate.split('-')[1] +'/'+ item.currentDate.split('-')[0] }) </Text>
+                        <Text style={{fontSize:10}}>วันที่: {moment( item.currentDate).format("DD/MM/YYYY")} </Text>
                         
-                        <Text style={{fontSize:12}}>อาจารย์: {item.teacherID} </Text>
-                        <Text style={{fontSize:12}}>คำอธิบาย: {item.desc == '' ? "(ไม่ได้ระบุไว้)" : item.desc } </Text>
-                        <Text style={{fontSize:12}}>รูปแบบการเช็คชื่อ: {item.isLocationSet ? "ระบุสถานที่" : "ออนไลน์"} </Text>
+                        <Text style={{fontSize:10}}>อาจารย์: {item.teacherID} </Text>
+                        <Text style={{fontSize:10}}>คำอธิบาย: {item.desc == '' ? "(ไม่ได้ระบุไว้)" : item.desc } </Text>
+                        <Text style={{fontSize:10}}>รูปแบบการเช็คชื่อ: {item.isLocationSet ? "ระบุสถานที่" : "ออนไลน์"} </Text>
                     </View>
                     
             </View>
 
-            <View >
-              
-
-              {item.sessionStatus == 0 ? 
+           {/* // <View > */}
+           {/* {item.sessionStatus == 0 ? 
               <View style={{flexDirection:'row',alignItems:'center',justifyContent:'space-evenly',marginTop:15}}>
                  {
-                  item.isStudentChecked == false ? 
+                  (item.isStudentChecked == false && item.sessionStatus == 0 )  ? 
                 
-                  <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20}}>
+                  <View style={{backgroundColor:'#9E76B4',width:95,height:75,elevation:2,borderRadius:20,justifyContent:'center'}}>
                   <TouchableOpacity onPress={async () => {
                     
                     const studentID = studentIDState
@@ -324,7 +323,6 @@ const StudentHome = ({navigation,route}) => {
                     
                     }
                     else{
-                      // await checkInOnlineAPI(studentID,teacherID,uqID,checkDate,timestamp)
                       navigation.navigate('StudentFaceCheckIn',
                       {
                           studentID:studentID,
@@ -335,48 +333,90 @@ const StudentHome = ({navigation,route}) => {
                       )
                     }
 
-                    
-                    
-                    
-                    
-
-                    // navigation.navigate('StudentFaceCheckIn',{sessionTitle:item.title,sessionID:item.id})
                     }} >
-                      <Text style={{color:'white'}}>เช็คชื่อเข้าห้องเรียน</Text>
+                      <View style={{flexDirection:'column',alignItems:'center'}}>
+                        <Ioniconcs name="checkmark" size={35} color="white" /> 
+                        <Text style={{color:'white',fontSize:10}}>เช็คชื่อ</Text>
+                      </View>
                   </TouchableOpacity>
                   </View>
                     : 
                     <></> 
                    } 
 
-                  {
+                  
+                  
+              </View>
+              :
+              <></>
+              } */}
+
+            {
+                  (item.isStudentChecked == false && item.sessionStatus == 0 )  ? 
+                
+                  <View style={{backgroundColor:'#9E76B4',width:95,height:75,elevation:2,borderRadius:20,justifyContent:'center',alignSelf:'center',marginTop:15}}>
+                  <TouchableOpacity onPress={async () => {
+                    
+                    const studentID = studentIDState
+                    const teacherID = item.teacherID
+                    const uqID = item.uqID
+                
+
+                    if(item.isLocationSet){
+                      // await getWifiList(uqID,teacherID)
+                      await getWifiList(studentID,teacherID,uqID)
+                    
+                    }
+                    else{
+                      navigation.navigate('StudentFaceCheckIn',
+                      {
+                          studentID:studentID,
+                          teacherID:teacherID,
+                          uqID:uqID
+                      }
+                      
+                      )
+                    }
+
+                    }} >
+                      <View style={{flexDirection:'column',alignItems:'center'}}>
+                        <Ioniconcs name="checkmark" size={35} color="white" /> 
+                        <Text style={{color:'white',fontSize:10}}>เช็คชื่อ</Text>
+                      </View>
+                  </TouchableOpacity>
+                  </View>
+                    : 
+                    <></> 
+                   } 
+              
+
+            <View style={{flexDirection:'row',justifyContent:'space-evenly',marginTop:15}}>
+
+              
+              {
                     (item.isStudentChecked && item.isSeatmapSet && item.isLocationSet ) ? 
-                  <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20}}>
+                  <View style={{backgroundColor:'#9E76B4',width:100,height:75,elevation:2,borderRadius:20,justifyContent:'center'}}>
                     <TouchableOpacity onPress={() => navigation.navigate('Seatmap',{
                       uqID:item.uqID,
                       teacherID:item.teacherID,
                       date: item.currentDate
                       })} >
-                        <Text style={{color:'white'}}>สร้างแผนผังที่นั่ง</Text>
+                        <View style={{flexDirection:'column',alignItems:'center'}}>
+                        <Icon name="users" size={30} color="white" />
+                        <Text style={{color:'white',fontSize:10}}>สร้างแผนผังที่นั่ง</Text>
+                        </View>
                     </TouchableOpacity>
                   </View>
                   :
                   <></>
                   }
-                  
-              </View>
-              :
-              <></>
-              }
-
-             
               
               
               {
                 (item.sessionStatus == -1 || (item.sessionStatus == 0 && item.isStudentChecked == false)  ) ?
                 <></>
                 :
-                <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20,alignSelf:'center',marginTop:15}}>
+                <View style={{backgroundColor:'#9E76B4',width:100,height:75,elevation:2,borderRadius:20,alignSelf:'center',justifyContent:'center'}}>
                   <TouchableOpacity onPress={async () => {
                     navigation.navigate('SessionReport',{
                       className:item.name,
@@ -386,11 +426,15 @@ const StudentHome = ({navigation,route}) => {
                       studentID:studentIDState
                     })
                     }} >
-                      <Text style={{color:'white'}}>สรุปผลการเช็คชื่อ</Text>
+                      <View style={{flexDirection:'column',alignItems:'center'}}>
+                        <Ioniconcs name="analytics-outline" size={35} color="white" /> 
+                        <Text style={{color:'white',fontSize:10}}>สรุปผล</Text>
+                      </View>
                   </TouchableOpacity>
                 </View>
               }
             </View>
+           {/* </View> */}
             
                           {
                             item.sessionStatus == -1 ? 
@@ -399,15 +443,15 @@ const StudentHome = ({navigation,route}) => {
                             item.isStudentChecked ? 
                             <View style={{marginTop:20,alignSelf:'center',elevation:2,backgroundColor:'white',padding:6,paddingHorizontal:13,borderRadius:15,borderColor:'green',borderWidth:3}}>
                               <View style={{flexDirection:'row'}}>
-                                <Text style={{alignSelf:'center',marginRight:10,color:'green'}}>เช็คชื่อแล้ว</Text>
-                                <Icon name="check-circle" size={50} color='green'/>
+                                <Text style={{alignSelf:'center',marginRight:10,color:'green'}}>เช็คชื่อสำเร็จ</Text>
+                                <Ioniconcs name="checkmark-circle" size={50} color='green'/>
                               </View>
                             </View>
                             :
                             <View style={{marginTop:20,alignSelf:'center',elevation:2,backgroundColor:'white',padding:6,paddingHorizontal:13,borderRadius:15,borderColor:'red',borderWidth:3}}>
                               <View style={{flexDirection:'row'}}>
                                 <Text style={{alignSelf:'center',marginRight:10,color:'red'}}>ยังไม่ได้เช็คชื่อ</Text>
-                                <Icon name="times-circle" size={50} color='red'/>
+                                <Ioniconcs  name="close-circle" size={50} color='red'/>
                               </View>
                             </View>
                           }

@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from 'react'
 import { FlatList, StatusBar, StyleSheet, Text, TouchableOpacity,View,Image } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
+import Ioniconcs from 'react-native-vector-icons/Ionicons';
 
 
 
@@ -76,13 +77,15 @@ const SessionReport = ({route}) => {
                   :
                   item.isChecked ?
                   <View style={{flexDirection:'row',alignItems:'baseline'}}>
-                    <Image source={require('../../assets/vectors/check.png')} style={{width:33,height:33,marginRight:5}} />
+                    {/* <Image source={require('../../assets/vectors/check.png')} style={{width:33,height:33,marginRight:5}} /> */}
+                    <Ioniconcs name="checkmark" size={32} color="green" /> 
                     <Text>เช็คแล้ว {item.timestamp}</Text>
                   </View>
                   :
                   <View style={{flexDirection:'row',alignItems:'baseline'}}>
-                  <Image source={require('../../assets/vectors/close.png')} style={{width:26,height:26,marginRight:7}} />
-                  <Text style={{color:'red'}}>ไม่ได้เช็คชื่อ</Text>
+                  {/* <Image source={require('../../assets/vectors/close.png')} style={{width:26,height:26,marginRight:7}} /> */}
+                  <Ioniconcs name="close" size={32} color="red"  /> 
+                  <Text >ไม่ได้เช็คชื่อ</Text>
                   </View>
                 }
               </View>
@@ -172,7 +175,7 @@ const styles = StyleSheet.create({
       backgroundColor:'white',
     },
     title: {
-      fontSize: 20,
+      fontSize: 15,
     },
     classDetail:{
       alignItems:'center',

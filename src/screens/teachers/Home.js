@@ -575,13 +575,8 @@ const TeacherHome = ({ navigation }) => {
                       <Text style={styles.descrption}>คำอธิบาย: {item.desc == "" ? "(ไม่ได้ระบุไว้)" : item.desc} </Text>
                       <Text style={styles.descrption}>รูปแบบการเช็คชื่อ: {item.isLocationSet ? 'ระบุสถานที่' : 'ออนไลน์'} </Text>
                     </View>
-                    
-              </View>
-              
-
-              {
-                item.isStudentAdded ?
-                <View style={{flexDirection:'column',margin:15}}>
+                    {
+                     item.isStudentAdded ?
                     <View style={{marginTop:20,flexDirection:'row',justifyContent:'space-around'}}>
                           <View style={{flexDirection:'row',justifyContent:'space-between'}}>
                               <Icon name="users" size={23} />
@@ -596,8 +591,20 @@ const TeacherHome = ({ navigation }) => {
                               <Text style={styles.statText}>  {item.uncheckedStudent}</Text>
                           </View>
                       </View>
-                      <View style={{marginTop:15}}>
-                        <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20,alignSelf:'center'}}>
+                      :
+                      <></>
+                    }
+                    
+              </View>
+              
+              <View style={{flexDirection:'row',justifyContent:'space-evenly',marginTop:15}}>  
+              {
+                item.isStudentAdded ?
+               
+                    
+                      
+                      
+                        <View style={{backgroundColor:'#9E76B4',width:95,height:75,elevation:2,borderRadius:20,alignSelf:'center',justifyContent:'center'}}>
                           <TouchableOpacity onPress={() => { navigation.navigate('RoomStat',
                           {
                             uqID:item.uqID,
@@ -607,43 +614,39 @@ const TeacherHome = ({ navigation }) => {
                             })
                           }} 
                           >
-                            <View style={{flexDirection:'row'}}>
-                              <Icon name="pie-chart" size={25} color="white" /> 
-                              <Text style={{color:'white',marginLeft:7}}>สถิติการเข้าห้อง</Text>
+                            <View style={{flexDirection:'column',alignItems:'center'}}>
+                              <Icon name="pie-chart" size={40} color="white" /> 
+                              <Text style={{color:'white',fontSize:10}}>สถิติ</Text>
                             </View>
                           </TouchableOpacity>
                         </View>
-                        { item.isSeatmapSet ?
-                        <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20,marginTop:15,alignSelf:'center'}}>
-                          <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{uqID:item.uqID,selectedDate:selectedDate})} >
-                            <View style={{flexDirection:'row'}}>
-                              <Icon name="users" size={23} color="white" />
-                              <Text style={{color:'white',marginLeft:7}}>แผนผังที่นั่ง</Text>
-                            </View>
-                          </TouchableOpacity>
-                      </View>
-                      :
-                      <></>
-                      }
-                    </View>
                     
+                    
+                   //</View>
                   
-                  </View> 
                 :
-                // <View style={{flexDirection:'row',alignSelf:'center',margin:15}}>
-                //   <TouchableOpacity style={styles.addStudentWarningButton}>
-                //     <Text style={{color:'red'}}>กรุณาเพิ่มรายชื่อนักศึกษา</Text>
-                //   </TouchableOpacity>
-                // </View> 
                 <></>
 
 
 
               }
 
+              { item.isSeatmapSet ?
+                        <View style={{backgroundColor:'#9E76B4',width:95,height:75,elevation:2,borderRadius:20,alignSelf:'center',justifyContent:'center'}}>
+                          <TouchableOpacity onPress={() => navigation.navigate('TeacherSeatmap',{uqID:item.uqID,selectedDate:selectedDate})} >
+                            <View style={{flexDirection:'column',alignItems:'center'}}>
+                              <Icon name="users" size={33} color="white" />
+                              <Text style={{color:'white',fontSize:10,bottom:-3}}>แผนผังที่นั่ง</Text>
+                            </View>
+                          </TouchableOpacity>
+                      </View>
+                      :
+                      <></>
+              }
+
             {
               item.isLocationSet ?
-              <View style={{backgroundColor:'#9E76B4',padding:12,elevation:2,borderRadius:20,alignSelf:'center',marginTop:15}}>
+              <View style={{backgroundColor:'#9E76B4',width:95,height:75,elevation:2,borderRadius:20,justifyContent:'center'}}>
                 <TouchableOpacity onPress={async () => {
                   setIsChangeLocModalShow(true)
                   setSelectedChangeLocData(
@@ -657,9 +660,9 @@ const TeacherHome = ({ navigation }) => {
                   )
                     // await updateWifiLocAPI(item.uqID,teacherIDState)
                 }}  >
-                  <View style={{flexDirection:'row'}}>
-                    <Icon name="map-marker" size={25} color="white" /> 
-                    <Text style={{color:'white',marginLeft:7}}>อัปเดตสถานที่เช็คชื่อ</Text>      
+                  <View style={{flexDirection:'column',alignItems:'center'}}>
+                    <Icon name="map-marker" size={40} color="white" /> 
+                    <Text style={{color:'white',fontSize:10}}>อัปเดตสถานที่</Text>      
                   </View>
                 </TouchableOpacity>
                
@@ -667,11 +670,12 @@ const TeacherHome = ({ navigation }) => {
             :
             <></>
             }
+            </View>   
             
-            {/* {
-              item.isStudentAdded ? */}
-              <View >
-                <TouchableOpacity style={{backgroundColor:'red',padding:15,elevation:2,borderRadius:25,alignSelf:'center',marginTop:15}}
+            <View style={{flexDirection:'row',justifyContent:'center',marginTop:15}}>
+
+            <View style={{marginRight:9}}>
+                <TouchableOpacity style={{backgroundColor:'#9E76B4',width:95,height:75,elevation:2,borderRadius:25,alignSelf:'center',justifyContent:'center'}}
                 onPress={async () => {
                   setIsCancelModalShow(true)
                   setCancelSelectedData({
@@ -683,15 +687,41 @@ const TeacherHome = ({ navigation }) => {
                   // await _cancelSession(item.currentDate,item.uqID)
                   // await _fetchSessionsAPI(item.currentDate,localTime,localDate)
                   }} >
-                  <Text style={{color:'white'}}>ยกเลิกการเช็คชื่อของวันนี้</Text>
+                  <View style={{flexDirection:'column',alignItems:'center'}}>
+                  <Icon name="cog" size={37} color="white" /> 
+                  <Text style={{color:'white',fontSize:10}}>แก้ไข</Text>
+                  </View>
                 </TouchableOpacity>
               </View>
-              {/* :
-              <></>
-            } */}
+              
+              <View style={{marginRight:9}}>
+                <TouchableOpacity style={{backgroundColor:'#9E76B4',width:95,height:75,elevation:2,borderRadius:25,alignSelf:'center',justifyContent:'center'}}
+                //backgroundColor:'orangered'
+                onPress={async () => {
+                  setIsCancelModalShow(true)
+                  setCancelSelectedData({
+                    uqID : item.uqID,
+                    date : item.currentDate,
+                    classID : item.id,
+                    className : item.name
+                  })
+                  // await _cancelSession(item.currentDate,item.uqID)
+                  // await _fetchSessionsAPI(item.currentDate,localTime,localDate)
+                  }} >
+                  <View style={{flexDirection:'column',alignItems:'center'}}>
+                  <Icon name="minus-circle" size={37} color="white" /> 
+                  <Text style={{color:'white',fontSize:10}}>ยกเลิก</Text>
+                  </View>
+                </TouchableOpacity>
+              </View>
+             
+              
+
+          
 
             <View >
-                <TouchableOpacity style={{backgroundColor:'black',padding:15,elevation:2,borderRadius:25,alignSelf:'center',marginTop:15}}
+                <TouchableOpacity style={{backgroundColor:'#9E76B4',width:95,height:75,elevation:2,borderRadius:25,alignSelf:'center',justifyContent:'center'}}
+                //backgroundColor:'#333'
                 onPress={async () => {
                   setIsCancelAllModalShow(true)
                   setCancelSelectedData({
@@ -701,14 +731,17 @@ const TeacherHome = ({ navigation }) => {
                     className : item.name
                   })
                   
-                  // await _cancelSessionAll(teacherIDState,item.uqID)
-                  // await _fetchSessionsAPI(item.currentDate,localTime,localDate)
                   }} >
-                  <Text style={{color:'white'}}>ยกเลิกการเช็คชื่อของทุกวัน</Text>
+                  <View style={{flexDirection:'column',alignItems:'center'}}>
+                      <Icon name="trash" size={37} color="white" /> 
+                      <Text style={{color:'white',fontSize:10}}>ลบห้องเช็คชื่อ</Text>
+                  </View>
                 </TouchableOpacity>
               </View>
+            </View>
+              
             
-            {/* {!item.isStudentAdded ? 
+            {!item.isStudentAdded ? 
             <View>
                 <TouchableOpacity style={{backgroundColor:'green',padding:15,elevation:5,borderRadius:25,alignSelf:'center',marginTop:15}}
                 onPress={async () => {
@@ -735,7 +768,7 @@ const TeacherHome = ({ navigation }) => {
             </View>
             :
             <></>
-            } */}
+            }
             
             
             </View>
@@ -764,25 +797,27 @@ const TeacherHome = ({ navigation }) => {
       const DupDay = (dupDate) => {
         let dupDayColor = ['','','','','','','']
 
-        if(dupDate[0]) dupDayColor[6] = 'green'
+        let isDupColor = 'green'
+
+        if(dupDate[0]) dupDayColor[6] = isDupColor
         else dupDayColor[6] = '#a9a9a9'
 
-        if(dupDate[1]) dupDayColor[0] = 'green'
+        if(dupDate[1]) dupDayColor[0] = isDupColor
         else dupDayColor[0] = '#a9a9a9'
 
-        if(dupDate[2]) dupDayColor[1] = 'green'
+        if(dupDate[2]) dupDayColor[1] = isDupColor
         else dupDayColor[1] = '#a9a9a9'
 
-        if(dupDate[3]) dupDayColor[2] = 'green'
+        if(dupDate[3]) dupDayColor[2] = isDupColor
         else dupDayColor[2] = '#a9a9a9'
 
-        if(dupDate[4]) dupDayColor[3] = 'green'
+        if(dupDate[4]) dupDayColor[3] = isDupColor
         else dupDayColor[3] = '#a9a9a9'
 
-        if(dupDate[5]) dupDayColor[4] = 'green'
+        if(dupDate[5]) dupDayColor[4] = isDupColor
         else dupDayColor[4] = '#a9a9a9'
 
-        if(dupDate[6]) dupDayColor[5] = 'green'
+        if(dupDate[6]) dupDayColor[5] = isDupColor
         else dupDayColor[5] = '#a9a9a9'
         
         return (
@@ -835,7 +870,7 @@ const TeacherHome = ({ navigation }) => {
                  </TouchableOpacity>
                  </View>
                  <View style={{alignItems:'center',backgroundColor:'#9E76B4',marginHorizontal:16,padding:10,elevation:2,borderRadius:10,marginBottom:5}}>
-                 <Text style={{color:'white'}}>การเช็คชื่อของวันที่ {myDate} ({localTime})</Text> 
+                 <Text style={{color:'white'}}>วันที่ {myDate} เวลา {localTime}</Text> 
 
                  {
                    sessionsData.length == 0  ? 
@@ -900,11 +935,11 @@ const TeacherHome = ({ navigation }) => {
                             <Text  >คุณแน่ใจหรือไม่ว่าต้องการยกเลิก?</Text>
                             <Text  >ชื่อวิชา: {cancelSelectedData.className}</Text>
                             <Text  >รหัสวิชา: {cancelSelectedData.classID}</Text>
-                            <Text  >วันที่: {moment( cancelSelectedData.date).format('DD/MM/YYYY')}</Text>
+                            <Text  >ในวันที่: {moment( cancelSelectedData.date).format('DD/MM/YYYY')}</Text>
                           </View>
                           <View style={{flexDirection:'row',justifyContent:'space-evenly',marginBottom:20}}>
                             <TouchableOpacity 
-                            style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
+                            style={{marginBottom:30,backgroundColor:"green",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
                             onPress={async () => {
                               console.log(cancelSelectedData);
                               await _cancelSession(cancelSelectedData.date,cancelSelectedData.uqID)
@@ -914,7 +949,7 @@ const TeacherHome = ({ navigation }) => {
                               <Text style={{color:'white'}}>ตกลง</Text>
                             </TouchableOpacity>
                             <TouchableOpacity 
-                            style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
+                            style={{marginBottom:30,backgroundColor:"red",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
                             onPress={() => setIsCancelModalShow(false)}
                             >
                               <Text style={{color:'white'}}>ยกเลิก</Text>
@@ -938,14 +973,14 @@ const TeacherHome = ({ navigation }) => {
                              <Icon name="exclamation-circle" size={100} color='red'/>
                           </View>
                           <View style={{flex:1,justifyContent:'center',alignItems:'center'}}>
-                            <Text  >คุณแน่ใจหรือไม่ว่าต้องการยกเลิกทุกวัน?</Text>
+                            <Text  >คุณแน่ใจหรือไม่ว่าต้องการลบห้องเช็คชื่อ?</Text>
                             <Text  >ชื่อวิชา: {cancelSelectedData.className}</Text>
                             <Text  >รหัสวิชา: {cancelSelectedData.classID}</Text>
                             {/* <Text  >วันที่: {cancelSelectedData.date}</Text> */}
                           </View>
                           <View style={{flexDirection:'row',justifyContent:'space-evenly',marginBottom:20}}>
                             <TouchableOpacity 
-                            style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
+                            style={{marginBottom:30,backgroundColor:"green",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
                             onPress={async () => {
                               console.log(cancelSelectedData);
                               await _cancelSessionAll(teacherIDState,cancelSelectedData.uqID)
@@ -955,7 +990,7 @@ const TeacherHome = ({ navigation }) => {
                               <Text style={{color:'white'}}>ตกลง</Text>
                             </TouchableOpacity>
                             <TouchableOpacity 
-                            style={{marginBottom:30,backgroundColor:"#9E76B4",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
+                            style={{marginBottom:30,backgroundColor:"red",padding:8,elevation:2,borderRadius:20,width:80,alignItems:'center'}} 
                             onPress={() => setIsCancelAllModalShow(false)}
                             >
                               <Text style={{color:'white'}}>ยกเลิก</Text>
@@ -1061,7 +1096,7 @@ const styles = StyleSheet.create({
       fontSize: 19,
     },
     descrption:{
-        fontSize:13
+        fontSize:10
     },
     addStudentWarningButton : {
       backgroundColor:'yellow',

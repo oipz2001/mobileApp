@@ -327,12 +327,13 @@ const TeacherSessionStat = ({route}) => {
                 }}
             >
                 <View style={{backgroundColor:'white',alignItems:'center',justifyContent:'center',flex:1,marginLeft:20,marginRight:20,marginTop:220,borderRadius:20,elevation:8,marginBottom:190}}>
-                    <View style={{flex:1,justifyContent:'center'}}>
+                    {/* <View style={{flex:1,justifyContent:'center'}}>
                         <TouchableOpacity  onPress={() => setIsShowStProfile(!isShowStProfile)}>
                             <Image source={require('../../assets/vectors/close.png')} style={{width:30,height:30}} />
                         </TouchableOpacity>
                     </View>
-                    <View style={{flex:4,justifyContent:'space-evenly',alignItems:'center',marginBottom:20}}>
+                     */}
+                    <View style={{flex:4,justifyContent:'space-evenly',alignItems:'center',marginTop:40}}>
                         <Image
                         style={{width:200,height:200}}
                         source={{
@@ -345,7 +346,13 @@ const TeacherSessionStat = ({route}) => {
                           <Text>อีเมลล์: {modalData.studentMail}</Text> 
                         </View>
                     </View>
-                    
+                    <View style={{flex:1,justifyContent:'center'}}>
+                        <TouchableOpacity  
+                        style={{backgroundColor:'#9E76B4',paddingHorizontal:20,paddingVertical:6,borderRadius:20,elevation:2}}
+                        onPress={() => setIsShowStProfile(!isShowStProfile)}>
+                            <Text style={{color:'white'}}>ปิด</Text>
+                        </TouchableOpacity>
+                    </View>
 
                 </View>
             </Modal>
